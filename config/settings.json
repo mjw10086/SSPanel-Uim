@@ -11,6 +11,26 @@
     },
     {
         "id": null,
+        "item": "cryptomus_merchant_uuid",
+        "value": "",
+        "class": "billing",
+        "is_public": 0,
+        "type": "string",
+        "default": "",
+        "mark": "cryptomus商户ID"
+    },
+    {
+        "id": null,
+        "item": "cryptomus_payment_key",
+        "value": "",
+        "class": "billing",
+        "is_public": 0,
+        "type": "string",
+        "default": "",
+        "mark": "cryptomus支付密钥"
+    },
+    {
+        "id": null,
         "item": "f2f_pay_app_id",
         "value": "",
         "class": "billing",

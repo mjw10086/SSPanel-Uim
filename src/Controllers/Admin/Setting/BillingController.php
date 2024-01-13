@@ -14,6 +14,9 @@ use function json_encode;
 final class BillingController extends BaseController
 {
     private static array $update_field = [
+        // cryptomus
+        'cryptomus_merchant_uuid',
+        'cryptomus_payment_key',
         // 支付宝当面付
         'f2f_pay_app_id',
         'f2f_pay_pid',
