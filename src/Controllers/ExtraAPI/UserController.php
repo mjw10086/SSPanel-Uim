@@ -13,7 +13,12 @@ use Slim\Http\ServerRequest;
 
 final class UserController extends BaseController
 {
-    public function index(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    public function getUserById(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        return $response->write("Hello World");
+    }
+
+    public function updateUser(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
         return $response->write("Hello World");
     }

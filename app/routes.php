@@ -333,7 +333,15 @@ return static function (Slim\App $app): void {
     })->add(new NodeToken());
 
     // Extra API
-    $app->group('/api', static function (RouteCollectorProxy $group): void {
-        $group->get('/user', App\Controllers\ExtraAPI\UserController::class . ':index');
+    $app->group('/api/v1', static function (RouteCollectorProxy $group): void {
+        // user info manage
+        $group->get('/user/{id:[0-9]+}', App\Controllers\ExtraAPI\UserController::class . ':getUserById');
+        $group->put('/user', App\Controllers\ExtraAPI\UserController::class . ':updateUser');
+
+        // plan manage
+        $group->get('/plan', App\Controllers\ExtraAPI\PlanController::class . ':listPlans');
+
+        // notification
+        $group->post('/notification', App\Controllers\ExtraAPI\NotificationController::class . ':createNotification');
     })->add(new ExtraAPIToken());
 };
