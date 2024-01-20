@@ -15,6 +15,10 @@ $_ENV['webAPIUrl']   = $_ENV['baseUrl'];   //WebAPI地址，如需和站点地�
 $_ENV['muKey']       = 'ChangeMe';         //WebAPI密钥，用于节点服务端与面板通信，请务必修改此key为随机字符串
 $_ENV['checkNodeIp'] = true;               //是否webapi验证节点ip
 
+// Extra API
+$_ENV['Extra API']   = true;
+$_ENV['APIKey']      = '123456789';
+
 //数据库设置-------------------------------------------------------------------------------------------
 // db_host|db_socket 二选一，若设置 db_socket 则 db_host 会被忽略，不用请留空。若数据库在本机上推荐用 db_socket。
 // db_host 例: localhost（可解析的主机名）, 127.0.0.1（IP 地址）, 10.0.0.2:4406（含端口)

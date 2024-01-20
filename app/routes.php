@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Middleware\Admin;
 use App\Middleware\Guest;
 use App\Middleware\NodeToken;
+use App\Middleware\ExtraAPIToken;
 use App\Middleware\User;
 use Slim\Routing\RouteCollectorProxy;
 
@@ -330,4 +331,9 @@ return static function (Slim\App $app): void {
         $group->get('/func/detect_rules', App\Controllers\WebAPI\FuncController::class . ':getDetectRules');
         $group->get('/func/ping', App\Controllers\WebAPI\FuncController::class . ':ping');
     })->add(new NodeToken());
+
+    // Extra API
+    $app->group('/api', static function (RouteCollectorProxy $group): void {
+        $group->get('/user', App\Controllers\ExtraAPI\UserController::class . ':index');
+    })->add(new ExtraAPIToken());
 };
