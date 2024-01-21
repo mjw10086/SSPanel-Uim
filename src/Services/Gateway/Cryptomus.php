@@ -68,7 +68,7 @@ final class Cryptomus extends Base
             'amount' => $price,
             'currency' => 'USD',
             'order_id' => $trade_no,
-            'url_return' => $_ENV['baseUrl'] . '/user/invoice/' . $invoice_id . '/view',
+            'url_return' => self::getUserReturnUrl() . "?trade_no=" . $trade_no . "&order_id=" . $invoice_id,
             'url_callback' => self::getUserReturnUrl() . "?trade_no=" . $trade_no . "&order_id=" . $invoice_id,
             'is_payment_multiple' => false,
             'lifetime' => '3600',
