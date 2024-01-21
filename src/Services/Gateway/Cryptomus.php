@@ -69,7 +69,7 @@ final class Cryptomus extends Base
             'currency' => 'USD',
             'order_id' => $trade_no,
             'url_return' => $_ENV['baseUrl'] . '/user/invoice/' . $invoice_id . '/view',
-            'url_callback' => self::getUserReturnUrl() . "?order_id=" . $invoice_id,
+            'url_callback' => self::getUserReturnUrl() . "?trade_no=" . $trade_no . "&order_id=" . $invoice_id,
             'is_payment_multiple' => false,
             'lifetime' => '3600',
         ];
@@ -85,7 +85,7 @@ final class Cryptomus extends Base
 
         // create paylist in system
         $paylist = (new Paylist())->where('invoice_id', $invoice_id)->first();
-        if(empty($paylist)) {
+        if (empty($paylist)) {
             $user = Auth::getUser();
             $pl = new Paylist();
             $pl->userid = $user->id;
@@ -94,8 +94,8 @@ final class Cryptomus extends Base
             $pl->tradeno = $trade_no;
             $pl->gateway = self::_readableName();
             $pl->save();
-        } 
-        
+        }
+
         // return cryptomus order payment info
         $data = ["order_id" => $trade_no];
 
@@ -117,13 +117,14 @@ final class Cryptomus extends Base
 
     public function getReturnHTML($request, $response, $args): ResponseInterface
     {
-        $order_id = $this->antiXss->xss_clean($request->getParam('order_id'));
-        $data = ["order_id" => $order_id];
+        $trade_no = $this->antiXss->xss_clean($request->getParam('trade_no'));
+        $system_order_id = $this->antiXss->xss_clean($request->getParam('order_id'));
+        $data = ["order_id" => $trade_no];
 
         try {
             $result = $this->payment->info($data);
             if ($result["payment_status"] == "paid" || $result["payment_status"] == "paid_over") {
-                $this->postPayment($result['uuid']);
+                $this->postPayment($trade_no);
             }
         } catch (Exception $e) {
             return $response->withJson([
@@ -132,7 +133,7 @@ final class Cryptomus extends Base
             ]);
         }
 
-        return $response->withRedirect($_ENV['baseUrl'] . '/user/invoice/'.$order_id.'/view');
+        return $response->withRedirect($_ENV['baseUrl'] . '/user/invoice/' . $system_order_id . '/view');
     }
 
     public static function getPurchaseHTML(): string
