@@ -1,0 +1,22 @@
+:root {
+    /* predefined color */
+    --bg-main-color: rgb(23, 24, 47);
+    --bg-secondary-color: rgb(10, 12, 23);
+    --bg-tertiary-color: rgb(27, 29, 44);
+    --bg-quaternary-color: rgb(65, 69, 95);
+    --bg-quinary-color: rgb(43, 45, 62);
+
+    --bg-default-color: rgb(52, 53, 63);
+
+    --info-color: rgb(161, 230, 246);
+    --info-disable-color: rgb(107, 150, 165);
+
+    --warning-color: rgba(255, 138, 0, 1);
+
+    --danger-color: rgb(255, 71, 73);
+
+    --secondary-color: #2ecc71;
+    --text-color: #333;
+
+    /* predefined font size */
+}

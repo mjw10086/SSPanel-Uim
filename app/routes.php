@@ -28,8 +28,27 @@ return static function (Slim\App $app): void {
 
     // User
     $app->group('/user', static function (RouteCollectorProxy $group): void {
-        $group->get('', App\Controllers\UserController::class . ':index');
-        $group->get('/', App\Controllers\UserController::class . ':index');
+        // mole
+        $group->get('/dashboard', App\Controllers\MoleController::class . ':dashboard');
+        $group->get('/plan', App\Controllers\MoleController::class . ':plan');
+        $group->get('/devices', App\Controllers\MoleController::class . ':devices');
+        $group->get('/faq', App\Controllers\MoleController::class . ':faq');
+        $group->get('/account', App\Controllers\MoleController::class . ':account');
+        $group->get('/account/info', App\Controllers\MoleController::class . ':account');
+        $group->get('/account/notification', App\Controllers\MoleController::class . ':account');
+        $group->get('/billing', App\Controllers\MoleController::class . ':billing');
+        $group->get('/billing/one-time-topup', App\Controllers\MoleController::class . ':billing');
+        $group->get('/billing/automatic-topups', App\Controllers\MoleController::class . ':billing');
+        $group->get('/billing/withdraw', App\Controllers\MoleController::class . ':billing');
+        $group->get('/billing/billing-history', App\Controllers\MoleController::class . ':billing');
+        $group->get('/billing/balance-history', App\Controllers\MoleController::class . ':billing');
+
+        $group->get('', App\Controllers\MoleController::class . ':dashboard');
+        $group->get('/', App\Controllers\MoleController::class . ':dashboard');
+
+
+        // $group->get('', App\Controllers\UserController::class . ':index');
+        // $group->get('/', App\Controllers\UserController::class . ':index');
         // 签到
         $group->post('/checkin', App\Controllers\UserController::class . ':checkin');
         // 公告
