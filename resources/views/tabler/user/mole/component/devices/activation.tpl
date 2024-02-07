@@ -113,9 +113,9 @@
     <div class="text-center mb-3 fs-4 fw-light">Anything went wrong?</div>
     <div class="d-flex justify-content-between">
         <div class="col-6 px-2">
-            <button class="col-12 btn btn-default fs-5 fw-normal">FAQ</button>
+            <a href="/user/faq" class="col-12 btn btn-default fs-5 fw-normal">FAQ</a>
         </div>
         <div class="col-6 px-2">
-            <button class="col-12 btn btn-outline-info ffs-5 fw-normal">Contact support</button>
+            <a href="/user/faq" class="col-12 btn btn-outline-info ffs-5 fw-normal">Contact support</a>
         </div>
 </div>

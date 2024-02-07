@@ -25,18 +25,18 @@
         </div>
         <div class="col-4 px-4 d-flex flex-column fs-5 gap-2">
             <button class="w-100 btn btn-outline-default fw-normal">Suspend</button>
-            <button class="w-100 btn btn-outline-danger fw-normal" data-bs-target="#exampleModalToggle"
+            <button class="w-100 btn btn-outline-danger fw-normal" data-bs-target="#cancelPlanModal"
                 data-bs-toggle="modal">Cancel</button>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+<div class="modal fade" id="cancelPlanModal" aria-hidden="true" aria-labelledby="cancelPlanModalLabel"
     tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-2 bg-quinary text-light opacity-100 p-3">
             <div class="modal-header border-0">
-                <h1 class="modal-title fs-4 fw-bold" id="exampleModalToggleLabel">Cancel Plan</h1>
+                <h1 class="modal-title fs-4 fw-bold" id="cancelPlanModalLabel">Cancel Plan</h1>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>

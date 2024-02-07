@@ -32,6 +32,7 @@ return static function (Slim\App $app): void {
         $group->get('/dashboard', App\Controllers\MoleController::class . ':dashboard');
         $group->get('/plan', App\Controllers\MoleController::class . ':plan');
         $group->get('/devices', App\Controllers\MoleController::class . ':devices');
+        $group->get('/devices/activate', App\Controllers\MoleController::class . ':devices');
         $group->get('/faq', App\Controllers\MoleController::class . ':faq');
         $group->get('/account', App\Controllers\MoleController::class . ':account');
         $group->get('/account/info', App\Controllers\MoleController::class . ':account');

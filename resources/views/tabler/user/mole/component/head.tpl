@@ -22,4 +22,6 @@
     <link
         href="https://fonts.googleapis.com/css2?family=K2D:wght@400;500;600&family=Poppins:wght@400;500;600&display=swap"
         rel="stylesheet">
+
+    <script src="//{$config['jsdelivr_url']}/npm/htmx.org@latest/dist/htmx.min.js"></script>
 </head>
