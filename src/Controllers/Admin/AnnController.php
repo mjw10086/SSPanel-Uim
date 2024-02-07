@@ -29,6 +29,8 @@ final class AnnController extends BaseController
                 'op' => '操作',
                 'id' => '公告ID',
                 'date' => '日期',
+                'title' => '标题',
+                'summary' => '概要',
                 'content' => '公告内容',
             ],
         ];
@@ -79,6 +81,22 @@ final class AnnController extends BaseController
         $email_notify_class = (int) $request->getParam('email_notify_class');
         $email_notify = $request->getParam('email_notify') === 'true' ? 1 : 0;
 
+        $title = strip_tags(
+            str_replace(
+                ['<p>','</p>'],
+                ['','<br><br>'],
+                $request->getParam('title')
+            ),
+            ['br', 'a', 'strong']
+        );
+        $summary = strip_tags(
+            str_replace(
+                ['<p>','</p>'],
+                ['','<br><br>'],
+                $request->getParam('summary')
+            ),
+            ['br', 'a', 'strong']
+        );
         $content = strip_tags(
             str_replace(
                 ['<p>','</p>'],
@@ -92,6 +110,8 @@ final class AnnController extends BaseController
         if ($content !== '') {
             $ann = new Ann();
             $ann->date = Tools::toDateTime(time());
+            $ann->title = $title;
+            $ann->summary = $summary;
             $ann->content = $content;
 
             if (! $ann->save()) {
@@ -157,6 +177,8 @@ final class AnnController extends BaseController
     public function update(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
         $ann = (new Ann())->find($args['id']);
+        $ann->title = (string) $request->getParam('title');
+        $ann->summary = (string) $request->getParam('summary');
         $ann->content = (string) $request->getParam('content');
         $ann->date = Tools::toDateTime(time());
 

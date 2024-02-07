@@ -11,7 +11,9 @@ return new class() implements MigrationInterface {
         DB::getPdo()->exec(
             "CREATE TABLE `announcement` (
                 `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '公告ID',
-                `date` datetime NOT NULL DEFAULT '1989-06-04 00:05:00' COMMENT '公告日期',
+                `date` timestamp NOT NULL DEFAULT '1989-06-04 00:05:00' COMMENT '公告日期',
+                `title` text NOT NULL DEFAULT '' COMMENT '公告标题',
+                `summary` text NOT NULL DEFAULT '' COMMENT '公告概要',
                 `content` text NOT NULL DEFAULT '' COMMENT '公告内容',
                 PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -31,6 +31,8 @@
                 <div class="card-body">
                     <div class="mb-3">
                         <form method="post">
+                            <input id="anntitle"></input>
+                            <input id="annsummary"></input>
                             <textarea id="tinymce"></textarea>
                         </form>
                     </div>
@@ -48,7 +50,7 @@
                                     <span class="col-auto">
                                         <label class="form-check form-check-single form-switch">
                                             <input id="email_notify" class="form-check-input" type="checkbox"
-                                                   checked="">
+                                                checked="">
                                         </label>
                                     </span>
                                 </label>
@@ -62,13 +64,12 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         let options = {
             selector: '#tinymce',
             menubar: false,
             statusbar: false,
-            plugins:
-                'advlist autolink lists link image charmap preview anchor ' +
+            plugins: 'advlist autolink lists link image charmap preview anchor ' +
                 'searchreplace visualblocks code fullscreen ' +
                 'insertdatetime media table wordcount',
             toolbar: 'undo redo | formatselect | ' +
@@ -77,26 +78,28 @@
                 'removeformat',
             content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;font-size:   14px; -webkit-font-smoothing: antialiased; }',
             {if $user->is_dark_mode}
-            skin: 'oxide-dark',
-            content_css: 'dark',
+                skin: 'oxide-dark',
+                content_css: 'dark',
             {/if}
         }
         tinyMCE.init(options);
     })
 
-    $("#create-ann").click(function () {
+    $("#create-ann").click(function() {
         $.ajax({
             url: '/admin/announcement',
             type: 'POST',
             dataType: "json",
             data: {
                 {foreach $update_field as $key}
-                {$key}: $('#{$key}').val(),
+                    {$key}: $('#{$key}').val(),
                 {/foreach}
                 email_notify: $("#email_notify").is(":checked"),
+                title: $('#anntitle').val(),
+                summary: $('#annsummary').val(),
                 content: tinyMCE.activeEditor.getContent(),
             },
-            success: function (data) {
+            success: function(data) {
                 if (data.ret === 1) {
                     $('#success-message').text(data.msg);
                     $('#success-dialog').modal('show');

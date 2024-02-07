@@ -5,12 +5,14 @@ declare(strict_types=1);
 use App\Interfaces\MigrationInterface;
 use App\Services\DB;
 
-return new class() implements MigrationInterface {
+return new class () implements MigrationInterface {
     public function up(): int
     {
         DB::getPdo()->exec("SET FOREIGN_KEY_CHECKS = 0;
         ALTER TABLE announcement MODIFY COLUMN `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '公告ID';
-        ALTER TABLE announcement MODIFY COLUMN `date` datetime NOT NULL DEFAULT '1989-06-04 00:05:00' COMMENT '公告日期';
+        ALTER TABLE announcement MODIFY COLUMN `date` timestamp NOT NULL DEFAULT '1989-06-04 00:05:00' COMMENT '公告日期';
+        ALTER TABLE announcement MODIFY COLUMN `title` text NOT NULL DEFAULT '' COMMENT '公告标题';
+        ALTER TABLE announcement MODIFY COLUMN `summary` text NOT NULL DEFAULT '' COMMENT '公告概要';
         ALTER TABLE announcement MODIFY COLUMN `content` text NOT NULL DEFAULT '' COMMENT '公告内容';
         ALTER TABLE config MODIFY COLUMN `value` varchar(2048) DEFAULT NULL COMMENT '值';
         ALTER TABLE detect_ban_log MODIFY COLUMN `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '记录ID';

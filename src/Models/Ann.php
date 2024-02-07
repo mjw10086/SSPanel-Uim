@@ -9,6 +9,8 @@ use Illuminate\Database\Query\Builder;
 /**
  * @property int    $id         公告ID
  * @property string $date       公告日期
+ * @property string $title       公告日期
+ * @property string $summary       公告日期
  * @property string $content    公告内容
  *
  * @mixin Builder
