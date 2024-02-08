@@ -32,8 +32,24 @@ final class MoleController extends BaseController
      */
     public function dashboard(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
+        $anns = (new Ann())->orderBy('date', 'desc')->get();
+
         return $response->write(
-            $this->view()->assign('data', MockData::getData())->fetch('user/mole/dashboard.tpl')
+            $this->view()
+                ->assign('data', MockData::getData())
+                ->assign('announcements', $anns)
+                ->fetch('user/mole/dashboard.tpl')
+        );
+    }
+
+
+    public function getAnnByID(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        $ann = (new Ann())->find($args['id']);
+        return $response->write(
+            $this->view()
+                ->assign('ann', $ann)
+                ->fetch('user/mole/component/dashboard/announcement_detail.tpl')
         );
     }
 
