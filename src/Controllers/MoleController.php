@@ -11,10 +11,13 @@ use App\Models\LoginIp;
 use App\Models\Node;
 use App\Models\OnlineLog;
 use App\Models\Payback;
+use App\Models\Device;
+use App\Models\UserDevices;
 use App\Services\Auth;
 use App\Services\Captcha;
 use App\Services\Subscribe;
 use App\Services\MockData;
+use App\Services\DeviceService;
 use App\Utils\ResponseHelper;
 use App\Utils\Tools;
 use Exception;
@@ -34,9 +37,13 @@ final class MoleController extends BaseController
     {
         $anns = (new Ann())->orderBy('date', 'desc')->get();
 
+        $deviceService = new DeviceService();
+        $userDevices = $deviceService->getUserDeviceList($this->user->id);
+
         return $response->write(
             $this->view()
                 ->assign('data', MockData::getData())
+                ->assign('user_devices', $userDevices)
                 ->assign('announcements', $anns)
                 ->fetch('user/mole/dashboard.tpl')
         );
