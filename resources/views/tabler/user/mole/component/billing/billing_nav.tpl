@@ -14,7 +14,7 @@
 
 <div class="card bg-tertiary text-light px-3 py-4">
     <div class="mb-5">
-        <div class="fs-4 fw-bold">Availble credit: ${$data.user_balance.balance}</div>
+        <div class="fs-4 fw-bold">Availble credit: ${$user.money}</div>
         <div class="fs-8 fw-light text-gray">should last till
             {$data.user_balance.expected_suffice_till|date_format:"%b %e, %Y"}</div>
     </div>

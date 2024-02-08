@@ -3,8 +3,8 @@
     <div class="d-flex justify-content-between align-items-end">
         <div class="col-7 fw-normal fs-5 text-light">
             <div class="d-flex justify-content-between my-2">
-                <span class="fw-light">{$data.current_plan.name}</span>
-                <span>${$data.current_plan.price}/Month</span>
+                <span class="fw-light">{$activated_order.product_name}</span>
+                <span>${$activated_order.price}/Month</span>
             </div>
             <div class="d-flex justify-content-between my-2">
                 <span class="fw-light">Next payment</span>
@@ -12,11 +12,11 @@
             </div>
             <div class="d-flex justify-content-between my-2">
                 <span class="fw-light">Active devices</span>
-                <span>{$data.user_devices.activated_count}/{$data.user_devices.total_count} device</span>
+                <span>{$user_devices.activated_count}/{$user_devices.total_count} device</span>
             </div>
             <div class="d-flex justify-content-between my-2">
                 <span class="fw-light">Remaining data this month</span>
-                <span>{$data.current_plan.data_used/1024/1024}GB/{$data.current_plan.data_quota/1024/1024}GB</span>
+                <span>{$data_usage/1024/1024/1024}GB/{$user.transfer_enable/1024/1024/1024}GB</span>
             </div>
             <div class="d-flex justify-content-between my-2">
                 <span class="fw-light">Member since</span>
@@ -24,7 +24,6 @@
             </div>
         </div>
         <div class="col-4 px-4 d-flex flex-column fs-5 gap-2">
-            <button class="w-100 btn btn-outline-default fw-normal">Suspend</button>
             <button class="w-100 btn btn-outline-danger fw-normal" data-bs-target="#cancelPlanModal"
                 data-bs-toggle="modal">Cancel</button>
         </div>

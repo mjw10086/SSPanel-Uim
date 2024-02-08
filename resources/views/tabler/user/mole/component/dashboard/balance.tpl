@@ -5,7 +5,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <div class="fw-normal text-light">
                 <span class="fs-3">Available credit: </span>
-                <span class="fs-2">${$data.user_balance.balance}</span>
+                <span class="fs-2">${$user.money}</span>
             </div>
             <a href="/user/billing/billing-history" class="nav-link fs-5 fw-bold text-info">Billing History</a>
         </div>

@@ -12,8 +12,8 @@
                         fill="transparent" />
                 </svg>
                 <div class="text d-flex align-items-end">
-                    <span class="m-0 p-0 fs-2">{$data.current_plan.data_used/1024/1024}GB</span>
-                    <span class="m-0 p-0 fs-7 fw-light text-light">/{$data.current_plan.data_quota/1024/1024}GB</span>
+                    <span class="m-0 p-0 fs-2">{$data_usage/1024/1024/1024}GB</span>
+                    <span class="m-0 p-0 fs-7 fw-light text-light">/{$user.transfer_enable/1024/1024/1024}GB</span>
                 </div>
             </div>
         </div>
