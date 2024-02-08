@@ -4,7 +4,7 @@
         <div class="col-7 fw-normal fs-5 text-light">
             <div class="d-flex justify-content-between my-2">
                 <span class="fw-light">{$data.current_plan.name}</span>
-                <span>${$data.current_plan.price}/{$data.current_plan.period}</span>
+                <span>${$data.current_plan.price}/Month</span>
             </div>
             <div class="d-flex justify-content-between my-2">
                 <span class="fw-light">Next payment</span>

@@ -15,7 +15,6 @@ final class MockData
             "price" => 2.5,
             "data_quota" => 52428800,
             "data_used" => 41943040,
-            "period" => "Month",
             "devices_limit" => 5,
             "activation_date" => 1703438093,
             "next_payment_date" => 1706448093,
@@ -99,7 +98,6 @@ final class MockData
                 "name" => "Starter",
                 "price" => 1.5,
                 "devices_limit" => 5,
-                "period" => "Month",
                 "description" => "Pay 1 month at a time <br/> VAT may apply",
                 "features" => [
                     ["include" => true, "item" => "10GB per month include"],
@@ -113,7 +111,6 @@ final class MockData
                 "name" => "Basic",
                 "price" => 2.5,
                 "devices_limit" => 5,
-                "period" => "Month",
                 "description" => "Pay 1 month at a time <br/> VAT may apply",
                 "features" => [
                     ["include" => true, "item" => "10GB per month include"],
@@ -127,7 +124,6 @@ final class MockData
                 "name" => "Progress",
                 "price" => 3.5,
                 "devices_limit" => 5,
-                "period" => "Month",
                 "description" => "Pay 1 month at a time <br/> VAT may apply",
                 "features" => [
                     ["include" => true, "item" => "10GB per month include"],

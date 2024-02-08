@@ -1,7 +1,7 @@
 <div class="w-100 mb-3">
     <span class="fs-4 fw-bold">Change plan</span>
     <div class="w-100 d-flex flex-nowrap mt-3 justify-content-center">
-        {foreach $data.available_plans as $plan}
+        {foreach $available_plans as $plan}
             <div class="card mx-3 rounded-4 bg-darkblue2 text-bg-dark p-4" style="width: 250px;">
                 <span class="mt-1 mb-3 fs-4 fw-normal">{$plan.name}</span>
                 <div class="">

@@ -47,6 +47,8 @@ final class ProductController extends BaseController
         'ip_limit',
         'class_required',
         'node_group_required',
+        'description',
+        'features'
     ];
 
     private static string $invalid_data_msg = '无效商品数据';
@@ -92,6 +94,8 @@ final class ProductController extends BaseController
         $content->node_group = $content->node_group ?? 0;
         $content->speed_limit = $content->speed_limit ?? 0;
         $content->ip_limit = $content->ip_limit ?? 0;
+        $content->description = $content->description ?? '';
+        $content->features = $content->features ?? '[]';
 
         return $response->write(
             $this->view()
@@ -113,6 +117,8 @@ final class ProductController extends BaseController
         $stock = $request->getParam('stock') ?? -1;
         // content
         $time = $request->getParam('time') ?? 0;
+        $description = $request->getParam('description') ?? '';
+        $features = $request->getParam('features') ?? '[]';
         $bandwidth = $request->getParam('bandwidth') ?? 0;
         $class = $request->getParam('class') ?? 0;
         $class_time = $request->getParam('class_time') ?? 0;
@@ -143,6 +149,8 @@ final class ProductController extends BaseController
 
             $content = [
                 'time' => $time,
+                'description' => $description,
+                'features' => $features,
                 'bandwidth' => $bandwidth,
                 'class' => $class,
                 'class_time' => $class_time,
@@ -160,6 +168,8 @@ final class ProductController extends BaseController
 
             $content = [
                 'time' => $time,
+                'description' => $description,
+                'features' => $features,
                 'class' => $class,
                 'class_time' => $class_time,
                 'node_group' => $node_group,
@@ -219,6 +229,8 @@ final class ProductController extends BaseController
         $stock = $request->getParam('stock') ?? -1;
         // content
         $time = $request->getParam('time') ?? 0;
+        $description = $request->getParam('description') ?? '';
+        $features = $request->getParam('features') ?? '[]';
         $bandwidth = $request->getParam('bandwidth') ?? 0;
         $class = $request->getParam('class') ?? 0;
         $class_time = $request->getParam('class_time') ?? 0;
@@ -249,6 +261,8 @@ final class ProductController extends BaseController
 
             $content = [
                 'time' => $time,
+                'description' => $description,
+                'features' => $features,
                 'bandwidth' => $bandwidth,
                 'class' => $class,
                 'class_time' => $class_time,
@@ -266,6 +280,8 @@ final class ProductController extends BaseController
 
             $content = [
                 'time' => $time,
+                'description' => $description,
+                'features' => $features,
                 'class' => $class,
                 'class_time' => $class_time,
                 'node_group' => $node_group,

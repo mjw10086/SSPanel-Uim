@@ -13,6 +13,7 @@ use App\Models\OnlineLog;
 use App\Models\Payback;
 use App\Models\Device;
 use App\Models\UserDevices;
+use App\Models\Product;
 use App\Services\Auth;
 use App\Services\Captcha;
 use App\Services\Subscribe;
@@ -75,8 +76,19 @@ final class MoleController extends BaseController
      */
     public function plan(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
+        $available_plans = (new Product())->orderBy('id', 'asc')->get();
+        foreach ($available_plans as $plan) {
+            $content = json_decode($plan->content);
+            $plan->devices_limit = $plan->limit;
+            $plan->description = $content->description;
+            $plan->features = json_decode($content->features, true);
+        }
+
         return $response->write(
-            $this->view()->assign('data', MockData::getData())->fetch('user/mole/plan.tpl')
+            $this->view()
+                ->assign('data', MockData::getData())
+                ->assign('available_plans', $available_plans)
+                ->fetch('user/mole/plan.tpl')
         );
     }
 
