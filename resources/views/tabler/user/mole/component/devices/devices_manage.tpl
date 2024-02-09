@@ -1,4 +1,4 @@
-<div class="col-12 p-2 h-100" id="devices_and_app_panel">
+<div class="col-12 p-2 {if $smarty.server.REQUEST_URI neq "/user/devices/activate"}h-100{/if}" id="devices_and_app_panel">
     <div class="card rounded-4 bg-secondary text-light px-4 py-3 h-100">
         <div class="d-flex">
             {include file='user/mole/component/devices/devices_list.tpl'}

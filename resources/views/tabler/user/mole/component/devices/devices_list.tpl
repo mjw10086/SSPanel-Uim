@@ -1,11 +1,11 @@
 <div class="col-6 py-4 pe-5 ps-4 h-100">
     <div class="mb-5">
         <div class="fs-4 fw-bold">Active Devices</div>
-        <div class="fs-7 fw-light text-gray">{$data.user_devices.activated_count} out of {$data.user_devices.total_count} devices limit
+        <div class="fs-7 fw-light text-gray">{$user_devices.activated_count} out of {$user_devices.total_count} devices limit
         </div>
         <hr class="ms-4" />
         <ul class="mt-4 list-unstyled">
-            {foreach $data.user_devices.devices as $device}
+            {foreach $user_devices.devices as $device}
                 {if $device.status eq "activated" }
                     <li class="text-light mb-2 d-flex justify-content-between">
                         <div class="d-flex align-items-center">

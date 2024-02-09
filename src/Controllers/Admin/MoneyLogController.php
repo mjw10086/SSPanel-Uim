@@ -23,6 +23,7 @@ final class MoneyLogController extends BaseController
                 'after' => '变动后余额',
                 'amount' => '变动金额',
                 'remark' => '备注',
+                'type' => 'type',
                 'create_time' => '变动时间',
             ],
         ];

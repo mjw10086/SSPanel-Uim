@@ -15,6 +15,7 @@ use function time;
  * @property float $amount 变动总额
  * @property string $remark 备注
  * @property int $create_time 创建时间
+ * @property string $type 余额变动类型
  *
  * @mixin Builder
  */
@@ -23,13 +24,14 @@ final class UserMoneyLog extends Model
     protected $connection = 'default';
     protected $table = 'user_money_log';
 
-    public function add(int $user_id, float $before, float $after, float $amount, string $remark): void
+    public function add(int $user_id, float $before, float $after, float $amount, string $remark, string $type): void
     {
         $this->user_id = $user_id;
         $this->before = $before;
         $this->after = $after;
         $this->amount = $amount;
         $this->remark = $remark;
+        $this->type = $type;    // manually_update, order_payment, gift_card, referral_bonuses, top-up, withdraw
         $this->create_time = time();
         $this->save();
     }

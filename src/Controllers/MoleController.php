@@ -15,6 +15,8 @@ use App\Models\Payback;
 use App\Models\Device;
 use App\Models\UserDevices;
 use App\Models\Product;
+use App\Models\UserMoneyLog;
+use App\Models\Docs;
 use App\Services\Auth;
 use App\Services\Captcha;
 use App\Services\DataUsage;
@@ -73,11 +75,14 @@ final class MoleController extends BaseController
     public function billing(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
         $billing_history = (new Order())->where('user_id', $this->user->id)->where('status', 'activated')->orderBy('update_time', 'desc')->get();
+        $balance_history = (new UserMoneyLog())->where('user_id', $this->user->id)->where('type', 'top-up')->orWhere('type', 'withdraw')->orderBy('create_time', 'desc')->get();
+
 
         return $response->write(
             $this->view()
                 ->assign('data', MockData::getData())
                 ->assign('billing_history', $billing_history)
+                ->assign('balance_history', $balance_history)
                 ->fetch('user/mole/billing.tpl')
         );
     }
@@ -117,8 +122,14 @@ final class MoleController extends BaseController
      */
     public function devices(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
+        $deviceService = new DeviceService();
+        $userDevices = $deviceService->getUserDeviceList($this->user->id);
+
         return $response->write(
-            $this->view()->assign('data', MockData::getData())->fetch('user/mole/devices.tpl')
+            $this->view()
+                ->assign('data', MockData::getData())
+                ->assign('user_devices', $userDevices)
+                ->fetch('user/mole/devices.tpl')
         );
     }
 
@@ -138,8 +149,13 @@ final class MoleController extends BaseController
      */
     public function faq(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
+        $faq_list = (new Docs())->orderBy('id', 'desc')->get();
+
         return $response->write(
-            $this->view()->assign('data', MockData::getData())->fetch('user/mole/faq.tpl')
+            $this->view()
+                ->assign('data', MockData::getData())
+                ->assign('faq_list', $faq_list)
+                ->fetch('user/mole/faq.tpl')
         );
     }
 }

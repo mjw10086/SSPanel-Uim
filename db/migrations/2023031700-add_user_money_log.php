@@ -15,6 +15,7 @@ return new class() implements MigrationInterface {
                 `after` decimal(10,2) NOT NULL DEFAULT 0 COMMENT '用户变动后账户余额',
                 `amount` decimal(10,2) NOT NULL DEFAULT 0 COMMENT '变动总额',
                 `remark` text NOT NULL DEFAULT '' COMMENT '备注',
+                `type` text NOT NULL DEFAULT '' COMMENT '余额变动类型',
                 `create_time` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '创建时间',
                 PRIMARY KEY (`id`),
                 KEY `user_id` (`user_id`)

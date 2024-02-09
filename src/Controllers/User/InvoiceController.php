@@ -117,7 +117,8 @@ final class InvoiceController extends BaseController
             $money_before,
             (float) $user->money,
             -$invoice->price,
-            '支付账单 #' . $invoice->id
+            '支付账单 #' . $invoice->id,
+            "order_payment"
         );
 
         $invoice->status = 'paid_balance';

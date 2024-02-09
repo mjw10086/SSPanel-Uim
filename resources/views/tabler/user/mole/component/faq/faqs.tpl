@@ -10,15 +10,15 @@
     </div>
     <div class="fs-5 fw-bold">Answers to your questions</div>
     <hr />
-    {foreach $data.faq_list as $faq}
-        <div class="d-flex fs-6 fw-light gap-3 faq_folder">
+    {foreach $faq_list as $faq}
+        <div class="d-flex fs-6 fw-light gap-3 faq_folder justify-content-between">
             <span data-parameter="{$faq.id}">
-                {$faq.question}
+                {$faq.title}
             </span>
             <i class="bi bi-plus-lg" data-parameter="{$faq.id}"></i>
         </div>
         <div class="visually-hidden fs-4 fw-light text-gray mt-2" id="a_{$faq.id}">
-            {$faq.answer}
+            {$faq.content}
         </div>
         <hr class="mt-4" />
     {/foreach}
