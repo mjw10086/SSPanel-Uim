@@ -3,7 +3,7 @@
         <div class="mb-2 fs-5">1. Download application</div>
         <div class="d-flex flex-column gap-2">
             <div class="d-flex gap-2 align-items-center">
-                <div class="card bg-quaternary text-light px-2 py-2" style="width: 160px;">
+                <a href="https://play.google.com/store/apps/details?id=com.ss.android.ugc.trill" target="_blank" class="nav-link card bg-quaternary text-light px-2 py-2" style="width: 160px;">
                     <div class="d-flex justify-content-between align-items-center gap-2">
                         <div class="col-3">
                             <img src="/assets/icons/google-play.svg">
@@ -13,9 +13,9 @@
                             <div class="fs-6 m-0">Google Play</div>
                         </div>
                     </div>
-                </div>
+                </a>
                 <span>or</span>
-                <div class="card bg-quaternary text-light px-2 py-2" style="width: 160px;">
+                <a href="/assets/apps/android/mole.apk" class="nav-link card bg-quaternary text-light px-2 py-2" style="width: 160px;">
                     <div class="d-flex justify-content-between align-items-center gap-2">
                         <div class="col-3">
                             <img src="/assets/icons/android.svg">
@@ -25,10 +25,10 @@
                             <div class="fs-6 fw-normal m-0">Download</div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="d-flex gap-2 align-items-center">
-                <div class="card bg-quinary text-light px-2 py-2" style="width: 160px;">
+                <a href="/assets/apps/macos/mole_arm.dmg"  class="nav-link card bg-quinary text-light px-2 py-2" style="width: 160px;">
                     <div class="d-flex justify-content-between align-items-center gap-2">
                         <div class="col-3">
                             <img src="/assets/icons/macos.svg">
@@ -38,9 +38,9 @@
                             <div class="fs-6 fw-normal m-0">Download</div>
                         </div>
                     </div>
-                </div>
+                </a>
                 <span>or</span>
-                <div class="card bg-quinary text-light ps-2 py-2" style="width: 160px;">
+                <a href="/assets/apps/macos/mole_x86.dmg" class="nav-link card bg-quinary text-light ps-2 py-2" style="width: 160px;">
                     <div class="d-flex justify-content-between align-items-center gap-1">
                         <div class="col-3">
                             <img src="/assets/icons/macos.svg">
@@ -50,10 +50,10 @@
                             <div class="fs-6 fw-normal m-0">Download</div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div>
-                <div class="card bg-quaternary text-light px-2 py-2" style="width: 160px;">
+                <a href="https://apps.apple.com/us/app/tiktok/id835599320" target="_blank" class="nav-link card bg-quaternary text-light px-2 py-2" style="width: 160px;">
                     <div class="d-flex justify-content-between align-items-center gap-2">
                         <div class="col-3">
                             <img src="/assets/icons/apple_store.svg">
@@ -63,10 +63,10 @@
                             <div class="fs-6 fw-normal m-0">App Store</div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div>
-                <div class="card bg-quinary text-light px-2 py-2" style="width: 160px;">
+                <a href="/assets/apps/windows/mole.exe" class="nav-link card bg-quinary text-light px-2 py-2" style="width: 160px;">
                     <div class="d-flex justify-content-between align-items-center gap-2">
                         <div class="col-3">
                             <img src="/assets/icons/windows.svg">
@@ -76,7 +76,7 @@
                             <div class="fs-6 fw-normal m-0">Download</div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
