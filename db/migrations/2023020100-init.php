@@ -310,6 +310,7 @@ return new class() implements MigrationInterface {
                 `is_dark_mode` tinyint(1) unsigned NOT NULL DEFAULT 0 COMMENT '是否启用暗黑模式',
                 `is_inactive` tinyint(1) unsigned NOT NULL DEFAULT 0 COMMENT '是否处于闲置状态',
                 `locale` varchar(16) NOT NULL DEFAULT 'zh-TW' COMMENT '显示语言',
+                `plan_start_date` timestamp DEFAULT NULL COMMENT '计划开始的时间(NULL为当前无计划)',
                 PRIMARY KEY (`id`),
                 UNIQUE KEY `uuid` (`uuid`),
                 UNIQUE KEY `email` (`email`),

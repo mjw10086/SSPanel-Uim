@@ -10,7 +10,11 @@
             <a href="/user/billing/billing-history" class="nav-link fs-5 fw-bold text-info">Billing History</a>
         </div>
         <span class="fs-7 fw-light text-lightgray mb-1">
-            Should last till {$data.user_balance.expected_suffice_till|date_format:"%b %e, %Y"}
+            {if $expected_suffice_till === null}
+                You don't have any plan now
+            {else}
+                Should last till {$expected_suffice_till|date_format:"%b %e, %Y"}
+            {/if}
         </span>
         <div class="d-flex mt-4 fs-5">
             <div class="col-6 pe-2">

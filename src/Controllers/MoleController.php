@@ -46,6 +46,12 @@ final class MoleController extends BaseController
         $userDevices = $deviceService->getUserDeviceList($this->user->id);
         $activated_order = (new Order())->where('user_id', $this->user->id)->where('status', 'activated')->first();
         $data_usage = (new DataUsage())->getUserDataUsage($this->user->id);
+        $expected_suffice_till = null;
+        if ($activated_order !== null) {
+            $activated_order->product_content = json_decode($activated_order->product_content);
+            $availale_date = intval($this->user->money / $activated_order->price) * $activated_order->product_content->time;
+            $expected_suffice_till = strtotime($this->user->plan_start_date) + ($availale_date * 24 * 60 * 60);
+        }
 
         return $response->write(
             $this->view()
@@ -54,6 +60,7 @@ final class MoleController extends BaseController
                 ->assign('announcements', $anns)
                 ->assign('activated_order', $activated_order)
                 ->assign('data_usage', $data_usage)
+                ->assign('expected_suffice_till', $expected_suffice_till)
                 ->fetch('user/mole/dashboard.tpl')
         );
     }

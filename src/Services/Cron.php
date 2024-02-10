@@ -197,6 +197,7 @@ final class Cron
                 $user->d = 0;
                 $user->transfer_today = 0;
                 $user->class = 0;
+                $user->plan_start_date = null;
                 $user->save();
             }
         }
@@ -286,6 +287,9 @@ final class Cron
                 $user->node_group = $content->node_group;
                 $user->node_speedlimit = $content->speed_limit;
                 $user->node_iplimit = $content->ip_limit;
+                if($user->plan_start_date === null){
+                    $user->plan_start_date = time();
+                }
                 $user->save();
                 $order->status = 'activated';
                 $order->update_time = time();
