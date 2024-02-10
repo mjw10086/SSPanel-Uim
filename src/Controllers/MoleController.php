@@ -44,7 +44,11 @@ final class MoleController extends BaseController
 
         $deviceService = new DeviceService();
         $userDevices = $deviceService->getUserDeviceList($this->user->id);
-        $activated_order = (new Order())->where('user_id', $this->user->id)->where('status', 'activated')->first();
+        $activated_order = (new Order())
+            ->where('user_id', $this->user->id)
+            ->where('status', 'activated')
+            ->where('product_type', 'tabp')
+            ->first();
         $data_usage = (new DataUsage())->getUserDataUsage($this->user->id);
         $expected_suffice_till = null;
         if ($activated_order !== null) {
@@ -84,7 +88,12 @@ final class MoleController extends BaseController
         $billing_history = (new Order())->where('user_id', $this->user->id)->where('status', 'activated')->orderBy('update_time', 'desc')->get();
         $balance_history = (new UserMoneyLog())->where('user_id', $this->user->id)->where('type', 'top-up')->orWhere('type', 'withdraw')->orderBy('create_time', 'desc')->get();
 
-        $activated_order = (new Order())->where('user_id', $this->user->id)->where('status', 'activated')->first();
+        $activated_order = (new Order())
+            ->where('user_id', $this->user->id)
+            ->where('status', 'activated')
+            ->where('product_type', 'tabp')
+            ->first();
+
         $expected_suffice_till = null;
         if ($activated_order !== null) {
             $activated_order->product_content = json_decode($activated_order->product_content);
@@ -123,7 +132,11 @@ final class MoleController extends BaseController
 
         $deviceService = new DeviceService();
         $userDevices = $deviceService->getUserDeviceList($this->user->id);
-        $activated_order = (new Order())->where('user_id', $this->user->id)->where('status', 'activated')->first();
+        $activated_order = (new Order())
+            ->where('user_id', $this->user->id)
+            ->where('status', 'activated')
+            ->where('product_type', 'tabp')
+            ->first();
         $data_usage = (new DataUsage())->getUserDataUsage($this->user->id);
 
         return $response->write(
