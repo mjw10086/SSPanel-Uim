@@ -44,12 +44,14 @@ return static function (Slim\App $app): void {
         $group->get('/billing/billing-history', App\Controllers\MoleController::class . ':billing');
         $group->get('/billing/balance-history', App\Controllers\MoleController::class . ':billing');
 
-        $group->get('', App\Controllers\MoleController::class . ':dashboard');
-        $group->get('/', App\Controllers\MoleController::class . ':dashboard');
+        $group->get('/announcement/{id:[0-9]+}', App\Controllers\MoleController::class . ':getAnnByID');
+
+        // $group->get('', App\Controllers\MoleController::class . ':dashboard');
+        // $group->get('/', App\Controllers\MoleController::class . ':dashboard');
 
 
-        // $group->get('', App\Controllers\UserController::class . ':index');
-        // $group->get('/', App\Controllers\UserController::class . ':index');
+        $group->get('', App\Controllers\UserController::class . ':index');
+        $group->get('/', App\Controllers\UserController::class . ':index');
         // 签到
         $group->post('/checkin', App\Controllers\UserController::class . ':checkin');
         // 公告
