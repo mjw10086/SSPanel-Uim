@@ -6,7 +6,7 @@
                 {$user.transfer_enable/1024/1024/1024}GB/Month with up to {$user.node_iplimit} devices
             </span>
         {else}
-            <div class="fs-1 fw-bold text-light">You don't have any plan now<div>
+            <div class="fs-1 fw-bold text-light">You don't have any plan now</div>
         {/if}
         <a href="/user/plan" class="btn btn-default mt-4 fs-5 fw-normal text-light">Manage Plan</a>
     </div>
