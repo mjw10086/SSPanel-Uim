@@ -15,8 +15,13 @@
 <div class="card bg-tertiary text-light px-3 py-4">
     <div class="mb-5">
         <div class="fs-4 fw-bold">Availble credit: ${$user.money}</div>
-        <div class="fs-8 fw-light text-gray">should last till
-            {$data.user_balance.expected_suffice_till|date_format:"%b %e, %Y"}</div>
+        <div class="fs-8 fw-light text-gray">
+            {if $expected_suffice_till === null}
+                You don't have any plan now
+            {else}
+                Should last till {$expected_suffice_till|date_format:"%b %e, %Y"}
+            {/if}
+        </div>
     </div>
     <div class="mb-5">
         <span class="fs-8 fw-lighter text-gray">Balance & billing</span>
@@ -30,16 +35,20 @@
                 </a>
                 <i class="bi bi-chevron-right"></i>
             </span>
-            <span class="{if $current_route == 2}bg-quinary{/if} rounded-2 p-2 d-flex align-items-center justify-content-between gap-4">
+            <span
+                class="{if $current_route == 2}bg-quinary{/if} rounded-2 p-2 d-flex align-items-center justify-content-between gap-4">
                 <a href="/user/billing/automatic-topups" class="nav-link">
-                    <img src="/assets/icons/automatic-topup{if $current_route == 2}-info{/if}.svg" alt="SVG Image" class="me-2">
+                    <img src="/assets/icons/automatic-topup{if $current_route == 2}-info{/if}.svg" alt="SVG Image"
+                        class="me-2">
                     Set up automatic top-ups
                 </a>
                 <i class="bi bi-chevron-right"></i>
             </span>
-            <span class="{if $current_route == 3}bg-quinary{/if} rounded-2 p-2 d-flex align-items-center justify-content-between gap-4">
+            <span
+                class="{if $current_route == 3}bg-quinary{/if} rounded-2 p-2 d-flex align-items-center justify-content-between gap-4">
                 <a href="/user/billing/withdraw" class="nav-link">
-                    <img src="/assets/icons/withdraw{if $current_route == 3}-info{/if}.svg" alt="SVG Image" class="me-2">
+                    <img src="/assets/icons/withdraw{if $current_route == 3}-info{/if}.svg" alt="SVG Image"
+                        class="me-2">
                     Withdraw balance
                 </a>
                 <i class="bi bi-chevron-right"></i>

@@ -84,12 +84,20 @@ final class MoleController extends BaseController
         $billing_history = (new Order())->where('user_id', $this->user->id)->where('status', 'activated')->orderBy('update_time', 'desc')->get();
         $balance_history = (new UserMoneyLog())->where('user_id', $this->user->id)->where('type', 'top-up')->orWhere('type', 'withdraw')->orderBy('create_time', 'desc')->get();
 
+        $activated_order = (new Order())->where('user_id', $this->user->id)->where('status', 'activated')->first();
+        $expected_suffice_till = null;
+        if ($activated_order !== null) {
+            $activated_order->product_content = json_decode($activated_order->product_content);
+            $availale_date = intval($this->user->money / $activated_order->price) * $activated_order->product_content->time;
+            $expected_suffice_till = strtotime($this->user->plan_start_date) + ($availale_date * 24 * 60 * 60);
+        }
 
         return $response->write(
             $this->view()
                 ->assign('data', MockData::getData())
                 ->assign('billing_history', $billing_history)
                 ->assign('balance_history', $balance_history)
+                ->assign('expected_suffice_till', $expected_suffice_till)
                 ->fetch('user/mole/billing.tpl')
         );
     }
