@@ -92,7 +92,12 @@ final class MoleController extends BaseController
      */
     public function plan(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
-        $available_plans = (new Product())->orderBy('id', 'asc')->get();
+        $available_plans = (new Product())
+            ->where('status', '1')
+            ->where('type', 'tabp')
+            ->orderBy('id', 'asc')
+            ->get();
+
         foreach ($available_plans as $plan) {
             $content = json_decode($plan->content);
             $plan->devices_limit = $plan->limit;
