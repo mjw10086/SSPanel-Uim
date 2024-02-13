@@ -32,7 +32,7 @@ return static function (Slim\App $app): void {
         $group->get('/dashboard', App\Controllers\MoleController::class . ':dashboard');
         $group->get('/plan', App\Controllers\MoleController::class . ':plan');
         $group->get('/devices', App\Controllers\MoleController::class . ':devices');
-        $group->get('/devices/activate', App\Controllers\MoleController::class . ':devices');
+        $group->get('/devices/activation', App\Controllers\MoleController::class . ':devices');
         $group->get('/faq', App\Controllers\MoleController::class . ':faq');
         $group->get('/account', App\Controllers\MoleController::class . ':account');
         $group->get('/account/info', App\Controllers\MoleController::class . ':account');
@@ -45,6 +45,16 @@ return static function (Slim\App $app): void {
         $group->get('/billing/balance-history', App\Controllers\MoleController::class . ':billing');
 
         $group->get('/announcement/{id:[0-9]+}', App\Controllers\MoleController::class . ':getAnnByID');
+
+        $group->get('/devices/activate-code', App\Controllers\MoleController::class . ':getActivateCode');
+        $group->post('/devices/activate', App\Controllers\MoleController::class . ':activate');
+        $group->post('/devices/deactivate', App\Controllers\MoleController::class . ':deactivate');
+        $group->delete('/devices/{id:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}', App\Controllers\MoleController::class . ':remove_device');
+        
+
+
+        // for test
+        $group->get('/sometrigger', App\Controllers\MoleController::class . ':sometrigger');
 
         // $group->get('', App\Controllers\MoleController::class . ':dashboard');
         // $group->get('/', App\Controllers\MoleController::class . ':dashboard');

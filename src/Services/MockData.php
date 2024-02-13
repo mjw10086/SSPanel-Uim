@@ -33,7 +33,7 @@ final class MockData
                 ["id" => "c1201e1d-617f-4ed3-a65d-ff4bb7927d54", "name" => "Samsung Galaxy A1", "status" => "activated"]
             ],
             "activated_count" => 3,
-            "total_count" => 5
+            "limited_count" => 5
         ];
 
         // {* user balance info *}

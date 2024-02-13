@@ -1,9 +1,3 @@
-{* {assign "devices" ["activated" => [
-    [ "id" => "1ad98eaa-aebc-4dda-af35-1965d2c22316", "name" => "iPhone 12 Pro" ],
-    [ "id" => "35d82401-c122-4d8f-8e18-95362923caee", "name" => "Macbook Air M2" ],
-    [ "id" => "c1201e1d-617f-4ed3-a65d-ff4bb7927d54", "name" => "Samsung Galaxy A1" ]
-], "totalCount" => 5 ]} *}
-
 <div class="p-2">
     <div class="card rounded-4 bg-secondary text-bg-dark p-4">
         <div class="d-flex justify-content-between align-items-center">
@@ -23,6 +17,6 @@
                 {/if}
             {/foreach}
         </ul>
-        <a href="/user/devices/activate" class="btn btn-info fs-5 fw-bold">Activate a new device</a>
+        <a href="/user/devices/activation" class="btn btn-info fs-5 fw-bold">Activate a new device</a>
     </div>
 </div>

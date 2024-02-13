@@ -13,7 +13,7 @@
                 </div>
                 <div class="d-flex justify-content-between my-2">
                     <span class="fw-light">Active devices</span>
-                    <span>{$user_devices.activated_count}/{$user_devices.total_count} device</span>
+                    <span>{$user_devices.activated_count}/{$user_devices.limited_count} device</span>
                 </div>
                 <div class="d-flex justify-content-between my-2">
                     <span class="fw-light">Remaining data this month</span>

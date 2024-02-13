@@ -38,12 +38,20 @@ final class MoleController extends BaseController
     /**
      * @throws Exception
      */
+    public function sometrigger(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        $res = DeviceService::addDeviceToUser($this->user->id);
+        return $response->write(json_encode($res));
+    }
+
+    /**
+     * @throws Exception
+     */
     public function dashboard(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
         $anns = (new Ann())->orderBy('date', 'desc')->get();
 
-        $deviceService = new DeviceService();
-        $userDevices = $deviceService->getUserDeviceList($this->user->id);
+        $userDevices = DeviceService::getUserDeviceList($this->user->id);
         $activated_order = (new Order())
             ->where('user_id', $this->user->id)
             ->where('status', 'activated')
@@ -129,9 +137,7 @@ final class MoleController extends BaseController
             $plan->features = json_decode($content->features, true);
         }
 
-
-        $deviceService = new DeviceService();
-        $userDevices = $deviceService->getUserDeviceList($this->user->id);
+        $userDevices = DeviceService::getUserDeviceList($this->user->id);
         $activated_order = (new Order())
             ->where('user_id', $this->user->id)
             ->where('status', 'activated')
@@ -155,8 +161,7 @@ final class MoleController extends BaseController
      */
     public function devices(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
-        $deviceService = new DeviceService();
-        $userDevices = $deviceService->getUserDeviceList($this->user->id);
+        $userDevices = DeviceService::getUserDeviceList($this->user->id);
 
         return $response->write(
             $this->view()
@@ -165,6 +170,76 @@ final class MoleController extends BaseController
                 ->fetch('user/mole/devices.tpl')
         );
     }
+
+    /**
+     * @throws Exception
+     */
+    public function activate(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        if (isset($_POST['id'])) {
+            $device_id = $_POST['id'];
+            $result = DeviceService::activateUserDevice($this->user->id, $device_id);
+            return $response->write(
+                $this->view()
+                    ->assign('user_devices', $result)
+                    ->fetch('user/mole/component/devices/devices_list.tpl')
+            );
+        }
+        return $response->write(
+            $this->view()
+                ->assign('user_devices', DeviceService::getUserDeviceList($this->user->id))
+                ->fetch('user/mole/component/devices/devices_list.tpl')
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function deactivate(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        if (isset($_POST['id'])) {
+            $device_id = $_POST['id'];
+            $result = DeviceService::deactivatedUserDevice($this->user->id, $device_id);
+            return $response->write(
+                $this->view()
+                    ->assign('user_devices', $result)
+                    ->fetch('user/mole/component/devices/devices_list.tpl')
+            );
+        }
+        return $response->write(
+            $this->view()
+                ->assign('user_devices', DeviceService::getUserDeviceList($this->user->id))
+                ->fetch('user/mole/component/devices/devices_list.tpl')
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function remove_device(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        $device_id = $args['id'];
+        $result = DeviceService::removeDeviceFromUser($this->user->id, $device_id);
+        return $response->write(
+            $this->view()
+                ->assign('user_devices', $result)
+                ->fetch('user/mole/component/devices/devices_list.tpl')
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getActivateCode(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        $result = DeviceService::getActivateCode($this->user->id);
+        return $response->write(
+            $this->view()
+                ->assign('activateCode', $result)
+                ->fetch('user/mole/component/devices/activation.tpl')
+        );
+    }
+
 
     /**
      * @throws Exception

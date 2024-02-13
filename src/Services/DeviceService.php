@@ -2,56 +2,112 @@
 
 namespace App\Services;
 
-use App\Models\Device;
-use App\Models\UserDevices;
-
+use Ramsey\Uuid\Uuid;
 
 final class DeviceService
 {
   private $apiUrl = 'https://baidu.com/';
 
-  public function getUserDeviceList($userid): array
+  private static function setUserDeviceList($userDevices)
   {
-    $api_data = $this->fetchDataFromRemoteApi();
-    $user_devices = json_decode($api_data, true);
-
-    return $user_devices;
+    $handle = fopen("/Users/paul/PlayGround/work/mole/devices.json", "w");
+    fwrite($handle, json_encode($userDevices));
+    fclose($handle);
   }
 
-  public function removeDeviceFromUser($userid, $deviceid): array
+  public static function getUserDeviceList($userid): array
   {
-    $api_data = $this->fetchDataFromRemoteApi();
-    $user_devices = json_decode($api_data, true);
-    $user_devices['activated_count'] = 2;
-
-    return $user_devices;
+    $handle = fopen("/Users/paul/PlayGround/work/mole/devices.json", "r");
+    $content = "";
+    while (!feof($handle)) {
+      $line = fgets($handle);
+      if (!is_bool($line)) {
+        $content .= $line;
+      }
+    }
+    fclose($handle);
+    return json_decode($content, true);
   }
 
-  public function activateUserDevice($userid, $deviceid): array
+  public static function addDeviceToUser($userid): array
   {
-    $api_data = $this->fetchDataFromRemoteApi();
-    $user_devices = json_decode($api_data, true);
-    $user_devices['activated_count'] = 2;
+    $userDevices = DeviceService::getUserDeviceList($userid);
+    $length = 10; // 生成的字符串长度
+    $random_bytes = random_bytes($length);
+    $random_string = bin2hex($random_bytes);
+    if ($userDevices["activated_count"] < $userDevices["limited_count"]) {
+      $userDevices["activated_count"] += 1;
+    }
 
-    return $user_devices;
+    array_push(
+      $userDevices["devices"],
+      [
+        "id" => Uuid::uuid4()->toString(),
+        "name" => $random_string,
+        "status" => $userDevices["activated_count"] < $userDevices["limited_count"] ? "activated" : "deactivated"
+      ]
+    );
+    DeviceService::setUserDeviceList($userDevices);
+    return $userDevices;
   }
 
-  public function deactivatedUserDevice($userid, $deviceid): array
-  {
-    $api_data = $this->fetchDataFromRemoteApi();
-    $user_devices = json_decode($api_data, true);
-    $user_devices['activated_count'] = 2;
 
-    return $user_devices;
+  public static function removeDeviceFromUser($userid, $deviceid): array
+  {
+    $userDevices = DeviceService::getUserDeviceList($userid);
+    foreach ($userDevices["devices"] as $index => $device) {
+      if ($device["id"] === $deviceid) {
+        unset($userDevices["devices"][$index]);
+        if ($device["status"] === "activated") {
+          $userDevices["activated_count"] -= 1;
+        }
+      }
+    }
+    DeviceService::setUserDeviceList($userDevices);
+    return $userDevices;
   }
 
-  public function getActivateCode($userid): string
+  public static function activateUserDevice($userid, $deviceid): array
   {
-    return "dsahdjsahdashklsh";
+    $userDevices = DeviceService::getUserDeviceList($userid);
+    foreach ($userDevices["devices"] as $index => $device) {
+      if ($device["id"] === $deviceid) {
+        if ($device["status"] === "deactivated") {
+          $userDevices["devices"][$index]["status"] = "activated";
+          $userDevices["activated_count"] += 1;
+        }
+        break;
+      }
+    }
+    DeviceService::setUserDeviceList($userDevices);
+    return $userDevices;
+  }
+
+  public static function deactivatedUserDevice($userid, $deviceid): array
+  {
+    $userDevices = DeviceService::getUserDeviceList($userid);
+    foreach ($userDevices["devices"] as $index => $device) {
+      if ($device["id"] === $deviceid) {
+        if ($device["status"] === "activated") {
+          $userDevices["devices"][$index]["status"] = "deactivated";
+          $userDevices["activated_count"] -= 1;
+        }
+        break;
+      }
+    }
+    DeviceService::setUserDeviceList($userDevices);
+    return $userDevices;
+  }
+
+  public static function getActivateCode($userid): array
+  {
+    // remain_time -> second
+    // status -> Inactive, Activated, Expired
+    return ["code" => "dsahdjsahdashklsh", "remain_time" => 60 * 30, "status" => "Inactive"];
   }
 
 
-  private function fetchDataFromRemoteApi(): string
+  private static function fetchDataFromRemoteApi(): string
   {
     return '{
             "devices": [
@@ -82,7 +138,7 @@ final class DeviceService
               }
             ],
             "activated_count": 3,
-            "total_count": 5
+            "limited_count": 5
           }';
   }
 }
