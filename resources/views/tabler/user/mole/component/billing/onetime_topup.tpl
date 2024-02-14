@@ -3,12 +3,17 @@
     <div class="fs-6 fw-light mt-2">Credit will be be used to auto-renew your
         Ironlink
         plan. You can withdraw it anytime.</div>
-    <form class="p-4 col-10">
+    <form class="p-4 col-10" action="/user/billing/topup/create" method="post">
         <div class="d-flex flex-column mb-4 gap-3">
-            <label class="fs-3 fw-bold">Enter amount</label>
+            <label class="fs-3 fw-bold" for="topup_amount">Enter amount</label>
             <div>
-                <input type="text" id="disabledTextInput"
-                    class="bg-tertiary border-0 form-control text-gray p-3 fs-6 fw-light" value="$8" />
+                <div class="input-group mb-3">
+                    <span class="input-group-text border-0 m-0 ps-3 pe-0 bg-tertiary text-light fs-6">$</span>
+                    <input type="number" id="topup_amount" name="topup_amount"
+                        class="bg-tertiary border-0 ps-2 form-control placeholder-gray text-light p-3 fs-6 fw-light"
+                         min="0"required />
+                </div>
+
                 <div class="text-secondary fs-6 fw-light text-gray mt-1">
                     <i class="bi bi-info-circle-fill me-2"></i>
                     Credit should suffice till Jan 3 2024.
@@ -22,8 +27,8 @@
                 <div class="d-flex align-items-center justify-content-between p-3">
                     <div>
                         <input class="form-check-input me-3 border-3 border-white bg-darkblue" type="radio"
-                            name="flexRadioDefault">
-                        <label class="form-check-label fw-lighter fs-6" for="flexRadioDefault1">
+                            name="paymentSelect" id="paywithcard" value="card" required>
+                        <label class="form-check-label fw-lighter fs-6" for="paywithcard">
                             Pay with credit or debit card
                         </label>
                     </div>
@@ -37,8 +42,8 @@
                 <div class="d-flex align-items-center justify-content-between p-3">
                     <div>
                         <input class="form-check-input me-3 border-3 border-white bg-darkblue" type="radio"
-                            name="flexRadioDefault">
-                        <label class="form-check-label fw-lighter fs-6" for="flexRadioDefault1">
+                            name="paymentSelect" id="paywithusdt" value="usdt" required>
+                        <label class="form-check-label fw-lighter fs-6" for="paywithusdt">
                             USDT/Tether via Polygon lowest fees
                         </label>
                     </div>
@@ -49,8 +54,8 @@
                 <div class="d-flex align-items-center justify-content-between p-3">
                     <div>
                         <input class="form-check-input me-3 border-3 border-white bg-darkblue" type="radio"
-                            name="flexRadioDefault">
-                        <label class="form-check-label fw-lighter fs-6" for="flexRadioDefault1">
+                            name="paymentSelect" id="paywithcrypto" value="crypto" required>
+                        <label class="form-check-label fw-lighter fs-6" for="paywithcrypto">
                             Any other crypto via your network of choice
                         </label>
                     </div>
@@ -59,6 +64,6 @@
             </div>
         </div>
         <hr class="mx-5 my-5" />
-        <button class="btn btn-info w-100 fs-5 fw-normal">Proceed To Pay</button>
+        <button type="submit" value="Submit" class="btn btn-info w-100 fs-5 fw-normal">Proceed To Pay</button>
     </form>
 </div>

@@ -44,13 +44,17 @@ return static function (Slim\App $app): void {
         $group->get('/billing/billing-history', App\Controllers\MoleController::class . ':billing');
         $group->get('/billing/balance-history', App\Controllers\MoleController::class . ':billing');
 
+        $group->post('/billing/topup/create', App\Controllers\MoleController::class . ':createTopUp');
+        $group->get('/billing/topup/return', App\Controllers\MoleController::class . ':returnTopUp');
+
+
         $group->get('/announcement/{id:[0-9]+}', App\Controllers\MoleController::class . ':getAnnByID');
 
         $group->get('/devices/activate-code', App\Controllers\MoleController::class . ':getActivateCode');
         $group->post('/devices/activate', App\Controllers\MoleController::class . ':activate');
         $group->post('/devices/deactivate', App\Controllers\MoleController::class . ':deactivate');
         $group->delete('/devices/{id:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}', App\Controllers\MoleController::class . ':remove_device');
-        
+
         $group->get('/plan/purchase', App\Controllers\MoleController::class . ':purchaseOrder');
         $group->get('/plan/cancel', App\Controllers\MoleController::class . ':cancelCurrentPlan');
 

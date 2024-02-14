@@ -13,6 +13,7 @@ use App\Models\OnlineLog;
 use App\Models\Order;
 use App\Models\Payback;
 use App\Models\Device;
+use App\Models\Paylist;
 use App\Models\Invoice;
 use App\Models\UserDevices;
 use App\Models\Product;
@@ -327,6 +328,104 @@ final class MoleController extends BaseController
 
         return true;
     }
+
+    /**
+     * @throws Exception
+     */
+    public function createTopUp(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        $amount = $this->antiXss->xss_clean($request->getParam('topup_amount'));
+        $payment_method = $this->antiXss->xss_clean($request->getParam('paymentSelect'));
+
+        if ($amount <= 0) {
+            return $response->withJson([
+                'ret' => 0,
+                'msg' => '非法的金额',
+            ]);
+        }
+
+        // create paylist
+        $pl = new Paylist();
+        $pl->userid = $this->user->id;
+        $pl->total = $amount;
+        $pl->invoice_id = 0;
+        $pl->tradeno = Tools::genRandomChar();
+        $pl->gateway = "Cryptomus";
+        $pl->save();
+
+        if ($payment_method === "crypto" || $payment_method === "usdt") {
+            $configs = Config::getClass('billing');
+            $cryptomus_merchant_uuid = $configs['cryptomus_merchant_uuid'];
+            $cryptomus_payment_key = $configs['cryptomus_payment_key'];
+
+            $payment = \Cryptomus\Api\Client::payment($cryptomus_payment_key, $cryptomus_merchant_uuid);
+
+            $data = [
+                'amount' => $amount,
+                'currency' => 'USD',
+                'order_id' => $pl->tradeno,
+                'url_return' => $_ENV['baseUrl'] . '/user/billing/topup/return' . "?trade_no=" . $pl->tradeno,
+                'url_callback' => $_ENV['baseUrl'] . '/user/billing/topup/return' . "?trade_no=" . $pl->tradeno,
+                'is_payment_multiple' => false,
+                'lifetime' => '3600',
+            ];
+
+            if($payment_method === "usdt"){
+                $data['network'] = "POLYGON";
+                $data['currency'] = "USDT";
+            }
+
+            $result = $payment->create($data);
+
+            return $response->withRedirect($result["url"]);
+        }
+
+        return $response->write(
+            $amount . $payment_method
+        );
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    public function returnTopUp(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        $trade_no = $this->antiXss->xss_clean($request->getParam('trade_no'));
+        $data = ["order_id" => $trade_no];
+
+        $configs = Config::getClass('billing');
+        $cryptomus_merchant_uuid = $configs['cryptomus_merchant_uuid'];
+        $cryptomus_payment_key = $configs['cryptomus_payment_key'];
+
+        $payment = \Cryptomus\Api\Client::payment($cryptomus_payment_key, $cryptomus_merchant_uuid);
+
+        $result = $payment->info($data);
+        if ($result["payment_status"] == "paid" || $result["payment_status"] == "paid_over") {
+            $paylist = (new Paylist())->where('tradeno', $trade_no)->first();
+
+            if ($paylist?->status === 0) {
+                $paylist->datetime = time();
+                $paylist->status = 1;
+                $paylist->save();
+
+                $this->user->money = $this->user->money + $paylist->total;
+                $this->user->save();
+
+                (new UserMoneyLog())->add(
+                    $this->user->id,
+                    $this->user->money,
+                    (float) $this->user->money + $paylist->total,
+                    (float) $paylist->total,
+                    '充值 #' . $trade_no,
+                    "top-up"
+                );
+            }
+        }
+
+        return $response->withRedirect($_ENV['baseUrl'] . '/user/billing');
+    }
+
 
     /**
      * @throws Exception
