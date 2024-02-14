@@ -115,7 +115,7 @@ final class Cron
                         $_ENV['appName'] . '-系统警告',
                         '管理员你好，系统发现节点 ' . $node->name . ' 掉线了，请你及时处理。'
                     );
-                } catch (GuzzleException|ClientExceptionInterface|TelegramSDKException $e) {
+                } catch (GuzzleException | ClientExceptionInterface | TelegramSDKException $e) {
                     echo $e->getMessage() . PHP_EOL;
                 }
 
@@ -147,7 +147,7 @@ final class Cron
                         $_ENV['appName'] . '-系统提示',
                         '管理员你好，系统发现节点 ' . $node->name . ' 恢复上线了。'
                     );
-                } catch (GuzzleException|ClientExceptionInterface|TelegramSDKException $e) {
+                } catch (GuzzleException | ClientExceptionInterface | TelegramSDKException $e) {
                     echo $e->getMessage() . PHP_EOL;
                 }
 
@@ -189,7 +189,7 @@ final class Cron
 
                 try {
                     Notification::notifyUser($user, $_ENV['appName'] . '-你的账号等级已经过期了', $text);
-                } catch (GuzzleException|ClientExceptionInterface|TelegramSDKException $e) {
+                } catch (GuzzleException | ClientExceptionInterface | TelegramSDKException $e) {
                     echo $e->getMessage() . PHP_EOL;
                 }
 
@@ -239,7 +239,7 @@ final class Cron
                         $email_queue['template'],
                         json_decode($email_queue['array'])
                     );
-                } catch (Exception|ClientExceptionInterface $e) {
+                } catch (Exception | ClientExceptionInterface $e) {
                     echo $e->getMessage();
                 }
             } else {
@@ -287,8 +287,8 @@ final class Cron
                 $user->node_group = $content->node_group;
                 $user->node_speedlimit = $content->speed_limit;
                 $user->node_iplimit = $content->ip_limit;
-                if($user->plan_start_date === null){
-                    $user->plan_start_date = time();
+                if ($user->plan_start_date === null) {
+                    $user->plan_start_date = new DateTime();
                 }
                 $user->save();
                 $order->status = 'activated';
@@ -443,7 +443,7 @@ final class Cron
                     $_ENV['appName'] . '-免费流量重置通知',
                     '你好，你的免费流量已经被重置为' . $user->auto_reset_bandwidth . 'GB。'
                 );
-            } catch (GuzzleException|ClientExceptionInterface|TelegramSDKException $e) {
+            } catch (GuzzleException | ClientExceptionInterface | TelegramSDKException $e) {
                 echo $e->getMessage() . PHP_EOL;
             }
 
@@ -481,7 +481,7 @@ final class Cron
                 $text_html,
                 'finance.tpl'
             );
-        } catch (GuzzleException|ClientExceptionInterface|TelegramSDKException $e) {
+        } catch (GuzzleException | ClientExceptionInterface | TelegramSDKException $e) {
             echo $e->getMessage() . PHP_EOL;
         }
 
@@ -504,7 +504,7 @@ final class Cron
                 $text_html,
                 'finance.tpl'
             );
-        } catch (GuzzleException|ClientExceptionInterface|TelegramSDKException $e) {
+        } catch (GuzzleException | ClientExceptionInterface | TelegramSDKException $e) {
             echo $e->getMessage() . PHP_EOL;
         }
 
@@ -527,7 +527,7 @@ final class Cron
                 $text_html,
                 'finance.tpl'
             );
-        } catch (GuzzleException|ClientExceptionInterface|TelegramSDKException $e) {
+        } catch (GuzzleException | ClientExceptionInterface | TelegramSDKException $e) {
             echo $e->getMessage() . PHP_EOL;
         }
 
@@ -543,19 +543,21 @@ final class Cron
             $under_limit = false;
             $unit_text = '';
 
-            if ($_ENV['notify_limit_mode'] === 'per' &&
+            if (
+                $_ENV['notify_limit_mode'] === 'per' &&
                 $user_traffic_left / $user->transfer_enable * 100 < $_ENV['notify_limit_value']
             ) {
                 $under_limit = true;
                 $unit_text = '%';
-            } elseif ($_ENV['notify_limit_mode'] === 'mb' &&
+            } elseif (
+                $_ENV['notify_limit_mode'] === 'mb' &&
                 Tools::flowToMB($user_traffic_left) < $_ENV['notify_limit_value']
             ) {
                 $under_limit = true;
                 $unit_text = 'MB';
             }
 
-            if ($under_limit && ! $user->traffic_notified) {
+            if ($under_limit && !$user->traffic_notified) {
                 try {
                     Notification::notifyUser(
                         $user,
@@ -564,13 +566,13 @@ final class Cron
                     );
 
                     $user->traffic_notified = true;
-                } catch (GuzzleException|ClientExceptionInterface|TelegramSDKException $e) {
+                } catch (GuzzleException | ClientExceptionInterface | TelegramSDKException $e) {
                     $user->traffic_notified = false;
                     echo $e->getMessage() . PHP_EOL;
                 }
 
                 $user->save();
-            } elseif (! $under_limit && $user->traffic_notified) {
+            } elseif (!$under_limit && $user->traffic_notified) {
                 $user->traffic_notified = false;
                 $user->save();
             }

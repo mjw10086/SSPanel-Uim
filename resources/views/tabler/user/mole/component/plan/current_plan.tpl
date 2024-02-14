@@ -48,12 +48,12 @@
             <div class="modal-footer border-0">
                 <div class="w-100 d-flex justify-content-between fs-5">
                     <div class="col-6 pe-2">
-                        <button class="w-100 btn btn-outline-info fw-normal">
+                        <button class="w-100 btn btn-outline-info fw-normal" data-bs-dismiss="modal">
                             No, keep it
                         </button>
                     </div>
                     <div class="col-6 ps-2">
-                        <button class="w-100 btn btn-danger text-dark fw-normal">
+                        <button class="w-100 btn btn-danger text-dark fw-normal" hx-get="/user/plan/cancel">
                             Yes, cancel the plan
                         </button>
                     </div>
