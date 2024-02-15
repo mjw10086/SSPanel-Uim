@@ -11,7 +11,7 @@
                     <span class="input-group-text border-0 m-0 ps-3 pe-0 bg-tertiary text-light fs-6">$</span>
                     <input type="number" id="topup_amount" name="topup_amount"
                         class="bg-tertiary border-0 ps-2 form-control placeholder-gray text-light p-3 fs-6 fw-light"
-                         min="0"required />
+                         min="1" value="1" required />
                 </div>
 
                 <div class="text-secondary fs-6 fw-light text-gray mt-1">

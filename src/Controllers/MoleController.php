@@ -436,7 +436,7 @@ final class MoleController extends BaseController
         $amount = $this->antiXss->xss_clean($request->getParam('topup_amount'));
         $payment_method = $this->antiXss->xss_clean($request->getParam('paymentSelect'));
 
-        if ($amount <= 0) {
+        if ($amount < 1) {
             return $response->withJson([
                 'ret' => 0,
                 'msg' => '非法的金额',
