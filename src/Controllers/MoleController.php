@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use DateTime;
 use App\Models\Ann;
 use App\Models\Config;
 use App\Models\InviteCode;
@@ -334,7 +335,97 @@ final class MoleController extends BaseController
         $invoice->pay_time = time();
         $invoice->save();
 
+        $this->processPendingOrder();
+        $this->processTabpOrderActivation();
+
         return true;
+    }
+
+    public function processPendingOrder(): void
+    {
+        $pending_payment_orders = (new Order())->where('status', 'pending_payment')->get();
+
+        foreach ($pending_payment_orders as $order) {
+            // 检查账单支付状态
+            $invoice = (new Invoice())->where('order_id', $order->id)->first();
+
+            if ($invoice === null) {
+                continue;
+            }
+            // 标记订单为等待激活
+            if (in_array($invoice->status, ['paid_gateway', 'paid_balance', 'paid_admin'])) {
+                $order->status = 'pending_activation';
+                $order->update_time = time();
+                $order->save();
+
+                continue;
+            }
+            // 取消超时未支付的订单和关联账单
+            if ($order->create_time + 86400 < time()) {
+                $order->status = 'cancelled';
+                $order->update_time = time();
+                $order->save();
+
+                $invoice->status = 'cancelled';
+                $invoice->update_time = time();
+                $invoice->save();
+
+            }
+        }
+    }
+
+    public function processTabpOrderActivation(): void
+    {
+        $user = $this->user;
+
+        $user_id = $user->id;
+        // 获取用户账户等待激活的TABP订单
+        $pending_activation_orders = (new Order())->where('user_id', $user_id)
+            ->where('status', 'pending_activation')
+            ->where('product_type', 'tabp')
+            ->orderBy('id')
+            ->get();
+        // 获取用户账户已激活的TABP订单，一个用户同时只能有一个已激活的TABP订单
+        $activated_order = (new Order())->where('user_id', $user_id)
+            ->where('status', 'activated')
+            ->where('product_type', 'tabp')
+            ->orderBy('id')
+            ->first();
+        // 如果用户账户中没有已激活的TABP订单，且有等待激活的TABP订单，则激活最早的等待激活TABP订单
+        if ($activated_order === null && count($pending_activation_orders) > 0) {
+            $order = $pending_activation_orders[0];
+            // 获取TABP订单内容准备激活
+            $content = json_decode($order->product_content);
+            // 激活TABP
+            $user->u = 0;
+            $user->d = 0;
+            $user->transfer_today = 0;
+            $user->transfer_enable = Tools::toGB($content->bandwidth);
+            $user->class = $content->class;
+            $old_class_expire = new DateTime();
+            $user->class_expire = $old_class_expire
+                ->modify('+' . $content->class_time . ' days')->format('Y-m-d H:i:s');
+            $user->node_group = $content->node_group;
+            $user->node_speedlimit = $content->speed_limit;
+            $user->node_iplimit = $content->ip_limit;
+            if ($user->plan_start_date === null) {
+                $user->plan_start_date = new DateTime();
+            }
+            $user->save();
+            $order->status = 'activated';
+            $order->update_time = time();
+            $order->save();
+        }
+        // 如果用户账户中有已激活的TABP订单，则判断是否过期
+        if ($activated_order !== null) {
+            $content = json_decode($activated_order->product_content);
+
+            if ($activated_order->update_time + $content->time * 86400 < time()) {
+                $activated_order->status = 'expired';
+                $activated_order->update_time = time();
+                $activated_order->save();
+            }
+        }
     }
 
     /**
