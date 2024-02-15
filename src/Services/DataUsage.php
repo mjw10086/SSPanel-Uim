@@ -22,6 +22,6 @@ final class DataUsage
 
   private static function fetchDataFromRemoteApi(): int
   {
-    return 8 * 1024 * 102 * 1024;
+    return 8 * 1024 * 1024 * 1024;
   }
 }
