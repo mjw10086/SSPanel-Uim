@@ -10,14 +10,14 @@ final class DeviceService
 
   private static function setUserDeviceList($userDevices)
   {
-    $handle = fopen("/Users/paul/PlayGround/work/mole/devices.json", "w");
+    $handle = fopen("/var/www/devices.json", "w");
     fwrite($handle, json_encode($userDevices));
     fclose($handle);
   }
 
   public static function getUserDeviceList($userid): array
   {
-    $handle = fopen("/Users/paul/PlayGround/work/mole/devices.json", "r");
+    $handle = fopen("/var/www/devices.json", "r");
     $content = "";
     while (!feof($handle)) {
       $line = fgets($handle);
