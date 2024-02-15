@@ -147,6 +147,12 @@ final class MoleController extends BaseController
             ->first();
         $data_usage = DataUsage::getUserDataUsage($this->user->id);
 
+        $next_payment_date = 0;
+        if ($activated_order !== null) {
+            $activated_order->product_content = json_decode($activated_order->product_content);
+            $next_payment_date = $activated_order->update_time + $activated_order->product_content->time * 24 * 60 * 60;
+        }
+
         return $response->write(
             $this->view()
                 ->assign('data', MockData::getData())
@@ -154,6 +160,8 @@ final class MoleController extends BaseController
                 ->assign('available_plans', $available_plans)
                 ->assign('activated_order', $activated_order)
                 ->assign('data_usage', $data_usage)
+                ->assign('next_payment_date', $next_payment_date)
+                ->assign('member_since', $this->user->plan_start_date ? $this->user->plan_start_date : 0)
                 ->fetch('user/mole/plan.tpl')
         );
     }
@@ -370,7 +378,7 @@ final class MoleController extends BaseController
                 'lifetime' => '3600',
             ];
 
-            if($payment_method === "usdt"){
+            if ($payment_method === "usdt") {
                 $data['network'] = "POLYGON";
                 $data['currency'] = "USDT";
             }

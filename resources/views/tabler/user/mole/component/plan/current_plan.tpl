@@ -9,7 +9,7 @@
                 </div>
                 <div class="d-flex justify-content-between my-2">
                     <span class="fw-light">Next payment</span>
-                    <span>{$data.current_plan.next_payment_date|date_format:"%b %e, %Y"}</span>
+                    <span>{$next_payment_date|date_format:"%b %e, %Y"}</span>
                 </div>
                 <div class="d-flex justify-content-between my-2">
                     <span class="fw-light">Active devices</span>
@@ -21,7 +21,7 @@
                 </div>
                 <div class="d-flex justify-content-between my-2">
                     <span class="fw-light">Member since</span>
-                    <span>{$data.current_plan.activation_date|date_format:"%b %e, %Y"}</span>
+                    <span>{$member_since|date_format:"%b %e, %Y"}</span>
                 </div>
             </div>
             <div class="col-4 px-4 d-flex flex-column fs-5 gap-2">
