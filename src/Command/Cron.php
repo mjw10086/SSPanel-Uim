@@ -33,6 +33,7 @@ EOL;
         $jobs = new CronService();
 
         // Run new shop related jobs
+        $jobs->autoRenewal();
         $jobs->processPendingOrder();
         $jobs->processTabpOrderActivation();
         $jobs->processBandwidthOrderActivation();

@@ -173,6 +173,34 @@ final class Cron
         echo Tools::toDateTime(time()) . ' 节点离线检测完成' . PHP_EOL;
     }
 
+    public static function autoRenewal(): void
+    {
+        $paidUsers = (new User())->where('class', '>', 0)->get();
+
+        foreach ($paidUsers as $user) {
+            if (strtotime($user->class_expire) < time()) {
+                $activated_order = (new Order())
+                    ->where('user_id', $user->id)
+                    ->where('status', 'activated')
+                    ->where('product_type', 'tabp')
+                    ->first();
+
+                if ($activated_order === null) {
+                    continue;
+                }
+
+                if ($user->money < $activated_order->price) {
+                    continue;
+                }
+
+                Purchase::createOrder($activated_order->product_id, $user);
+                Purchase::purchaseWithBalance($activated_order->product_id, $user);
+            }
+        }
+
+        echo Tools::toDateTime(time()) . ' 自动续订完成' . PHP_EOL;
+    }
+
     public static function expirePaidUserAccount(): void
     {
         $paidUsers = (new User())->where('class', '>', 0)->get();
