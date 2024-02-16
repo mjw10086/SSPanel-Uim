@@ -97,7 +97,11 @@ final class MoleController extends BaseController
      */
     public function billing(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
-        $billing_history = (new Order())->where('user_id', $this->user->id)->where('status', 'activated')->orderBy('update_time', 'desc')->get();
+        $billing_history = (new Invoice())->where('user_id', $this->user->id)->where('status', 'paid_balance')->orderBy('update_time', 'desc')->get();
+        foreach ($billing_history as $billing) {
+            $billing->content = json_decode($billing->content);
+        }
+
         $balance_history = (new UserMoneyLog())->where('user_id', $this->user->id)->where('type', 'top-up')->orWhere('type', 'withdraw')->orderBy('create_time', 'desc')->get();
 
         $activated_order = (new Order())
