@@ -269,6 +269,10 @@
                                             <i class="ti ti-gift"></i>&nbsp;
                                             礼品卡
                                         </a>
+                                        <a class="dropdown-item" href="/admin/withdraw">
+                                            <i class="ti ti-gift"></i>&nbsp;
+                                            提款
+                                        </a>
                                     </div>
                                 </div>
                             </div>

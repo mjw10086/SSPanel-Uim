@@ -26,6 +26,9 @@ return static function (Slim\App $app): void {
     // 通用订阅
     $app->get('/sub/{token}/{subtype}', App\Controllers\SubController::class . ':index');
 
+    // payment callback url
+    $app->post('/user/billing/withdraw/return', App\Controllers\MoleController::class . ':returnWithdraw');
+
     // User
     $app->group('/user', static function (RouteCollectorProxy $group): void {
         // mole
@@ -44,8 +47,13 @@ return static function (Slim\App $app): void {
         $group->get('/billing/billing-history', App\Controllers\MoleController::class . ':billing');
         $group->get('/billing/balance-history', App\Controllers\MoleController::class . ':billing');
 
+        $group->get('/billing/cryptomus-network-list', App\Controllers\MoleController::class . ':getCryptomusNetworkList');
+
         $group->post('/billing/topup/create', App\Controllers\MoleController::class . ':createTopUp');
         $group->get('/billing/topup/return', App\Controllers\MoleController::class . ':returnTopUp');
+        // $group->get('/billing/recurrence/create', App\Controllers\MoleController::class . ':createRecurrence');
+        // $group->get('/billing/recurrence/return', App\Controllers\MoleController::class . ':returnRecurrence');
+        $group->post('/billing/withdraw/create', App\Controllers\MoleController::class . ':createWithdraw');
 
 
         $group->get('/announcement/{id:[0-9]+}', App\Controllers\MoleController::class . ':getAnnByID');
@@ -308,6 +316,10 @@ return static function (Slim\App $app): void {
             '/setting/test/slack',
             App\Controllers\Admin\Setting\ImController::class . ':testSlack'
         );
+        // 提款
+        $group->get('/withdraw', App\Controllers\Admin\WithdrawController::class . ':index');
+        $group->post('/withdraw/ajax', App\Controllers\Admin\WithdrawController::class . ':ajax');
+
         // 礼品卡
         $group->get('/giftcard', App\Controllers\Admin\GiftCardController::class . ':index');
         $group->post('/giftcard', App\Controllers\Admin\GiftCardController::class . ':add');

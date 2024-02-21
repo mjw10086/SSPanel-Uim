@@ -81,6 +81,13 @@
                                                     value="{$settings['cryptomus_payment_key']}">
                                             </div>
                                         </div>
+                                        <div class="form-group mb-3 row">
+                                            <label class="form-label col-3 col-form-label">Payout Key</label>
+                                            <div class="col">
+                                                <input id="cryptomus_payout_key" type="text" class="form-control"
+                                                    value="{$settings['cryptomus_payout_key']}">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="f2f">

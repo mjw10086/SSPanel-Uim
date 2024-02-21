@@ -17,6 +17,7 @@ final class BillingController extends BaseController
         // cryptomus
         'cryptomus_merchant_uuid',
         'cryptomus_payment_key',
+        'cryptomus_payout_key',
         // 支付宝当面付
         'f2f_pay_app_id',
         'f2f_pay_pid',
