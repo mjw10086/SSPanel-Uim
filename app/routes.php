@@ -27,51 +27,50 @@ return static function (Slim\App $app): void {
     $app->get('/sub/{token}/{subtype}', App\Controllers\SubController::class . ':index');
 
     // payment callback url
-    $app->post('/user/billing/withdraw/return', App\Controllers\MoleController::class . ':returnWithdraw');
+    $app->post('/user/billing/withdraw/return', App\Controllers\Mole\BillingController::class . ':returnWithdraw');
+    $app->post('/use/billing/recurrence/return', App\Controllers\Mole\BillingController::class . ':returnRecurrence');
 
     // User
     $app->group('/user', static function (RouteCollectorProxy $group): void {
         // mole
-        $group->get('/dashboard', App\Controllers\MoleController::class . ':dashboard');
-        $group->get('/plan', App\Controllers\MoleController::class . ':plan');
-        $group->get('/devices', App\Controllers\MoleController::class . ':devices');
-        $group->get('/devices/activation', App\Controllers\MoleController::class . ':devices');
-        $group->get('/faq', App\Controllers\MoleController::class . ':faq');
-        $group->get('/account', App\Controllers\MoleController::class . ':account');
-        $group->get('/account/info', App\Controllers\MoleController::class . ':account');
-        $group->get('/account/notification', App\Controllers\MoleController::class . ':account');
-        $group->get('/billing', App\Controllers\MoleController::class . ':billing');
-        $group->get('/billing/one-time-topup', App\Controllers\MoleController::class . ':billing');
-        $group->get('/billing/automatic-topups', App\Controllers\MoleController::class . ':billing');
-        $group->get('/billing/withdraw', App\Controllers\MoleController::class . ':billing');
-        $group->get('/billing/billing-history', App\Controllers\MoleController::class . ':billing');
-        $group->get('/billing/balance-history', App\Controllers\MoleController::class . ':billing');
-
-        $group->get('/billing/cryptomus-network-list', App\Controllers\MoleController::class . ':getCryptomusNetworkList');
-
-        $group->post('/billing/topup/create', App\Controllers\MoleController::class . ':createTopUp');
-        $group->get('/billing/topup/return', App\Controllers\MoleController::class . ':returnTopUp');
-        // $group->get('/billing/recurrence/create', App\Controllers\MoleController::class . ':createRecurrence');
-        // $group->get('/billing/recurrence/return', App\Controllers\MoleController::class . ':returnRecurrence');
-        $group->post('/billing/withdraw/create', App\Controllers\MoleController::class . ':createWithdraw');
+        $group->get('/dashboard', App\Controllers\Mole\MoleController::class . ':dashboard');
+        $group->get('/plan', App\Controllers\Mole\MoleController::class . ':plan');
+        $group->get('/devices', App\Controllers\Mole\MoleController::class . ':devices');
+        $group->get('/devices/activation', App\Controllers\Mole\MoleController::class . ':devices');
+        $group->get('/faq', App\Controllers\Mole\MoleController::class . ':faq');
+        $group->get('/account', App\Controllers\Mole\MoleController::class . ':account');
+        $group->get('/account/info', App\Controllers\Mole\MoleController::class . ':account');
+        $group->get('/account/notification', App\Controllers\Mole\MoleController::class . ':account');
+        $group->get('/billing', App\Controllers\Mole\BillingController::class . ':billing');
+        $group->get('/billing/one-time-topup', App\Controllers\Mole\BillingController::class . ':billing');
+        $group->get('/billing/automatic-topups', App\Controllers\Mole\BillingController::class . ':billing');
+        $group->get('/billing/withdraw', App\Controllers\Mole\BillingController::class . ':billing');
+        $group->get('/billing/billing-history', App\Controllers\Mole\BillingController::class . ':billing');
+        $group->get('/billing/balance-history', App\Controllers\Mole\BillingController::class . ':billing');
+        $group->get('/billing/cryptomus-network-list', App\Controllers\Mole\BillingController::class . ':getCryptomusNetworkList');
+        $group->post('/billing/topup/create', App\Controllers\Mole\BillingController::class . ':createTopUp');
+        $group->get('/billing/topup/return', App\Controllers\Mole\BillingController::class . ':returnTopUp');
+        $group->post('/billing/recurrence/create', App\Controllers\Mole\BillingController::class . ':createRecurrence');
+        $group->get('/billing/recurrence/cancel', App\Controllers\Mole\BillingController::class . ':cancelRecurrence');
+        $group->post('/billing/withdraw/create', App\Controllers\Mole\BillingController::class . ':createWithdraw');
 
 
-        $group->get('/announcement/{id:[0-9]+}', App\Controllers\MoleController::class . ':getAnnByID');
+        $group->get('/announcement/{id:[0-9]+}', App\Controllers\Mole\MoleController::class . ':getAnnByID');
 
-        $group->get('/devices/activate-code', App\Controllers\MoleController::class . ':getActivateCode');
-        $group->post('/devices/activate', App\Controllers\MoleController::class . ':activate');
-        $group->post('/devices/deactivate', App\Controllers\MoleController::class . ':deactivate');
-        $group->delete('/devices/{id:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}', App\Controllers\MoleController::class . ':remove_device');
+        $group->get('/devices/activate-code', App\Controllers\Mole\MoleController::class . ':getActivateCode');
+        $group->post('/devices/activate', App\Controllers\Mole\MoleController::class . ':activate');
+        $group->post('/devices/deactivate', App\Controllers\Mole\MoleController::class . ':deactivate');
+        $group->delete('/devices/{id:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}', App\Controllers\Mole\MoleController::class . ':remove_device');
 
-        $group->get('/plan/purchase', App\Controllers\MoleController::class . ':purchaseOrder');
-        $group->get('/plan/cancel', App\Controllers\MoleController::class . ':cancelCurrentPlan');
+        $group->get('/plan/purchase', App\Controllers\Mole\MoleController::class . ':purchaseOrder');
+        $group->get('/plan/cancel', App\Controllers\Mole\MoleController::class . ':cancelCurrentPlan');
 
 
         // for test
-        $group->get('/sometrigger', App\Controllers\MoleController::class . ':sometrigger');
+        $group->get('/sometrigger', App\Controllers\Mole\MoleController::class . ':sometrigger');
 
-        // $group->get('', App\Controllers\MoleController::class . ':dashboard');
-        // $group->get('/', App\Controllers\MoleController::class . ':dashboard');
+        // $group->get('', App\Controllers\Mole\MoleController::class . ':dashboard');
+        // $group->get('/', App\Controllers\Mole\MoleController::class . ':dashboard');
 
 
         $group->get('', App\Controllers\UserController::class . ':index');

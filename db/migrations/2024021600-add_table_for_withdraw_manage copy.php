@@ -19,6 +19,7 @@ return new class() implements MigrationInterface {
                 status VARCHAR(50) NOT NULL,
                 create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                create_message longtext DEFAULT '',
                 message longtext DEFAULT ''
             );
         ");
