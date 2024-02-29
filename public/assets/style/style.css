@@ -180,6 +180,11 @@
     color: rgba(205, 205, 205, 1) !important;
 }
 
+.placeholder-gray::placeholder {
+    --bs-text-opacity: 1;
+    color: rgba(205, 205, 205, 1) !important;
+}
+
 .text-lightgray {
     --bs-text-opacity: 1;
     color: rgba(187, 187, 187, 1) !important;
@@ -329,4 +334,11 @@ thead {
     background-color: transparent;
     outline: none;
     cursor: pointer;
+}
+
+.line {
+    display: inline-block;
+    width: 150px;
+    border-top: 1px solid #cccccc;
+    vertical-align: 5px;
 }

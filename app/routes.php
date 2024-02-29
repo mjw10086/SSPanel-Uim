@@ -40,6 +40,8 @@ return static function (Slim\App $app): void {
         $group->get('/faq', App\Controllers\Mole\MoleController::class . ':faq');
         $group->get('/account', App\Controllers\Mole\MoleController::class . ':account');
         $group->get('/account/info', App\Controllers\Mole\MoleController::class . ':account');
+        $group->post('/account/password', App\Controllers\Mole\MoleController::class . ':updatePassword');
+        $group->post('/account/email', App\Controllers\Mole\MoleController::class . ':updateEmail');
         $group->get('/account/notification', App\Controllers\Mole\MoleController::class . ':account');
         $group->get('/billing', App\Controllers\Mole\BillingController::class . ':billing');
         $group->get('/billing/one-time-topup', App\Controllers\Mole\BillingController::class . ':billing');
@@ -69,12 +71,12 @@ return static function (Slim\App $app): void {
         // for test
         $group->get('/sometrigger', App\Controllers\Mole\MoleController::class . ':sometrigger');
 
-        // $group->get('', App\Controllers\Mole\MoleController::class . ':dashboard');
-        // $group->get('/', App\Controllers\Mole\MoleController::class . ':dashboard');
+        $group->get('', App\Controllers\Mole\MoleController::class . ':dashboard');
+        $group->get('/', App\Controllers\Mole\MoleController::class . ':dashboard');
 
 
-        $group->get('', App\Controllers\UserController::class . ':index');
-        $group->get('/', App\Controllers\UserController::class . ':index');
+        // $group->get('', App\Controllers\UserController::class . ':index');
+        // $group->get('/', App\Controllers\UserController::class . ':index');
         // 签到
         $group->post('/checkin', App\Controllers\UserController::class . ':checkin');
         // 公告
@@ -163,20 +165,20 @@ return static function (Slim\App $app): void {
 
     // Auth
     $app->group('/auth', static function (RouteCollectorProxy $group): void {
-        $group->get('/login', App\Controllers\AuthController::class . ':login');
-        $group->post('/login', App\Controllers\AuthController::class . ':loginHandle');
-        $group->get('/register', App\Controllers\AuthController::class . ':register');
-        $group->post('/register', App\Controllers\AuthController::class . ':registerHandle');
-        $group->post('/send', App\Controllers\AuthController::class . ':sendVerify');
-        $group->get('/logout', App\Controllers\AuthController::class . ':logout');
+        $group->get('/login', App\Controllers\Mole\AuthController::class . ':login');
+        $group->post('/login', App\Controllers\Mole\AuthController::class . ':loginHandle');
+        $group->get('/register', App\Controllers\Mole\AuthController::class . ':register');
+        $group->post('/register', App\Controllers\Mole\AuthController::class . ':registerHandle');
+        $group->post('/send', App\Controllers\Mole\AuthController::class . ':sendVerify');
+        $group->get('/logout', App\Controllers\Mole\AuthController::class . ':logout');
     })->add(new Guest());
 
     // Password
     $app->group('/password', static function (RouteCollectorProxy $group): void {
-        $group->get('/reset', App\Controllers\PasswordController::class . ':reset');
-        $group->post('/reset', App\Controllers\PasswordController::class . ':handleReset');
-        $group->get('/token/{token}', App\Controllers\PasswordController::class . ':token');
-        $group->post('/token/{token}', App\Controllers\PasswordController::class . ':handleToken');
+        $group->get('/reset', App\Controllers\Mole\PasswordController::class . ':reset');
+        $group->post('/reset', App\Controllers\Mole\PasswordController::class . ':handleReset');
+        $group->get('/token/{token}', App\Controllers\Mole\PasswordController::class . ':token');
+        $group->post('/token/{token}', App\Controllers\Mole\PasswordController::class . ':handleToken');
     })->add(new Guest());
 
     // Admin

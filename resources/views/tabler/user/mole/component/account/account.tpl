@@ -100,7 +100,7 @@
                         <div class="d-flex justify-content-between fs-6 fw-light text-gray m-0">
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-envelope fs-2 my-2 mx-3"></i>
-                                <span class="">Sign in with Apple</span>
+                                <span class="">Sign in with Email</span>
                             </div>
                             <div class="d-flex align-items-center gap-2">
                                 <div class="green-circle"></div>
@@ -111,25 +111,42 @@
                         <div class="d-flex flex-column gap-3">
                             <div class="d-flex justify-content-between gap-4">
                                 <input type="email" class="form-control bg-tertiary border-0 fs-6 fw-light text-light"
-                                    value="{$data.account_info.email}" />
-                                <button class="btn btn-default fs-6 fw-normal" style="width: 270px;">Change
-                                    email</button>
+                                    value="{$user.email}" id="new-email" />
+                                <button class="btn btn-default fs-6 fw-normal" style="width: 270px;"
+                                    hx-post="/user/account/email" hx-swap="innerHTML" hx-target="#operationResultRender"
+                                    hx-vals='js:{
+                                        newemail: document.getElementById("new-email").value,
+                                    }' data-bs-target="#operationResult" data-bs-toggle="modal">
+                                    Change email
+                                </button>
                             </div>
                             <div class="d-flex justify-content-between gap-4">
-                                <input type="password"
-                                    class="form-control bg-tertiary border-0 fs-6 fw-light text-light"
-                                    value="********" />
-                                <button class="btn btn-default fs-6 fw-normal" style="width: 270px;">Change
+                                <input type="password" id="new-passwd"
+                                    class="form-control bg-tertiary border-0 fs-6 fw-light text-light"  />
+                                <button class="btn btn-default fs-6 fw-normal" style="width: 270px;"
+                                    hx-post="/user/account/password" hx-swap="innerHTML"
+                                    hx-target="#operationResultRender" hx-vals='js:{
+                                    passwd: document.getElementById("new-passwd").value,
+                                }' data-bs-target="#operationResult" data-bs-toggle="modal">Change
                                     password</button>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between mt-4">
+                        <div class=" d-flex justify-content-between mt-4">
                             <div></div>
-                            <button class="col-5 btn btn-outline-danger fs-5 fw-normal">Disable & remove</button>
+                            <button class="col-5 btn btn-outline-danger fs-5 fw-normal">Disable &
+                                remove</button>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="operationResult" aria-hidden="true" aria-labelledby="operationResult" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-2 bg-quinary text-light opacity-100 p-3" id="operationResultRender">
         </div>
     </div>
 </div>

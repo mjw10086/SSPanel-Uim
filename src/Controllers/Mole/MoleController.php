@@ -6,7 +6,10 @@ namespace App\Controllers\Mole;
 
 use App\Controllers\BaseController;
 use App\Services\Purchase;
+use App\Models\Config;
+use App\Services\Cache;
 use App\Models\Ann;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\UserMoneyLog;
@@ -14,8 +17,11 @@ use App\Models\Docs;
 use App\Services\DataUsage;
 use App\Services\MockData;
 use App\Services\DeviceService;
+use App\Utils\ResponseHelper;
 use App\Utils\Tools;
+use App\Utils\Hash;
 use Exception;
+use RedisException;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
@@ -342,6 +348,135 @@ final class MoleController extends BaseController
         );
     }
 
+    /**
+     * @throws RedisException
+     */
+    public function updateEmail(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        $new_email = $this->antiXss->xss_clean($request->getParam('newemail'));
+        $user = $this->user;
+        $old_email = $user->email;
+
+        if (!$_ENV['enable_change_email'] || $user->is_shadow_banned) {
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Operation Failed")
+                    ->assign('message', 'Update Email Fail')
+                    ->fetch('user/mole/component/account/operation-res.tpl')
+            );
+        }
+
+        if ($new_email === '') {
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Operation Failed")
+                    ->assign('message', 'You must fill up email')
+                    ->fetch('user/mole/component/account/operation-res.tpl')
+            );
+        }
+
+        $check_res = Tools::isEmailLegal($new_email);
+
+        if ($check_res['ret'] !== 1) {
+            return $response->withJson($check_res);
+        }
+
+        $exist_user = (new User())->where('email', $new_email)->first();
+
+        if ($exist_user !== null) {
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Operation Failed")
+                    ->assign('message', 'The email is using')
+                    ->fetch('user/mole/component/account/operation-res.tpl')
+            );
+        }
+
+        if ($new_email === $old_email) {
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Operation Failed")
+                    ->assign('message', 'new email must be different between old one')
+                    ->fetch('user/mole/component/account/operation-res.tpl')
+            );
+        }
+
+        // if (Config::obtain('reg_email_verify')) {
+        //     $redis = (new Cache())->initRedis();
+        //     $email_verify_code = $request->getParam('emailcode');
+        //     $email_verify = $redis->get('email_verify:' . $email_verify_code);
+
+        //     if (!$email_verify) {
+        //         return ResponseHelper::error($response, '你的邮箱验证码不正确');
+        //     }
+
+        //     $redis->del('email_verify:' . $email_verify_code);
+        // }
+
+        $user->email = $new_email;
+
+        if (!$user->save()) {
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Operation Failed")
+                    ->assign('message', 'System Error')
+                    ->fetch('user/mole/component/account/operation-res.tpl')
+            );
+        }
+
+        return $response->write(
+            $this->view()
+                ->assign('status', "Operation Succuss")
+                ->assign('message', 'Email has changed, relogin pls')
+                ->fetch('user/mole/component/account/operation-res.tpl')
+        );
+    }
+
+
+    public function updatePassword(ServerRequest $request, Response $response, array $args): ResponseInterface
+    {
+        $pwd = $request->getParam('passwd');
+        $user = $this->user;
+
+        if ($pwd === '') {
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Operation Failed")
+                    ->assign('message', 'Password can not be empty')
+                    ->fetch('user/mole/component/account/operation-res.tpl')
+            );
+        }
+
+        if (strlen($pwd) < 8) {
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Operation Failed")
+                    ->assign('message', 'Password too short')
+                    ->fetch('user/mole/component/account/operation-res.tpl')
+            );
+        }
+
+        if (!$user->updatePassword($pwd)) {
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Operation Failed")
+                    ->assign('message', 'Update Fail')
+                    ->fetch('user/mole/component/account/operation-res.tpl')
+            );
+        }
+
+        // if (Config::obtain('enable_forced_replacement')) {
+        //     $user->cleanLink();
+        // }
+
+        return $response->write(
+            $this->view()
+                ->assign('status', "Operation Succuss")
+                ->assign('message', 'Password has changed, relogin pls')
+                ->fetch('user/mole/component/account/operation-res.tpl')
+        );
+    }
+
 
     /**
      * @throws Exception
@@ -349,7 +484,9 @@ final class MoleController extends BaseController
     public function account(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
         return $response->write(
-            $this->view()->assign('data', MockData::getData())->fetch('user/mole/account.tpl')
+            $this->view()
+                ->assign('user', $this->user)
+                ->assign('data', MockData::getData())->fetch('user/mole/account.tpl')
         );
     }
 
