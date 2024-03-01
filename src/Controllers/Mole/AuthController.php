@@ -79,32 +79,23 @@ final class AuthController extends BaseController
         $user = (new User())->where('email', $email)->first();
         $loginIp = new LoginIp();
 
-        if ($user === null) {
-            $loginIp->collectLoginIP($_SERVER['REMOTE_ADDR'], 1);
+        if ($user === null || !Hash::checkPassword($user->pass, $passwd)) {
+            $loginIp->collectLoginIP($_SERVER['REMOTE_ADDR'], 1, $user === null ? 0 : $user->id);
 
-            return $response->withJson([
-                'ret' => 0,
-                'msg' => '邮箱或者密码错误',
-            ]);
+            return $response->write(
+                $this->view()
+                    ->fetch("user/mole/login-res.tpl")
+            );
         }
 
-        if (!Hash::checkPassword($user->pass, $passwd)) {
-            $loginIp->collectLoginIP($_SERVER['REMOTE_ADDR'], 1, $user->id);
+        // if ($user->ga_enable && (strlen($mfa_code) !== 6 || !MFA::verifyGa($user, $mfa_code))) {
+        //     $loginIp->collectLoginIP($_SERVER['REMOTE_ADDR'], 1, $user->id);
 
-            return $response->withJson([
-                'ret' => 0,
-                'msg' => '邮箱或者密码错误',
-            ]);
-        }
-
-        if ($user->ga_enable && (strlen($mfa_code) !== 6 || !MFA::verifyGa($user, $mfa_code))) {
-            $loginIp->collectLoginIP($_SERVER['REMOTE_ADDR'], 1, $user->id);
-
-            return $response->withJson([
-                'ret' => 0,
-                'msg' => '两步验证码错误',
-            ]);
-        }
+        //     return $response->withJson([
+        //         'ret' => 0,
+        //         'msg' => '两步验证码错误',
+        //     ]);
+        // }
 
         $time = 3600;
 
