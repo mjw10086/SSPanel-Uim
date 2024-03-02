@@ -23,12 +23,14 @@
                         </div>
                     </li>
                 {/if}
-            {{/foreach}}
+            {/foreach}
         </ul>
-        <button id="activate_app_btn" class="w-100 btn btn-info mt-3 fs-5 fw-bold" hx-get="/user/devices/activate-code"
-            hx-swap="innerHTML" {if $smarty.server.REQUEST_URI eq "/user/devices/activation"}hx-trigger="load" {/if}
-            hx-target="#activate_app_panel">Download &
-            activate app</button>
+        {if $user_devices.activated_count < $user_devices.limited_count }
+            <button id="activate_app_btn" class="w-100 btn btn-info mt-3 fs-5 fw-bold" hx-get="/user/devices/activate-code"
+                hx-swap="innerHTML" {if $smarty.server.REQUEST_URI eq "/user/devices/activation"}hx-trigger="load" {/if}
+                hx-target="#activate_app_panel">Download &
+                activate app</button>
+        {/if}
     </div>
     {if $user_devices.devices|count - $user_devices.activated_count > 0}
         <div>

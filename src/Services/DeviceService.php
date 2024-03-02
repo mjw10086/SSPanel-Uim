@@ -35,9 +35,6 @@ final class DeviceService
     $length = 10; // 生成的字符串长度
     $random_bytes = random_bytes($length);
     $random_string = bin2hex($random_bytes);
-    if ($userDevices["activated_count"] < $userDevices["limited_count"]) {
-      $userDevices["activated_count"] += 1;
-    }
 
     array_push(
       $userDevices["devices"],
@@ -47,6 +44,11 @@ final class DeviceService
         "status" => $userDevices["activated_count"] < $userDevices["limited_count"] ? "activated" : "deactivated"
       ]
     );
+
+    if ($userDevices["activated_count"] < $userDevices["limited_count"]) {
+      $userDevices["activated_count"] += 1;
+    }
+
     DeviceService::setUserDeviceList($userDevices);
     return $userDevices;
   }
@@ -70,6 +72,9 @@ final class DeviceService
   public static function activateUserDevice($userid, $deviceid): array
   {
     $userDevices = DeviceService::getUserDeviceList($userid);
+    if($userDevices["activated_count"] >= $userDevices["limited_count"]){
+      return $userDevices;
+    }
     foreach ($userDevices["devices"] as $index => $device) {
       if ($device["id"] === $deviceid) {
         if ($device["status"] === "deactivated") {

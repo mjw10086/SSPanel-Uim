@@ -31,6 +31,16 @@
     },
     {
         "id": null,
+        "item": "cryptomus_payout_key",
+        "value": "",
+        "class": "billing",
+        "is_public": 0,
+        "type": "string",
+        "default": "",
+        "mark": "cryptomus付费密钥"
+    },
+    {
+        "id": null,
         "item": "f2f_pay_app_id",
         "value": "",
         "class": "billing",
@@ -179,7 +189,7 @@
         "default": "",
         "mark": "易支付url"
     },
-	{
+    {
         "id": null,
         "item": "epay_pid",
         "value": "",
@@ -189,7 +199,7 @@
         "default": "",
         "mark": "易支付商户ID"
     },
-	{
+    {
         "id": null,
         "item": "epay_key",
         "value": "",
