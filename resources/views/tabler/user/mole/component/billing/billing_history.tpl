@@ -16,7 +16,7 @@
             {foreach $billing_history as $billing}
                 <tr>
                     <th scope="row" class="fw-light">{$billing.update_time|date_format:"%b %e, %Y"}</th>
-                    <td class="fw-light">{$billing.product_name}</td>
+                    <td class="fw-light">{$billing.content[0]->name}</td>
                     <td class="fw-light">${$billing.price}</td>
                     <td class="fw-light text-end"><a href="#">Invoice</a></td>
                 </tr>

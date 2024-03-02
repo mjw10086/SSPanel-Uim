@@ -24,7 +24,13 @@
                     <span>{$member_since|date_format:"%b %e, %Y"}</span>
                 </div>
             </div>
-            <div class="col-4 px-4 d-flex flex-column fs-5 gap-2">
+            <div class="col-4 px-4 d-flex flex-column justify-content-end fs-5 gap-4">
+                <div class="d-flex gap-4">
+                    <button class="w-100 btn btn-info py-2" data-bs-target="#additionQuota" data-bs-toggle="modal">
+                        <div class="fs-5 fw-bold">Buy Extra Data</div>
+                        <div class="fs-6 fw-light">vaild until Feb 1, 2024</div>
+                    </button>
+                </div>
                 <button class="w-100 btn btn-outline-danger fw-normal" data-bs-target="#cancelPlanModal"
                     data-bs-toggle="modal">Cancel</button>
             </div>
@@ -59,6 +65,52 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="additionQuota" aria-hidden="true" aria-labelledby="additionQuota" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-2 bg-quinary text-light opacity-100 p-3" id="additionQuotaRender">
+            <div class="modal-header border-0">
+                <h1 class="modal-title fs-4 fw-bold">Add-ons</h1>
+                <button type="button" class="btn-close btn-small btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <hr class="mx-5 my-3" />
+            <div class="modal-body border-0 fs-5 fw-light my-1">
+                <div class="fs-4 fw-bold mb-2">Available credit: ${$user.money}</div>
+                <div class="fs-6 fw-light">Choose how many gigs you want to add to your line</div>
+                <div class="d-flex mt-4 justify-content-around gap-3">
+                    {foreach $data_plans as $data_plan}
+                        <div>
+                            <div class="px-4 py-3 rounded-3 card text-light border-light d-flex flex-column gap-2 justify-content-center align-items-center"
+                                style="background-color: transparent;">
+                                <div class="fs-5 fw-bold">{$data_plan.name}</div>
+                                <div>Price: ${$data_plan.price}</div>
+                                <button class="btn btn-info fs-7 fw-bold" {if $user.money < $data_plan.price}disabled{/if}
+                                    hx-get="/user/plan/purchase-quota?product_id={$data_plan.id}" hx-swap="innerHTML"
+                                    hx-target="#operationResultRender" data-bs-target="#operationResult"
+                                    data-bs-toggle="modal">Confirm</button>
+                            </div>
+                            <div class="text-secondary fs-8 fw-light text-gray mt-1">
+                                <i class="bi bi-info-circle-fill me-1"></i>
+                                You dont have enough balance.
+                            </div>
+                        </div>
+                    {/foreach}
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <a class="text-info nav-link" href="/user/billing/one-time-topup">Top-Up</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="operationResult" aria-hidden="true" aria-labelledby="operationResult" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-2 bg-quinary text-light opacity-100 p-3" id="operationResultRender">
         </div>
     </div>
 </div>

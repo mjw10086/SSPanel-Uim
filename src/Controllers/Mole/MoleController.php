@@ -103,6 +103,15 @@ final class MoleController extends BaseController
             $plan->features = json_decode($content->features, true);
         }
 
+        $data_plans = (new Product())
+            ->where('status', '1')
+            ->where('type', 'bandwidth')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        foreach ($data_plans as $plan) {
+        }
+
         $userDevices = DeviceService::getUserDeviceList($this->user->id);
         $activated_order = (new Order())
             ->where('user_id', $this->user->id)
@@ -122,6 +131,7 @@ final class MoleController extends BaseController
                 ->assign('data', MockData::getData())
                 ->assign('user_devices', $userDevices)
                 ->assign('available_plans', $available_plans)
+                ->assign('data_plans', $data_plans)
                 ->assign('activated_order', $activated_order)
                 ->assign('data_usage', $data_usage)
                 ->assign('next_payment_date', $next_payment_date)
@@ -246,8 +256,6 @@ final class MoleController extends BaseController
             );
         }
 
-
-
         // activate plan
         return $response->write(
             $this->view()
@@ -262,6 +270,83 @@ final class MoleController extends BaseController
     {
         $this->_cancelCurrentPlan();
         return $response->withHeader('HX-Refresh', 'true');
+    }
+
+
+
+    /**
+     * @throws Exception
+     */
+    public function purchaseDataQuota(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        $product_id = $this->antiXss->xss_clean($request->getQueryParams()['product_id']) ?? null;
+
+        // check product selected
+        if ($product_id === null || $product_id === '') {
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Operation Fail")
+                    ->assign('message', 'no product selected')
+                    ->fetch('user/mole/component/account/operation-res.tpl')
+            );
+        }
+
+        //  check have tabp order already
+        $activated_order = (new Order())
+            ->where('user_id', $this->user->id)
+            ->where('status', 'activated')
+            ->where('product_type', 'tabp')
+            ->first();
+
+        if ($activated_order === null) {
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Operation Fail")
+                    ->assign('message', 'no activated plan')
+                    ->fetch('user/mole/component/account/operation-res.tpl')
+            );
+        }
+
+        // purchase with balance
+        $product = (new Product())->where('id', $product_id)->first();
+        // check balance
+        if ($product->price > $this->user->money) {
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Operation Fail")
+                    ->assign('message', 'no enough balance')
+                    ->fetch('user/mole/component/account/operation-res.tpl')
+            );
+        }
+
+        // create order
+        $result = Purchase::createOrder($product_id, $this->user);
+        if ($result === false) {
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Operation Fail")
+                    ->assign('message', 'error occur when purchase plan')
+                    ->fetch('user/mole/component/account/operation-res.tpl')
+            );
+        }
+
+        // pay with balance
+        $res = Purchase::purchaseWithBalance($result, $this->user);
+        if ($res === true) {
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Operation Succuss")
+                    ->assign('message', 'purchase success')
+                    ->fetch('user/mole/component/account/operation-res.tpl')
+            );
+        }
+
+        return $response->write(
+            $this->view()
+                ->assign('status', "Operation Fail")
+                ->assign('message', 'System Error, try later')
+                ->fetch('user/mole/component/account/operation-res.tpl')
+        );
     }
 
     /**
@@ -477,6 +562,30 @@ final class MoleController extends BaseController
         );
     }
 
+
+    public function updateContactMethod(ServerRequest $request, Response $response, array $args): ResponseInterface
+    {
+        $email_enable = (bool) $request->getParam('email');
+        $im_enable = (bool) $request->getParam('telegram');
+        $value = 0;
+
+        if ($email_enable && !$im_enable) {
+            $value = 1;
+        } else if (!$email_enable && $im_enable) {
+            $value = 2;
+        } else if ($email_enable && $im_enable) {
+            $value = 3;
+        }
+
+        $user = $this->user;
+        $user->contact_method = $value;
+
+        if (!$user->save()) {
+            return $response->withHeader('HX-Refresh', 'true');
+        }
+
+        return $response->withHeader('HX-Refresh', 'true');
+    }
 
     /**
      * @throws Exception

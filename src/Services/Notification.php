@@ -39,6 +39,45 @@ final class Notification
         }
     }
 
+    /* @throws GuzzleException
+     * @throws TelegramSDKException
+     * @throws ClientExceptionInterface
+     */
+    public static function notifyUserMole($user, $title = '', $msg = '', $template = 'warn.tpl'): void
+    {
+        if ($user->contact_method === 0) {
+            return;
+        }
+        if ($user->contact_method === 1 || $user->im_type === 0) {
+            $array = [
+                'user' => $user,
+                'title' => $title,
+                'text' => $msg,
+            ];
+
+            (new EmailQueue())->add($user->email, $title, $template, $array);
+            return;
+        }
+        if ($user->contact_method === 2) {
+            IM::send($user->im_value, $msg, $user->im_type);
+            return;
+        }
+        if ($user->contact_method === 3) {
+            $array = [
+                'user' => $user,
+                'title' => $title,
+                'text' => $msg,
+            ];
+
+            (new EmailQueue())->add($user->email, $title, $template, $array);
+
+            if ($user->im_type !== 0) {
+                IM::send($user->im_value, $msg, $user->im_type);
+            }
+            return;
+        }
+    }
+
     /**
      * @throws GuzzleException
      * @throws TelegramSDKException

@@ -43,6 +43,7 @@ return static function (Slim\App $app): void {
         $group->post('/account/password', App\Controllers\Mole\MoleController::class . ':updatePassword');
         $group->post('/account/email', App\Controllers\Mole\MoleController::class . ':updateEmail');
         $group->get('/account/notification', App\Controllers\Mole\MoleController::class . ':account');
+        $group->post('/account/notification/contact-method', App\Controllers\Mole\MoleController::class . ':updateContactMethod');
         $group->get('/billing', App\Controllers\Mole\BillingController::class . ':billing');
         $group->get('/billing/one-time-topup', App\Controllers\Mole\BillingController::class . ':billing');
         $group->get('/billing/automatic-topups', App\Controllers\Mole\BillingController::class . ':billing');
@@ -66,17 +67,18 @@ return static function (Slim\App $app): void {
 
         $group->get('/plan/purchase', App\Controllers\Mole\MoleController::class . ':purchaseOrder');
         $group->get('/plan/cancel', App\Controllers\Mole\MoleController::class . ':cancelCurrentPlan');
+        $group->get('/plan/purchase-quota', App\Controllers\Mole\MoleController::class . ':purchaseDataQuota');
 
 
         // for test
         $group->get('/sometrigger', App\Controllers\Mole\MoleController::class . ':sometrigger');
 
-        $group->get('', App\Controllers\Mole\MoleController::class . ':dashboard');
-        $group->get('/', App\Controllers\Mole\MoleController::class . ':dashboard');
+        // $group->get('', App\Controllers\Mole\MoleController::class . ':dashboard');
+        // $group->get('/', App\Controllers\Mole\MoleController::class . ':dashboard');
 
 
-        // $group->get('', App\Controllers\UserController::class . ':index');
-        // $group->get('/', App\Controllers\UserController::class . ':index');
+        $group->get('', App\Controllers\UserController::class . ':index');
+        $group->get('/', App\Controllers\UserController::class . ':index');
         // 签到
         $group->post('/checkin', App\Controllers\UserController::class . ':checkin');
         // 公告

@@ -131,6 +131,7 @@ final class Purchase
 
         Purchase::processPendingOrder($user);
         Purchase::processTabpOrderActivation($user);
+        Purchase::processBandwidthOrderActivation($user);
 
         return true;
     }
@@ -219,4 +220,27 @@ final class Purchase
             }
         }
     }
+
+    public static function processBandwidthOrderActivation($user): void
+    {
+        $user_id = $user->id;
+        // 获取用户账户等待激活的流量包订单
+        $order = (new Order())->where('user_id', $user_id)
+            ->where('status', 'pending_activation')
+            ->where('product_type', 'bandwidth')
+            ->orderBy('id')
+            ->first();
+
+        if ($order !== null) {
+            // 获取流量包订单内容准备激活
+            $content = json_decode($order->product_content);
+            // 激活流量包
+            $user->transfer_enable += Tools::toGB($content->bandwidth);
+            $user->save();
+            $order->status = 'activated';
+            $order->update_time = time();
+            $order->save();
+        }
+    }
+
 }
