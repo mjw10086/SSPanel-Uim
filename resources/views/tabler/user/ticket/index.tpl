@@ -109,8 +109,8 @@
                     <button id="create-ticket-button" class="btn btn-primary" data-bs-dismiss="modal"
                             hx-post="/user/ticket" hx-swap="none"
                             hx-vals='js:{
-                            title: document.getElementById("ticket-title").value
-                            comment: document.getElementById("ticket-comment").value
+                            title: document.getElementById("ticket-title").value,
+                            comment: document.getElementById("ticket-comment").value,
                             type: document.getElementById("ticket-type").value }'>
                         创建
                     </button>

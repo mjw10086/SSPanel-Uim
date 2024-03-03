@@ -63,10 +63,12 @@ final class TicketController extends BaseController
         $title = $request->getParam('title') ?? '';
         $comment = $request->getParam('comment') ?? '';
         $type = $request->getParam('type') ?? '';
+        $email = $request->getParam('email') ?? '';
+        $name = $request->getParam('name') ?? '';
 
         if (! Config::obtain('enable_ticket') ||
             $this->user->is_shadow_banned ||
-            ! RateLimit::checkTicketLimit($this->user->id) ||
+            // ! RateLimit::checkTicketLimit($this->user->id) ||
             $title === '' ||
             $comment === '' ||
             $type === ''
@@ -93,6 +95,8 @@ final class TicketController extends BaseController
         $ticket->datetime = time();
         $ticket->status = 'open_wait_admin';
         $ticket->type = $this->antiXss->xss_clean($type);
+        $ticket->email = $this->antiXss->xss_clean($email);
+        $ticket->name = $this->antiXss->xss_clean($name);
         $ticket->save();
 
         if (Config::obtain('mail_ticket')) {

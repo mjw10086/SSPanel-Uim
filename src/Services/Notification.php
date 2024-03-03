@@ -78,6 +78,23 @@ final class Notification
         }
     }
 
+    /* @throws GuzzleException
+     * @throws TelegramSDKException
+     * @throws ClientExceptionInterface
+     */
+    public static function notifyUserTicket($user, $ticket, $title = '', $msg = '', $template = 'warn.tpl'): void
+    {
+        $array = [
+            'user' => $user ?? "",
+            'title' => $title,
+            'text' => $msg,
+            'ticket' => $ticket,
+        ];
+
+        (new EmailQueue())->add($ticket->email, $title, $template, $array);
+        return;
+    }
+
     /**
      * @throws GuzzleException
      * @throws TelegramSDKException

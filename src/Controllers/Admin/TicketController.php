@@ -92,14 +92,15 @@ final class TicketController extends BaseController
 
         $user = (new User())->find($ticket->userid);
 
-        Notification::notifyUser(
+        Notification::notifyUserTicket(
             $user,
+            $ticket,
             $_ENV['appName'] . '-工单被回复',
             '你好，有人回复了<a href="' . $_ENV['baseUrl'] . '/user/ticket/' . $ticket->id . '/view">工单</a>，请你查看。'
         );
 
         $ticket->content = json_encode(array_merge($content_old, $content_new));
-        $ticket->status = 'open_wait_user';
+        $ticket->status = 'closed';
         $ticket->save();
 
         return $response->withJson([

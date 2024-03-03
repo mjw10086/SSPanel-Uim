@@ -14,6 +14,8 @@ use Illuminate\Database\Query\Builder;
  * @property int    $datetime 创建时间
  * @property string $status   工单状态
  * @property string $type     工单类型
+ * @property string $email    用户邮箱
+ * @property string $name     用户称呼
  *
  * @mixin Builder
  */
