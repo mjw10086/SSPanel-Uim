@@ -35,7 +35,7 @@ final class HomeController extends BaseController
     {
         $user = Auth::getUser();
 
-        if (! $user->isLogin) {
+        if (!$user->isLogin) {
             return $response->withStatus(404)->write($this->view()->fetch('404.tpl'));
         }
 
@@ -47,7 +47,8 @@ final class HomeController extends BaseController
      */
     public function notFound(ServerRequest $request, Response $response, array $args): ResponseInterface
     {
-        return $response->write($this->view()->fetch('404.tpl'));
+        // return $response->write($this->view()->fetch('404.tpl'));
+        return $response->write($this->view()->fetch('user/mole/404.tpl'));
     }
 
     /**
@@ -55,7 +56,8 @@ final class HomeController extends BaseController
      */
     public function methodNotAllowed(ServerRequest $request, Response $response, array $args): ResponseInterface
     {
-        return $response->write($this->view()->fetch('405.tpl'));
+        // return $response->write($this->view()->fetch('405.tpl'));
+        return $response->write($this->view()->fetch('user/mole/404.tpl'));
     }
 
     /**
@@ -63,6 +65,7 @@ final class HomeController extends BaseController
      */
     public function internalServerError(ServerRequest $request, Response $response, array $args): ResponseInterface
     {
-        return $response->write($this->view()->fetch('500.tpl'));
+        // return $response->write($this->view()->fetch('500.tpl'));
+        return $response->write($this->view()->fetch('user/mole/404.tpl'));
     }
 }
