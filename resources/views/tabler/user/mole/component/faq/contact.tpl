@@ -3,10 +3,10 @@
         <div class="fs-4 fw-bold text-center">Have any other question?</div>
         <div class="fs-6 fw-light text-center">Couldn’t find you r answer in our FAQ? contact us and we’ll be with you
             shortly</div>
-        <button class="btn btn-outline-info fw-7 fw-light d-flex align-items-center ps-0 py-1">
+        <a href="https://t.me/irontest_bot" class="btn btn-outline-info fw-7 fw-light d-flex align-items-center ps-0 py-1">
             <img src="/assets/icons/telegram.svg" />
             <span>Contact us on Telegram</span>
-        </button>
+        </a>
     </div>
     <hr class="m-5" />
 
