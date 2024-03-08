@@ -104,4 +104,90 @@ final class CouponController extends BaseController
             'buy_price' => $buy_price,
         ]);
     }
+
+    public function checkMole(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        $coupon_raw = $this->antiXss->xss_clean($request->getParam('coupon'));
+        $product_id = $this->antiXss->xss_clean($request->getParam('product_id'));
+        $invalid_coupon_msg = 'invalid coupon';
+
+        if ($coupon_raw === '') {
+            return $response->withJson([
+                'success' => false,
+                'msg' => '<div class="text-danger d-flex gap-2 fs-6"><i class="bi bi-x-circle"></i>' . $invalid_coupon_msg . '</div>',
+            ]);
+        }
+
+        $coupon = (new UserCoupon())->where('code', $coupon_raw)->first();
+
+        if ($coupon === null || ($coupon->expire_time !== 0 && $coupon->expire_time < time())) {
+            return $response->withJson([
+                'success' => false,
+                'msg' => '<div class="text-danger d-flex gap-2 fs-6"><i class="bi bi-x-circle"></i>' . $invalid_coupon_msg . '</div>',
+            ]);
+        }
+
+        $product = (new Product())->where('id', $product_id)->first();
+
+        if ($product === null) {
+            return $response->withJson([
+                'success' => false,
+                'msg' => '<div class="text-danger d-flex gap-2 fs-6"><i class="bi bi-x-circle"></i>' . $invalid_coupon_msg . '</div>',
+            ]);
+        }
+
+        $limit = json_decode($coupon->limit);
+
+        if ($limit->disabled) {
+            return $response->withJson([
+                'success' => false,
+                'msg' => '<div class="text-danger d-flex gap-2 fs-6"><i class="bi bi-x-circle"></i>' . $invalid_coupon_msg . '</div>',
+            ]);
+        }
+
+        if ($limit->product_id !== '' && !in_array($product_id, explode(',', $limit->product_id))) {
+            return $response->withJson([
+                'success' => false,
+                'msg' => '<div class="text-danger d-flex gap-2 fs-6"><i class="bi bi-x-circle"></i>' . $invalid_coupon_msg . '</div>',
+            ]);
+        }
+
+        $user = $this->user;
+        $use_limit = $limit->use_time;
+
+        if ($use_limit > 0) {
+            $user_use_count = (new Order())->where('user_id', $user->id)->where('coupon', $coupon->code)->count();
+            if ($user_use_count >= $use_limit) {
+                return $response->withJson([
+                    'success' => false,
+                    'msg' => '<div class="text-danger d-flex gap-2 fs-6"><i class="bi bi-x-circle"></i>' . $invalid_coupon_msg . '</div>',
+                ]);
+            }
+        }
+
+        $total_use_limit = $limit->total_use_time;
+
+        if ($total_use_limit > 0 && $coupon->use_count >= $total_use_limit) {
+            return $response->withJson([
+                'success' => false,
+                'msg' => '<div class="text-danger d-flex gap-2 fs-6"><i class="bi bi-x-circle"></i>' . $invalid_coupon_msg . '</div>',
+            ]);
+        }
+
+        $content = json_decode($coupon->content);
+
+        if ($content->type === 'percentage') {
+            $discount = $product->price * $content->value / 100;
+        } else {
+            $discount = $content->value;
+        }
+
+        $buy_price = $product->price - $discount;
+
+        return $response->withJson([
+            'success' => true,
+            'msg' => '<div class="text-success d-flex gap-2 fs-6"><i class="bi bi-check-circle"></i> coupon code applied</div>',
+            'price' => $buy_price,
+        ]);
+    }
 }
