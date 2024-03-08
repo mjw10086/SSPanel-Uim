@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\UserCoupon;
 use DateTime;
 use App\Utils\Tools;
 use App\Models\Config;
@@ -19,7 +20,7 @@ use RedisException;
 
 final class Purchase
 {
-    public static function createOrder($product_id, $user)
+    public static function createOrder($product_id, $user, UserCoupon $coupon = null)
     {
         $product = (new Product())->find($product_id);
 
@@ -27,7 +28,20 @@ final class Purchase
             return false;
         }
 
-        $buy_price = $product->price;
+        if ($coupon != null) {
+            $content = json_decode($coupon->content);
+
+            if ($content->type === 'percentage') {
+                $discount = $product->price * $content->value / 100;
+            } else {
+                $discount = $content->value;
+            }
+
+            $buy_price = $product->price - $discount;
+        } else {
+            $buy_price = $product->price;
+        }
+
 
         if ($user->is_shadow_banned) {
             return false;
@@ -59,7 +73,7 @@ final class Purchase
         $order->product_type = $product->type;
         $order->product_name = $product->name;
         $order->product_content = $product->content;
-        $order->coupon = '';
+        $order->coupon = $coupon === null ? '' : $coupon->code;
         $order->price = $buy_price;
         $order->status = 'pending_payment';
         $order->create_time = time();
@@ -100,6 +114,10 @@ final class Purchase
         $invoice = (new Invoice())->where('user_id', $user->id)->where('id', $invoice_id)->first();
 
         if ($invoice === null) {
+            return false;
+        }
+
+        if($invoice->status !== "unpaid"){
             return false;
         }
 
