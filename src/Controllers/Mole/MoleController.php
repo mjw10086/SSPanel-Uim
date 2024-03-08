@@ -5,21 +5,27 @@ declare(strict_types=1);
 namespace App\Controllers\Mole;
 
 use App\Controllers\BaseController;
+use App\Models\Invoice;
 use App\Services\Purchase;
 use App\Models\Config;
 use App\Services\Cache;
+use App\Services\Auth;
 use App\Models\Ann;
 use App\Models\User;
+use App\Models\UserCoupon;
+use App\Models\Paylist;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\UserMoneyLog;
 use App\Models\Docs;
 use App\Services\DataUsage;
+use App\Services\MFA;
 use App\Services\MockData;
 use App\Services\DeviceService;
 use App\Utils\ResponseHelper;
 use App\Utils\Tools;
 use App\Utils\Hash;
+use Ramsey\Uuid\Uuid;
 use Exception;
 use RedisException;
 use Psr\Http\Message\ResponseInterface;
@@ -613,5 +619,329 @@ final class MoleController extends BaseController
                 ->assign('faq_list', $faq_list)
                 ->fetch('user/mole/faq.tpl')
         );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function initPurchase(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        return $response->write(
+            $this->view()
+                ->fetch('user/mole/init-purchase.tpl')
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function createInitPurchase(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        // ----------------
+        // get parameter
+        $coupon_code = $this->antiXss->xss_clean($request->getParam('coupon_code'));
+        $product_id = $this->antiXss->xss_clean($request->getParam('product_id')) ?? null;
+        $payment_method = $this->antiXss->xss_clean($request->getParam('paymentSelect'));
+        $email = $this->antiXss->xss_clean($request->getParam('email'));
+
+
+        // -----------------
+        // check and create account
+        if ($this->user->id === null) {
+            // create account with email
+            $user = new User();
+            $configs = Config::getClass('reg');
+
+            $user->user_name = "";
+            $user->email = $email;
+            $user->remark = '';
+            $user->pass = '';
+            $user->passwd = Tools::genRandomChar(16);
+            $user->uuid = Uuid::uuid4();
+            $user->api_token = Uuid::uuid4();
+            $user->port = Tools::getSsPort();
+            $user->u = 0;
+            $user->d = 0;
+            $user->method = $configs['sign_up_for_method'];
+            $user->forbidden_ip = Config::obtain('reg_forbidden_ip');
+            $user->forbidden_port = Config::obtain('reg_forbidden_port');
+            $user->im_type = 0;
+            $user->im_value = '';
+            $user->transfer_enable = Tools::toGB($configs['sign_up_for_free_traffic']);
+            $user->invite_num = $configs['sign_up_for_invitation_codes'];
+            $user->auto_reset_day = Config::obtain('free_user_reset_day');
+            $user->auto_reset_bandwidth = Config::obtain('free_user_reset_bandwidth');
+            $user->daily_mail_enable = $configs['sign_up_for_daily_report'];
+            $user->money = 0;
+            $user->ref_by = 0;
+            $user->ga_token = MFA::generateGaToken();
+            $user->ga_enable = 0;
+            $user->class_expire = date('Y-m-d H:i:s', time() + (int) $configs['sign_up_for_class_time'] * 86400);
+            $user->class = $configs['sign_up_for_class'];
+            $user->node_iplimit = $configs['connection_ip_limit'];
+            $user->node_speedlimit = $configs['connection_rate_limit'];
+            $user->reg_date = date('Y-m-d H:i:s');
+            $user->reg_ip = $_SERVER['REMOTE_ADDR'];
+            $user->theme = $_ENV['theme'];
+            $user->locale = $_ENV['locale'];
+            $random_group = Config::obtain('random_group');
+
+            if ($random_group === '') {
+                $user->node_group = 0;
+            } else {
+                $user->node_group = $random_group[array_rand(explode(',', $random_group))];
+            }
+
+            $user->save();
+
+            $time = 86400 * ($_ENV['rememberMeDuration'] ?: 7);
+
+            Auth::login($user->id, $time);
+            $this->user = $user;
+        }
+
+        // -----------------
+        // deal with product and coupon
+        if ($product_id === null || $product_id === '') {
+            return $response->write("need product id");
+        }
+
+        $product = (new Product())->where('id', $product_id)->first();
+        if ($product === null) {
+            return $response->write("no such product");
+        }
+
+        $result = $this->checkCoupon($coupon_code, $product);
+        if ($result === false) {
+            return $response->write("invalid coupon");
+        }
+
+        $pay_amount = $result;
+
+        // -------------------
+        // return payment page
+        if ($pay_amount < 1) {
+            return $response->write("pay amount error");
+        }
+
+        $pl = new Paylist();
+        $pl->userid = $this->user->id;
+        $pl->total = $pay_amount;
+        $pl->invoice_id = 0;
+        $pl->tradeno = Tools::genRandomChar();
+        $pl->gateway = "Cryptomus";
+        $pl->save();
+
+        // ------------------
+        // create order
+        $result = Purchase::createOrder($product_id, $this->user, (new UserCoupon())->where('code', $coupon_code)->first());
+        if ($result === false) {
+            return $response->write("create order fail");
+        }
+
+        if ($payment_method === "crypto" || $payment_method === "usdt") {
+            $configs = Config::getClass('billing');
+            $cryptomus_merchant_uuid = $configs['cryptomus_merchant_uuid'];
+            $cryptomus_payment_key = $configs['cryptomus_payment_key'];
+
+            $payment = \Cryptomus\Api\Client::payment($cryptomus_payment_key, $cryptomus_merchant_uuid);
+
+            $data = [
+                'amount' => (string) $pay_amount,
+                'currency' => 'USD',
+                'order_id' => $pl->tradeno,
+                'url_return' => $_ENV['baseUrl'] . '/init-purchase/check' . "?trade_no=" . $pl->tradeno . "&invoice_id=" . $result . "&counpon_code=" . $coupon_code,
+                'url_callback' => $_ENV['baseUrl'] . '/init-purchase/return' . "?trade_no=" . $pl->tradeno . "&invoice_id=" . $result . "&counpon_code=" . $coupon_code,
+                'url_success' => $_ENV['baseUrl'] . '/init-purchase/check' . "?trade_no=" . $pl->tradeno . "&invoice_id=" . $result . "&counpon_code=" . $coupon_code,
+                'is_payment_multiple' => false,
+                'lifetime' => '3600',
+            ];
+
+            if ($payment_method === "usdt") {
+                $data['network'] = "POLYGON";
+                $data['to_currency'] = "USDT";
+            }
+
+            $result = $payment->create($data);
+
+            return $response->withRedirect($result["url"]);
+        }
+
+        return $response->write(
+            $pay_amount . $payment_method
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function checkInitPurchase(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        // ----------------
+        // get parameter
+        $trade_no = $this->antiXss->xss_clean($request->getParam('trade_no'));
+        $coupon_code = $this->antiXss->xss_clean($request->getParam('coupon_code'));
+        $invoice_id = $this->antiXss->xss_clean($request->getParam('invoice_id'));
+
+        // ----------------
+        // check payment status(to update)
+        $data = ["order_id" => $trade_no];
+
+        $configs = Config::getClass('billing');
+        $cryptomus_merchant_uuid = $configs['cryptomus_merchant_uuid'];
+        $cryptomus_payment_key = $configs['cryptomus_payment_key'];
+
+        $payment = \Cryptomus\Api\Client::payment($cryptomus_payment_key, $cryptomus_merchant_uuid);
+
+        $result = $payment->info($data);
+        if ($result["payment_status"] != "paid" && $result["payment_status"] != "paid_over") {
+            return $response->write("fail");
+        }
+
+        $paylist = (new Paylist())->where('tradeno', $trade_no)->first();
+
+        if ($paylist?->status === 0) {
+            $paylist->datetime = time();
+            $paylist->status = 1;
+            $paylist->save();
+
+            $this->user->money = $this->user->money + $paylist->total;
+            $this->user->save();
+
+            (new UserMoneyLog())->add(
+                $this->user->id,
+                $this->user->money,
+                (float) $this->user->money + $paylist->total,
+                (float) $paylist->total,
+                '充值 #' . $trade_no,
+                "top-up"
+            );
+        }
+
+
+        // -----------------
+        // order update
+        $res = Purchase::purchaseWithBalance($invoice_id, $this->user);
+        if ($res === true) {
+            return $response->write("success");
+        }
+
+        return $response->write(
+            json_encode($_POST)
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function returnInitPurchase(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        // read paramter
+        $coupon_code = $this->antiXss->xss_clean($request->getParam('coupon_code'));
+        $invoice_id = $this->antiXss->xss_clean($request->getParam('invoice_id'));
+        $trade_no = $this->antiXss->xss_clean($request->getParam('order_id'));
+        $status = $this->antiXss->xss_clean($request->getParam('status'));
+
+        $configs = Config::getClass('billing');
+        $cryptomus_payment_key = $configs['cryptomus_payment_key'];
+
+        $body = $request->getParsedBody();
+        $get_sign = $body["sign"];
+        unset($body["sign"]);
+        $sign = md5(base64_encode(json_encode($body, JSON_UNESCAPED_UNICODE)) . $cryptomus_payment_key);
+
+        if ($get_sign !== $sign) {
+            return $response->withJson([
+                'ret' => 0,
+                'msg' => '非法请求',
+            ]);
+        }
+
+        if ($status == "paid" || $status == "paid_over") {
+            $paylist = (new Paylist())->where('tradeno', $trade_no)->first();
+
+            if ($paylist?->status === 0) {
+                $paylist->datetime = time();
+                $paylist->status = 1;
+                $paylist->save();
+
+                $this->user->money = $this->user->money + $paylist->total;
+                $this->user->save();
+
+                (new UserMoneyLog())->add(
+                    $this->user->id,
+                    $this->user->money,
+                    (float) $this->user->money + $paylist->total,
+                    (float) $paylist->total,
+                    '充值 #' . $trade_no,
+                    "top-up"
+                );
+            }
+        }
+
+        // -----------------
+        // order update
+        $res = Purchase::purchaseWithBalance($invoice_id, $this->user);
+        if ($res === true) {
+            return $response->write("success");
+        }
+
+        return $response->withJson([
+            'ret' => 1,
+            'msg' => 'success',
+        ]);
+    }
+
+    private function checkCoupon(string $coupon_code, Product $product)
+    {
+        $buy_price = $product->price;
+
+        if ($coupon_code === '' || $coupon_code === null) {
+            return $buy_price;
+        }
+        $coupon = (new UserCoupon())->where('code', $coupon_code)->first();
+        if ($coupon === null || ($coupon->expire_time !== 0 && $coupon->expire_time < time())) {
+            return false;
+        }
+
+        $coupon_limit = json_decode($coupon->limit);
+        if ($coupon_limit->disabled) {
+            return false;
+        }
+
+        if ($coupon_limit->product_id !== '' && !in_array($product->id, explode(',', $coupon_limit->product_id))) {
+            return false;
+        }
+
+        $coupon_use_limit = $coupon_limit->use_time;
+
+        if ($coupon_use_limit > 0) {
+            $user_use_count = (new Order())->where('user_id', $this->user->id)->where('coupon', $coupon->code)->count();
+            if ($user_use_count >= $coupon_use_limit) {
+                return false;
+            }
+        }
+
+        if (property_exists($coupon_limit, 'total_use_time')) {
+            $coupon_total_use_limit = $coupon_limit->total_use_time;
+        } else {
+            $coupon_total_use_limit = -1;
+        }
+
+        if ($coupon_total_use_limit > 0 && $coupon->use_count >= $coupon_total_use_limit) {
+            return false;
+        }
+
+        $content = json_decode($coupon->content);
+
+        if ($content->type === 'percentage') {
+            $discount = $product->price * $content->value / 100;
+        } else {
+            $discount = $content->value;
+        }
+
+        $buy_price = $product->price - $discount;
+
+        return $buy_price;
     }
 }
