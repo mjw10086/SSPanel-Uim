@@ -26,6 +26,11 @@
     background-color: var(--bg-tertiary-color) !important;
 }
 
+.bg-dark {
+    --bs-bg-opacity: 1;
+    background-color: var(--bg-dark) !important;
+}
+
 .bg-default {
     --bs-bg-opacity: 1;
     background-color: var(--bg-default-color) !important;
