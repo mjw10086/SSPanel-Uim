@@ -10,6 +10,7 @@ use App\Middleware\User;
 use Slim\Routing\RouteCollectorProxy;
 
 return static function (Slim\App $app): void {
+    // $app->post('/echo', App\Controllers\Mole\MoleController::class . ':echo');
     // Home
     $app->get('/', App\Controllers\HomeController::class . ':index');
     $app->get('/tos', App\Controllers\HomeController::class . ':tos');
@@ -29,6 +30,13 @@ return static function (Slim\App $app): void {
     // payment callback url
     $app->post('/user/billing/withdraw/return', App\Controllers\Mole\BillingController::class . ':returnWithdraw');
     $app->post('/use/billing/recurrence/return', App\Controllers\Mole\BillingController::class . ':returnRecurrence');
+
+    // init purchase
+    $app->get('/init-purchase', App\Controllers\Mole\MoleController::class . ':initPurchase');
+    $app->post('/init-purchase/create', App\Controllers\Mole\MoleController::class . ':createInitPurchase');
+    $app->get('/init-purchase/return', App\Controllers\Mole\MoleController::class . ':returnInitPurchase');
+    $app->get('/init-purchase/check', App\Controllers\Mole\MoleController::class . ':checkInitPurchase');
+
 
     // User
     $app->group('/user', static function (RouteCollectorProxy $group): void {
@@ -53,6 +61,7 @@ return static function (Slim\App $app): void {
         $group->get('/billing/cryptomus-network-list', App\Controllers\Mole\BillingController::class . ':getCryptomusNetworkList');
         $group->post('/billing/topup/create', App\Controllers\Mole\BillingController::class . ':createTopUp');
         $group->get('/billing/topup/return', App\Controllers\Mole\BillingController::class . ':returnTopUp');
+        $group->get('/billing/topup/check', App\Controllers\Mole\BillingController::class . ':checkTopUp');
         $group->post('/billing/recurrence/create', App\Controllers\Mole\BillingController::class . ':createRecurrence');
         $group->get('/billing/recurrence/cancel', App\Controllers\Mole\BillingController::class . ':cancelRecurrence');
         $group->post('/billing/withdraw/create', App\Controllers\Mole\BillingController::class . ':createWithdraw');
@@ -76,9 +85,9 @@ return static function (Slim\App $app): void {
         // $group->get('', App\Controllers\Mole\MoleController::class . ':dashboard');
         // $group->get('/', App\Controllers\Mole\MoleController::class . ':dashboard');
 
-
         $group->get('', App\Controllers\UserController::class . ':index');
         $group->get('/', App\Controllers\UserController::class . ':index');
+
         // 签到
         $group->post('/checkin', App\Controllers\UserController::class . ':checkin');
         // 公告
@@ -148,7 +157,7 @@ return static function (Slim\App $app): void {
         $group->post('/invoice/pay_balance', App\Controllers\User\InvoiceController::class . ':payBalance');
         $group->post('/invoice/ajax', App\Controllers\User\InvoiceController::class . ':ajax');
         // 新优惠码系统
-        $group->post('/coupon', App\Controllers\User\CouponController::class . ':check');
+        $group->post('/coupon', App\Controllers\User\CouponController::class . ':checkMole');
         // 支付
         $group->post('/payment/purchase/{type}', App\Services\Payment::class . ':purchase');
         $group->get('/payment/purchase/{type}', App\Services\Payment::class . ':purchase');

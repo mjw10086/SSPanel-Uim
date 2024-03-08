@@ -452,15 +452,16 @@ final class BillingController extends BaseController
                 'amount' => $amount,
                 'currency' => 'USD',
                 'order_id' => $pl->tradeno,
-                'url_return' => $_ENV['baseUrl'] . '/user/billing/topup/return' . "?trade_no=" . $pl->tradeno,
+                'url_return' => $_ENV['baseUrl'] . '/user/billing/topup/check' . "?trade_no=" . $pl->tradeno,
                 'url_callback' => $_ENV['baseUrl'] . '/user/billing/topup/return' . "?trade_no=" . $pl->tradeno,
+                'url_success' => $_ENV['baseUrl'] . '/user/billing/topup/check' . "?trade_no=" . $pl->tradeno,
                 'is_payment_multiple' => false,
                 'lifetime' => '3600',
             ];
 
             if ($payment_method === "usdt") {
                 $data['network'] = "POLYGON";
-                $data['currency'] = "USDT";
+                $data['to_currency'] = "USDT";
             }
 
             $result = $payment->create($data);
@@ -479,6 +480,61 @@ final class BillingController extends BaseController
      */
     public function returnTopUp(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
+        $configs = Config::getClass('billing');
+        $cryptomus_payment_key = $configs['cryptomus_payment_key'];
+
+        // read paramter
+        $trade_no = $this->antiXss->xss_clean($request->getParam('order_id'));
+        $status = $this->antiXss->xss_clean($request->getParam('status'));
+
+        // read paramter
+        $body = $request->getParsedBody();
+        $get_sign = $body["sign"];
+        unset($body["sign"]);
+        $sign = md5(base64_encode(json_encode($body, JSON_UNESCAPED_UNICODE)) . $cryptomus_payment_key);
+
+        if ($get_sign !== $sign) {
+            return $response->withJson([
+                'ret' => 0,
+                'msg' => '非法请求',
+            ]);
+        }
+
+        if ($status == "paid" || $status == "paid_over") {
+            $paylist = (new Paylist())->where('tradeno', $trade_no)->first();
+
+            if ($paylist?->status === 0) {
+                $paylist->datetime = time();
+                $paylist->status = 1;
+                $paylist->save();
+
+                $this->user->money = $this->user->money + $paylist->total;
+                $this->user->save();
+
+                (new UserMoneyLog())->add(
+                    $this->user->id,
+                    $this->user->money,
+                    (float) $this->user->money + $paylist->total,
+                    (float) $paylist->total,
+                    '充值 #' . $trade_no,
+                    "top-up"
+                );
+            }
+        }
+        
+        return $response->withJson([
+            'ret' => 1,
+            'msg' => 'success',
+        ]);
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    public function checkTopUp(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        // (to update)
         $trade_no = $this->antiXss->xss_clean($request->getParam('trade_no'));
         $data = ["order_id" => $trade_no];
 
