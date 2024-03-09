@@ -82,8 +82,8 @@ return static function (Slim\App $app): void {
         // for test
         $group->get('/sometrigger', App\Controllers\Mole\MoleController::class . ':sometrigger');
 
-        // $group->get('', App\Controllers\Mole\MoleController::class . ':dashboard');
-        // $group->get('/', App\Controllers\Mole\MoleController::class . ':dashboard');
+        $group->get('', App\Controllers\Mole\MoleController::class . ':dashboard');
+        $group->get('/', App\Controllers\Mole\MoleController::class . ':dashboard');
 
         $group->get('', App\Controllers\UserController::class . ':index');
         $group->get('/', App\Controllers\UserController::class . ':index');
