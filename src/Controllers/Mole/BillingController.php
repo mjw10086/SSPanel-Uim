@@ -120,8 +120,8 @@ final class BillingController extends BaseController
             'order_id' => Tools::genRandomChar(),
             'address' => $address,
             'is_subtract' => '0',
-            'url_callback' => "http://echo.connexusy.com",
-            // 'url_callback' => $_ENV['baseUrl'] . '/user/billing/withdraw/return',
+            // 'url_callback' => "http://echo.connexusy.com",
+            'url_callback' => $_ENV['baseUrl'] . '/user/billing/withdraw/return',
         ];
 
         try {
@@ -284,7 +284,8 @@ final class BillingController extends BaseController
             "currency" => "USD",
             "name" => "Ironlink recurring payment",
             "period" => "monthly",
-            "url_callback" => "http://echo.connexusy.com"
+            // "url_callback" => "http://echo.connexusy.com"
+            'url_callback' => $_ENV['baseUrl'] . '/user/billing/recurrence/return',
         ];
 
         $requestBuilder = new \Cryptomus\Api\RequestBuilder($cryptomus_payment_key, $cryptomus_merchant_uuid);
