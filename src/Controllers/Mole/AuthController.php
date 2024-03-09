@@ -212,7 +212,6 @@ final class AuthController extends BaseController
         $name,
         $email,
         $passwd,
-        $invite_code,
         $imtype,
         $imvalue,
         $money,
@@ -251,13 +250,6 @@ final class AuthController extends BaseController
         }
 
         $user->ref_by = 0;
-
-        if ($invite_code !== '') {
-            $invite = (new InviteCode())->where('code', $invite_code)->first();
-            $invite->reward();
-            $user->ref_by = $invite->user_id;
-            $user->money = Config::obtain('invitation_to_register_balance_reward');
-        }
 
         $user->ga_token = MFA::generateGaToken();
         $user->ga_enable = 0;
@@ -310,34 +302,9 @@ final class AuthController extends BaseController
             return ResponseHelper::error($response, '系统无法接受你的验证结果，请刷新页面后重试。');
         }
 
-        $tos = $request->getParam('tos') === 'true' ? 1 : 0;
         $email = strtolower(trim($this->antiXss->xss_clean($request->getParam('email'))));
-        $name = $this->antiXss->xss_clean($request->getParam('name'));
+        $name = $email;
         $passwd = $request->getParam('passwd');
-        $repasswd = $request->getParam('repasswd');
-        $invite_code = $this->antiXss->xss_clean(trim($request->getParam('invite_code')));
-        // Check TOS agreement
-        if (!$tos) {
-            return ResponseHelper::error($response, '请同意服务条款');
-        }
-        // Check Invite Code
-        if ($invite_code === '' && Config::obtain('reg_mode') === 'invite') {
-            return ResponseHelper::error($response, '邀请码不能为空');
-        }
-
-        if ($invite_code !== '') {
-            $user_invite = (new InviteCode())->where('code', $invite_code)->first();
-
-            if ($user_invite === null) {
-                return ResponseHelper::error($response, '邀请码无效');
-            }
-
-            $gift_user = (new User())->where('id', $user_invite->user_id)->first();
-
-            if ($gift_user === null || $gift_user->invite_num === 0) {
-                return ResponseHelper::error($response, '邀请码无效');
-            }
-        }
 
         $imtype = 0;
         $imvalue = '';
@@ -358,24 +325,8 @@ final class AuthController extends BaseController
         if (strlen($passwd) < 8) {
             return ResponseHelper::error($response, '密码请大于8位');
         }
-        // check pwd re
-        if ($passwd !== $repasswd) {
-            return ResponseHelper::error($response, '两次密码输入不符');
-        }
 
-        if (Config::obtain('reg_email_verify')) {
-            $redis = (new Cache())->initRedis();
-            $email_verify_code = trim($this->antiXss->xss_clean($request->getParam('emailcode')));
-            $email_verify = $redis->get('email_verify:' . $email_verify_code);
-
-            if (!$email_verify) {
-                return ResponseHelper::error($response, '你的邮箱验证码不正确');
-            }
-
-            $redis->del('email_verify:' . $email_verify_code);
-        }
-
-        return $this->registerHelper($response, $name, $email, $passwd, $invite_code, $imtype, $imvalue, 0, 0);
+        return $this->registerHelper($response, $name, $email, $passwd, $imtype, $imvalue, 0, 0);
     }
 
     public function logout(ServerRequest $request, Response $response, $next): Response

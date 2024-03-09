@@ -16,7 +16,10 @@
                 <span class="line" style="width: 24%;"></span>
             </div>
             <form class="w-100 d-flex flex-column justify-content-center align-items-center gap-3 mb-3"
-                hx-post="/auth/login" hx-swap="none">
+                hx-post="/auth/register" hx-swap="none" hx-vals='js:{
+                    email: document.getElementById("email").value,
+                    passwd: document.getElementById("passwd").value
+                 }'>
                 <div class="col-9">
                     <label for="email" class="form-label">Your Email</label>
                     <input type="email" class="form-control text-light" id="email" name="email"
@@ -28,7 +31,7 @@
                         style="background-color: transparent;" autocomplete="on" required>
                 </div>
                 <div class="col-9 d-flex mt-2">
-                    <input id="tos" type="checkbox" class="me-2" required/>
+                    <input id="tos" type="checkbox" class="me-2" required />
                     <span class="fs-6">
                         I have read and agree to <a href="/tos" tabindex="-1"> the terms of service and privacy policy
                         </a>
