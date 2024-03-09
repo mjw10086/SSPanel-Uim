@@ -11,7 +11,7 @@
             </div>
             <span class="my-1 fw-bold fs-2">Reset your password</span>
             <form class="w-100 d-flex flex-column justify-content-center align-items-center gap-3 mb-3 mt-5"
-                hx-post="{ location.pathname }">
+                hx-post="/password/token/{$token}">
                 <div class="col-9">
                     <label for="password" class="form-label">New Password</label>
                     <input type="password" class="form-control text-light" id="password" name="password"

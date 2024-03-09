@@ -94,7 +94,9 @@ final class PasswordController extends BaseController
         }
 
         return $response->write(
-            $this->view()->fetch('user/mole/reset-passwd.tpl')
+            $this->view()
+                ->assign("token", $token)
+                ->fetch('user/mole/reset-passwd.tpl')
         );
     }
 
