@@ -221,7 +221,7 @@ final class BillingController extends BaseController
         // check status
         if ($status == "fail" || $status == "cancel" || $status == "system_fail") {
             // back money to user balance
-            $user = (new User())->where("id", $withdrawRecord->user_id);
+            $user = (new User())->where("id", $withdrawRecord->user_id)->first();
 
             (new UserMoneyLog())->add(
                 $user->id,
@@ -386,7 +386,7 @@ final class BillingController extends BaseController
         // check status
         if ($status == "paid") {
             // back money to user balance
-            $user = (new User())->where("id", $recurrenceRecord->user_id);
+            $user = (new User())->where("id", $recurrenceRecord->user_id)->first();
 
             (new UserMoneyLog())->add(
                 $user->id,
@@ -503,23 +503,24 @@ final class BillingController extends BaseController
 
         if ($status == "paid" || $status == "paid_over") {
             $paylist = (new Paylist())->where('tradeno', $trade_no)->first();
+            $user = (new User())->where("id", $paylist->userid)->first();
 
             if ($paylist?->status === 0) {
                 $paylist->datetime = time();
                 $paylist->status = 1;
                 $paylist->save();
 
-                $this->user->money = $this->user->money + $paylist->total;
-                $this->user->save();
-
                 (new UserMoneyLog())->add(
-                    $this->user->id,
-                    $this->user->money,
-                    (float) $this->user->money + $paylist->total,
+                    $user->id,
+                    $user->money,
+                    (float) $user->money + $paylist->total,
                     (float) $paylist->total,
                     '充值 #' . $trade_no,
                     "top-up"
                 );
+
+                $user->money = $user->money + $paylist->total;
+                $user->save();
             }
         }
         
@@ -553,10 +554,7 @@ final class BillingController extends BaseController
                 $paylist->datetime = time();
                 $paylist->status = 1;
                 $paylist->save();
-
-                $this->user->money = $this->user->money + $paylist->total;
-                $this->user->save();
-
+                
                 (new UserMoneyLog())->add(
                     $this->user->id,
                     $this->user->money,
@@ -565,6 +563,9 @@ final class BillingController extends BaseController
                     '充值 #' . $trade_no,
                     "top-up"
                 );
+
+                $this->user->money = $this->user->money + $paylist->total;
+                $this->user->save();
             }
         }
 

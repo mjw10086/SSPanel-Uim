@@ -30,6 +30,7 @@ return static function (Slim\App $app): void {
     // payment callback url
     $app->post('/user/billing/withdraw/return', App\Controllers\Mole\BillingController::class . ':returnWithdraw');
     $app->post('/user/billing/recurrence/return', App\Controllers\Mole\BillingController::class . ':returnRecurrence');
+    $app->get('/user/billing/topup/return', App\Controllers\Mole\BillingController::class . ':returnTopUp');
 
     // init purchase
     $app->get('/init-purchase', App\Controllers\Mole\MoleController::class . ':initPurchase');
@@ -60,7 +61,6 @@ return static function (Slim\App $app): void {
         $group->get('/billing/balance-history', App\Controllers\Mole\BillingController::class . ':billing');
         $group->get('/billing/cryptomus-network-list', App\Controllers\Mole\BillingController::class . ':getCryptomusNetworkList');
         $group->post('/billing/topup/create', App\Controllers\Mole\BillingController::class . ':createTopUp');
-        $group->get('/billing/topup/return', App\Controllers\Mole\BillingController::class . ':returnTopUp');
         $group->get('/billing/topup/check', App\Controllers\Mole\BillingController::class . ':checkTopUp');
         $group->post('/billing/recurrence/create', App\Controllers\Mole\BillingController::class . ':createRecurrence');
         $group->get('/billing/recurrence/cancel', App\Controllers\Mole\BillingController::class . ':cancelRecurrence');
