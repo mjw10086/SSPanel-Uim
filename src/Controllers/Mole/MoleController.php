@@ -751,7 +751,7 @@ final class MoleController extends BaseController
                 'currency' => 'USD',
                 'order_id' => $pl->tradeno,
                 'url_return' => $_ENV['baseUrl'] . '/init-purchase/check' . "?trade_no=" . $pl->tradeno . "&invoice_id=" . $result . "&counpon_code=" . $coupon_code,
-                'url_callback' => $_ENV['baseUrl'] . '/init-purchase/return' . "?trade_no=" . $pl->tradeno . "&invoice_id=" . $result . "&counpon_code=" . $coupon_code,
+                'url_callback' => $_ENV['baseUrl'] . '/init-purchase/return' . "&invoice_id=" . $result . "&counpon_code=" . $coupon_code,
                 'url_success' => $_ENV['baseUrl'] . '/init-purchase/check' . "?trade_no=" . $pl->tradeno . "&invoice_id=" . $result . "&counpon_code=" . $coupon_code,
                 'is_payment_multiple' => false,
                 'lifetime' => '3600',

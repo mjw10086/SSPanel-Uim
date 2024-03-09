@@ -454,7 +454,7 @@ final class BillingController extends BaseController
                 'currency' => 'USD',
                 'order_id' => $pl->tradeno,
                 'url_return' => $_ENV['baseUrl'] . '/user/billing/topup/check' . "?trade_no=" . $pl->tradeno,
-                'url_callback' => $_ENV['baseUrl'] . '/user/billing/topup/return' . "?trade_no=" . $pl->tradeno,
+                'url_callback' => $_ENV['baseUrl'] . '/user/billing/topup/return',
                 'url_success' => $_ENV['baseUrl'] . '/user/billing/topup/check' . "?trade_no=" . $pl->tradeno,
                 'is_payment_multiple' => false,
                 'lifetime' => '3600',
