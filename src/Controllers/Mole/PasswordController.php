@@ -105,11 +105,6 @@ final class PasswordController extends BaseController
     {
         $token = $this->antiXss->xss_clean($args['token']);
         $password = $request->getParam('password');
-        $repasswd = $request->getParam('repasswd');
-
-        if ($password !== $repasswd) {
-            return ResponseHelper::error($response, '两次输入不符合');
-        }
 
         if (strlen($password) < 8) {
             return ResponseHelper::error($response, '密码过短');
