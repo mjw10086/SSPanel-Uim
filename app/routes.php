@@ -85,8 +85,8 @@ return static function (Slim\App $app): void {
         $group->get('', App\Controllers\Mole\MoleController::class . ':dashboard');
         $group->get('/', App\Controllers\Mole\MoleController::class . ':dashboard');
 
-        $group->get('', App\Controllers\UserController::class . ':index');
-        $group->get('/', App\Controllers\UserController::class . ':index');
+        // $group->get('', App\Controllers\UserController::class . ':index');
+        // $group->get('/', App\Controllers\UserController::class . ':index');
 
         // 签到
         $group->post('/checkin', App\Controllers\UserController::class . ':checkin');
