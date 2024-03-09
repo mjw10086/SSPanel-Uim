@@ -29,7 +29,7 @@ return static function (Slim\App $app): void {
 
     // payment callback url
     $app->post('/user/billing/withdraw/return', App\Controllers\Mole\BillingController::class . ':returnWithdraw');
-    $app->post('/use/billing/recurrence/return', App\Controllers\Mole\BillingController::class . ':returnRecurrence');
+    $app->post('/user/billing/recurrence/return', App\Controllers\Mole\BillingController::class . ':returnRecurrence');
 
     // init purchase
     $app->get('/init-purchase', App\Controllers\Mole\MoleController::class . ':initPurchase');
