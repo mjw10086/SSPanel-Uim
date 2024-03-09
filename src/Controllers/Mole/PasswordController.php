@@ -60,11 +60,11 @@ final class PasswordController extends BaseController
             return ResponseHelper::error($response, '未填写邮箱');
         }
 
-        // if (! RateLimit::checkEmailIpLimit($request->getServerParam('REMOTE_ADDR')) ||
-        //     ! RateLimit::checkEmailAddressLimit($email)
-        // ) {
-        //     return ResponseHelper::error($response, '你的请求过于频繁，请稍后再试');
-        // }
+        if (! RateLimit::checkEmailIpLimit($request->getServerParam('REMOTE_ADDR')) ||
+            ! RateLimit::checkEmailAddressLimit($email)
+        ) {
+            return ResponseHelper::error($response, '你的请求过于频繁，请稍后再试');
+        }
 
         $user = (new User())->where('email', $email)->first();
         $msg = '如果你的账户存在于我们的数据库中，那么重置密码的链接将会发送到你账户所对应的邮箱。';
