@@ -144,7 +144,7 @@
 </div>
 
 
-<div class="modal fade" id="operationResult" aria-hidden="true" aria-labelledby="operationResult" tabindex="-1">
+<div class="modal fade" id="operationResult" aria-hidden="true" aria-labelledby="operationResult" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-2 bg-quinary text-light opacity-100 p-3" id="operationResultRender">
         </div>
