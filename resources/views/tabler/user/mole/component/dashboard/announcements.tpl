@@ -10,7 +10,7 @@
             </p>
             <div class="d-flex mt-4 fs-5">
                 <div class="col-6 pe-2">
-                    <button class="w-100 btn btn-default fw-normal" data-bs-target="#announcementDetailModal"
+                    <button id="announcement_open_btn" class="w-100 btn btn-default fw-normal" data-bs-target="#announcementDetailModal"
                         data-bs-toggle="modal" hx-get="/user/announcement/{$ann.id}" hx-swap="innerHTML"
                         hx-target="#announcementDetail">Open</button>
                 </div>
@@ -36,7 +36,7 @@
                     aria-label="Close"></button>
             </div>
             <div class="modal-body border-0 fs-5 fw-light my-1" id="announcementDetail">
-                
+
             </div>
             <div class="modal-footer border-0">
                 <div class="w-100 d-flex justify-content-between fs-5">
