@@ -55,3 +55,13 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    document.getElementById("announcement_open_btn").addEventListener("click", function(event) {
+        document.getElementById("announcementDetail").innerHTML = ` <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>`;
+    });
+</script>
