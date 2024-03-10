@@ -278,13 +278,15 @@ final class BillingController extends BaseController
         $configs = Config::getClass('billing');
         $cryptomus_merchant_uuid = $configs['cryptomus_merchant_uuid'];
         $cryptomus_payment_key = $configs['cryptomus_payment_key'];
+        $uuid =  Tools::genRandomChar();
 
         $data = [
             "amount" => "1",
             "currency" => "USD",
+            "order_id" =>  $uuid,
             "name" => "Ironlink recurring payment",
             "period" => "monthly",
-            // "url_callback" => "http://echo.connexusy.com"
+            // "url_callback" => "http://echo.connexusy.com",
             'url_callback' => $_ENV['baseUrl'] . '/user/billing/recurrence/return',
         ];
 
@@ -294,12 +296,12 @@ final class BillingController extends BaseController
 
         $recurrence = new Recurrence();
         $recurrence->type = "crypto";
-        $recurrence->uuid = $result["uuid"];
+        $recurrence->uuid = $uuid;
         $recurrence->user_id = $this->user->id;
-        $recurrence->amount = 10;
+        $recurrence->amount = 1;
         $recurrence->status = $result["status"];
         $recurrence->period = $result["period"];
-        $recurrence->create_message = $result["period"];
+        $recurrence->create_message = json_encode($result);
         $recurrence->message = "";
         $recurrence->save();
 
@@ -358,7 +360,7 @@ final class BillingController extends BaseController
         $cryptomus_payment_key = $configs['cryptomus_payment_key'];
 
         // read paramter
-        $uuid = $this->antiXss->xss_clean($request->getParam('uuid'));
+        $uuid = $this->antiXss->xss_clean($request->getParam('order_id'));
         $status = $this->antiXss->xss_clean($request->getParam('status'));
 
         // check request validity
