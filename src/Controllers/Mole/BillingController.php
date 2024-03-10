@@ -33,7 +33,7 @@ final class BillingController extends BaseController
             $billing->content = json_decode($billing->content);
         }
 
-        $balance_history = (new UserMoneyLog())->where('user_id', $this->user->id)->where('type', 'top-up')->orWhere('type', 'withdraw')->orderBy('create_time', 'desc')->get();
+        $balance_history = (new UserMoneyLog())->where('user_id', $this->user->id)->whereIn('type', ['top-up', 'withdraw', 'recurrence'])->orderBy('create_time', 'desc')->get();
 
         $activated_order = (new Order())
             ->where('user_id', $this->user->id)
