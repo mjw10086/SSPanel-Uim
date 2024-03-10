@@ -93,10 +93,12 @@
                                     hx-target="#operationResultRender" data-bs-target="#operationResult"
                                     data-bs-toggle="modal">Confirm</button>
                             </div>
-                            <div class="text-secondary fs-8 fw-light text-gray mt-1">
-                                <i class="bi bi-info-circle-fill me-1"></i>
-                                You dont have enough balance.
-                            </div>
+                            {if $user.money < $data_plan.price}
+                                <div class="text-secondary fs-8 fw-light text-gray mt-1">
+                                    <i class="bi bi-info-circle-fill me-1"></i>
+                                    You dont have enough balance.
+                                </div>
+                            {/if}
                         </div>
                     {/foreach}
                 </div>
