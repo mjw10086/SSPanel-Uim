@@ -326,7 +326,7 @@ final class BillingController extends BaseController
         $cryptomus_payment_key = $configs['cryptomus_payment_key'];
 
         $data = [
-            "uuid" => $recurrenceRecord->uuid,
+            "order_id" => $recurrenceRecord->uuid,
         ];
 
         $result = null;
