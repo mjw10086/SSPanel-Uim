@@ -293,7 +293,7 @@ final class MoleController extends BaseController
                 $this->view()
                     ->assign('status', "Operation Fail")
                     ->assign('message', 'no product selected')
-                    ->fetch('user/mole/component/account/operation-res.tpl')
+                    ->fetch('user/mole/component/plan/operation-res.tpl')
             );
         }
 
@@ -309,7 +309,7 @@ final class MoleController extends BaseController
                 $this->view()
                     ->assign('status', "Operation Fail")
                     ->assign('message', 'no activated plan')
-                    ->fetch('user/mole/component/account/operation-res.tpl')
+                    ->fetch('user/mole/component/plan/operation-res.tpl')
             );
         }
 
@@ -321,7 +321,7 @@ final class MoleController extends BaseController
                 $this->view()
                     ->assign('status', "Operation Fail")
                     ->assign('message', 'no enough balance')
-                    ->fetch('user/mole/component/account/operation-res.tpl')
+                    ->fetch('user/mole/component/plan/operation-res.tpl')
             );
         }
 
@@ -332,7 +332,7 @@ final class MoleController extends BaseController
                 $this->view()
                     ->assign('status', "Operation Fail")
                     ->assign('message', 'error occur when purchase plan')
-                    ->fetch('user/mole/component/account/operation-res.tpl')
+                    ->fetch('user/mole/component/plan/operation-res.tpl')
             );
         }
 
@@ -343,7 +343,7 @@ final class MoleController extends BaseController
                 $this->view()
                     ->assign('status', "Operation Succuss")
                     ->assign('message', 'purchase success')
-                    ->fetch('user/mole/component/account/operation-res.tpl')
+                    ->fetch('user/mole/component/plan/operation-res.tpl')
             );
         }
 
@@ -351,7 +351,7 @@ final class MoleController extends BaseController
             $this->view()
                 ->assign('status', "Operation Fail")
                 ->assign('message', 'System Error, try later')
-                ->fetch('user/mole/component/account/operation-res.tpl')
+                ->fetch('user/mole/component/plan/operation-res.tpl')
         );
     }
 
