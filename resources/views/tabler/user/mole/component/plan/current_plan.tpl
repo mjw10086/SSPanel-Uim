@@ -26,7 +26,7 @@
             </div>
             <div class="col-4 px-4 d-flex flex-column justify-content-end fs-5 gap-4">
                 <div class="d-flex gap-4">
-                    <button class="w-100 btn btn-info py-2" data-bs-target="#additionQuota" data-bs-toggle="modal">
+                    <button id="purchase_addition_quota_btn" class="w-100 btn btn-info py-2" data-bs-target="#additionQuota" data-bs-toggle="modal">
                         <div class="fs-5 fw-bold">Buy Extra Data</div>
                         <div class="fs-6 fw-light">vaild until Feb 1, 2024</div>
                     </button>
@@ -110,9 +110,16 @@
     </div>
 </div>
 
-<div class="modal fade" id="operationResult" aria-hidden="true" aria-labelledby="operationResult" tabindex="-1" data-bs-backdrop="static">
+<div class="modal fade" id="operationResult" aria-hidden="true" aria-labelledby="operationResult" tabindex="-1"
+    data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-2 bg-quinary text-light opacity-100 p-3" id="operationResultRender">
         </div>
     </div>
 </div>
+
+{if $addition_quota}
+    <script>
+        document.getElementById("purchase_addition_quota_btn").click();
+    </script>
+{/if}

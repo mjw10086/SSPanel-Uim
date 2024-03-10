@@ -44,6 +44,10 @@ return static function (Slim\App $app): void {
         // mole
         $group->get('/dashboard', App\Controllers\Mole\MoleController::class . ':dashboard');
         $group->get('/plan', App\Controllers\Mole\MoleController::class . ':plan');
+        $group->get('/plan/addition-quota', App\Controllers\Mole\MoleController::class . ':plan');
+        $group->get('/plan/purchase', App\Controllers\Mole\MoleController::class . ':purchaseOrder');
+        $group->get('/plan/cancel', App\Controllers\Mole\MoleController::class . ':cancelCurrentPlan');
+        $group->get('/plan/purchase-quota', App\Controllers\Mole\MoleController::class . ':purchaseDataQuota');
         $group->get('/devices', App\Controllers\Mole\MoleController::class . ':devices');
         $group->get('/devices/activation', App\Controllers\Mole\MoleController::class . ':devices');
         $group->get('/faq', App\Controllers\Mole\MoleController::class . ':faq');
@@ -74,9 +78,7 @@ return static function (Slim\App $app): void {
         $group->post('/devices/deactivate', App\Controllers\Mole\MoleController::class . ':deactivate');
         $group->delete('/devices/{id:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}', App\Controllers\Mole\MoleController::class . ':remove_device');
 
-        $group->get('/plan/purchase', App\Controllers\Mole\MoleController::class . ':purchaseOrder');
-        $group->get('/plan/cancel', App\Controllers\Mole\MoleController::class . ':cancelCurrentPlan');
-        $group->get('/plan/purchase-quota', App\Controllers\Mole\MoleController::class . ':purchaseDataQuota');
+
 
 
         // for test

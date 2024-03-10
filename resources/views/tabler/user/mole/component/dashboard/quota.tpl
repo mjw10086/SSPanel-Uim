@@ -8,7 +8,7 @@
         <div class="usage_container">
             <div class="circle w-50">
                 <svg id="usage" data-percent="0.8">
-                    <circle id="circle" cx="50%" cy="50%" r="35%" stroke="#00FF00" stroke-width="10"
+<circle id="circle" cx="50%" cy="50%" r="35%" stroke="{if $user.transfer_enable == 0}#202232{else}#00FF00{/if}" stroke-width="10"
                         fill="transparent" />
                 </svg>
                 <div class="text d-flex align-items-end">
@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <button class="btn btn-info fs-5 fw-bold">Get one-time extra data</button>
+        <a class="btn btn-info fs-5 fw-bold" href="/user/plan/addition-quota">Get one-time extra data</a>
     </div>
 </div>
 

@@ -15,6 +15,6 @@
 
 <script>
     function reloadPage() {
-        location.reload();
+        window.location.href = "/user/plan";
     }
 </script>

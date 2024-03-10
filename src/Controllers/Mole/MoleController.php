@@ -96,6 +96,11 @@ final class MoleController extends BaseController
      */
     public function plan(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
+        $addition_quota = false;
+        if(substr_compare($request->getUri()->__toString(), "addition-quota", -strlen("addition-quota")) === 0)
+        {
+            $addition_quota = true;
+        }
         $available_plans = (new Product())
             ->where('status', '1')
             ->where('type', 'tabp')
@@ -115,9 +120,6 @@ final class MoleController extends BaseController
             ->orderBy('id', 'asc')
             ->get();
 
-        foreach ($data_plans as $plan) {
-        }
-
         $userDevices = DeviceService::getUserDeviceList($this->user->id);
         $activated_order = (new Order())
             ->where('user_id', $this->user->id)
@@ -134,6 +136,7 @@ final class MoleController extends BaseController
 
         return $response->write(
             $this->view()
+                ->assign("addition_quota", $addition_quota)
                 ->assign('data', MockData::getData())
                 ->assign('user_devices', $userDevices)
                 ->assign('available_plans', $available_plans)
