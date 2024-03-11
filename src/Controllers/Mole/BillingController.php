@@ -33,7 +33,7 @@ final class BillingController extends BaseController
             $billing->content = json_decode($billing->content);
         }
 
-        $balance_history = (new UserMoneyLog())->where('user_id', $this->user->id)->whereIn('type', ['top-up', 'withdraw', 'recurrence'])->orderBy('create_time', 'desc')->get();
+        $balance_history = (new UserMoneyLog())->where('user_id', $this->user->id)->whereIn('type', ['admin', 'card manual', 'card recurring', 'crypto manual', 'crypto recurring', 'withdraw', 'withdraw failed'])->orderBy('create_time', 'desc')->get();
 
         $activated_order = (new Order())
             ->where('user_id', $this->user->id)
@@ -229,7 +229,7 @@ final class BillingController extends BaseController
                 (float) $user->money + $withdrawRecord->amount,
                 (float) $withdrawRecord->amount,
                 '提款退回 #' . $withdrawRecord->uuid,
-                "withdraw"
+                "withdraw failed"
             );
 
             $user->money = $user->money + $withdrawRecord->amount;
@@ -396,7 +396,7 @@ final class BillingController extends BaseController
                 (float) $user->money + $recurrenceRecord->amount,
                 (float) $recurrenceRecord->amount,
                 '订阅 #' . $recurrenceRecord->uuid,
-                "recurrence"
+                "crypto recurring"
             );
 
             $user->money = $user->money + $recurrenceRecord->amount;
@@ -518,7 +518,7 @@ final class BillingController extends BaseController
                     (float) $user->money + $paylist->total,
                     (float) $paylist->total,
                     '充值 #' . $trade_no,
-                    "top-up"
+                    "crypto manual"
                 );
 
                 $user->money = $user->money + $paylist->total;
@@ -563,7 +563,7 @@ final class BillingController extends BaseController
                     (float) $this->user->money + $paylist->total,
                     (float) $paylist->total,
                     '充值 #' . $trade_no,
-                    "top-up"
+                    "crypto manual"
                 );
 
                 $this->user->money = $this->user->money + $paylist->total;

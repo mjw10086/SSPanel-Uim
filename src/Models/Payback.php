@@ -106,7 +106,7 @@ final class Payback extends Model
                 (float) $gift_user->money,
                 $adjust_rebate ?? $rebate_amount,
                 '邀请用户 #' . $user_id . ' 返利',
-                "referral_bonuses"
+                "referral bonuses"
             );
             // 添加记录
             $this->total = $order_amount;

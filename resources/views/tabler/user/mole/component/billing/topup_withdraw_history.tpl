@@ -7,6 +7,7 @@
         <thead>
             <tr>
                 <th scope="col" class="text-gray">Date</th>
+                <th scope="col" class="text-gray text-end">Type</th>
                 <th scope="col" class="text-gray text-end">Amount</th>
             </tr>
         </thead>
@@ -14,6 +15,7 @@
             {foreach $balance_history as $history}
                 <tr>
                     <th scope="row" class="fw-light">{$history.create_time|date_format:"%b %e, %Y"}</th>
+                    <th scope="row" class="fw-light text-end">{$history.type}</th>
                     <td class="fw-light text-end">{if $history.type eq "withdraw"}-{else}+{/if}${$history.amount}</td>
                 </tr>
             {{/foreach}}

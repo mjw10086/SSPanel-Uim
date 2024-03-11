@@ -197,7 +197,7 @@ final class MoleController extends BaseController
             (float) $this->user->money + $refund_amount,
             (float) $refund_amount,
             '取消计划 #' . $activated_order->id,
-            "cancel_plan"
+            "plan cancel"
         );
 
         $this->user->money = $this->user->money + $refund_amount;
@@ -817,7 +817,7 @@ final class MoleController extends BaseController
                 (float) $this->user->money + $paylist->total,
                 (float) $paylist->total,
                 '充值 #' . $trade_no,
-                "top-up"
+                "crypto manual"
             );
         }
 
@@ -875,7 +875,7 @@ final class MoleController extends BaseController
                     (float) $user->money + $paylist->total,
                     (float) $paylist->total,
                     '充值 #' . $trade_no,
-                    "top-up"
+                    "crypto manual"
                 );
 
                 $user->money = $user->money + $paylist->total;

@@ -74,7 +74,7 @@ final class MoneyController extends BaseController
             (float) $user->money,
             $giftcard->balance,
             '礼品卡充值 ' . $giftcard->card,
-            "gift_card"
+            "gift card"
         );
 
         return $response->withJson([

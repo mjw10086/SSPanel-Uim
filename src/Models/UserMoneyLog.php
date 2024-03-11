@@ -31,7 +31,7 @@ final class UserMoneyLog extends Model
         $this->after = $after;
         $this->amount = $amount;
         $this->remark = $remark;
-        $this->type = $type;    // manually_update, order_payment, gift_card, referral_bonuses, top-up, withdraw
+        $this->type = $type;    // admin, card manual, card recurring, crypto manual, crypto recurring, withdraw, withdraw failed, pay with balance, plan cancel, gift card, referral bonuses
         $this->create_time = time();
         $this->save();
     }
