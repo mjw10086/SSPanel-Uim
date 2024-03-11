@@ -27,31 +27,38 @@
         <span class="fs-8 fw-lighter text-gray">Balance & billing</span>
         <hr class="mt-0" />
         <div class="d-flex flex-column gap-2 fs-6 fw-normal">
-            <span
-                class="{if $current_route == 1}bg-quinary{/if} rounded-2 p-2 d-flex align-items-center justify-content-between gap-4">
-                <a href="/user/billing/one-time-topup" class="nav-link">
-                    <img src="/assets/icons/top-up{if $current_route == 1}-info{/if}.svg" alt="SVG Image" class="me-2">
-                    One Time top-up
+            <span class="{if $current_route == 1}bg-quinary{/if} rounded-2 p-2 ">
+                <a href="/user/billing/one-time-topup"
+                    class="nav-link d-flex align-items-center justify-content-between gap-4">
+                    <div>
+                        <img src="/assets/icons/top-up{if $current_route == 1}-info{/if}.svg" alt="SVG Image"
+                            class="me-2">
+                        One Time top-up
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
                 </a>
-                <i class="bi bi-chevron-right"></i>
             </span>
-            <span
-                class="{if $current_route == 2}bg-quinary{/if} rounded-2 p-2 d-flex align-items-center justify-content-between gap-4">
-                <a href="/user/billing/automatic-topups" class="nav-link">
-                    <img src="/assets/icons/automatic-topup{if $current_route == 2}-info{/if}.svg" alt="SVG Image"
-                        class="me-2">
-                    Set up automatic top-ups
+            <span class="{if $current_route == 2}bg-quinary{/if} rounded-2 p-2">
+                <a href="/user/billing/automatic-topups"
+                    class="nav-link d-flex align-items-center justify-content-between gap-4">
+                    <div>
+                        <img src="/assets/icons/automatic-topup{if $current_route == 2}-info{/if}.svg" alt="SVG Image"
+                            class="me-2">
+                        Set up automatic top-ups
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
                 </a>
-                <i class="bi bi-chevron-right"></i>
             </span>
-            <span
-                class="{if $current_route == 3}bg-quinary{/if} rounded-2 p-2 d-flex align-items-center justify-content-between gap-4">
-                <a href="/user/billing/withdraw" class="nav-link">
-                    <img src="/assets/icons/withdraw{if $current_route == 3}-info{/if}.svg" alt="SVG Image"
-                        class="me-2">
-                    Withdraw balance
+            <span class="{if $current_route == 3}bg-quinary{/if} rounded-2 p-2">
+                <a href="/user/billing/withdraw"
+                    class="nav-link d-flex align-items-center justify-content-between gap-4">
+                    <div>
+                        <img src="/assets/icons/withdraw{if $current_route == 3}-info{/if}.svg" alt="SVG Image"
+                            class="me-2">
+                        Withdraw balance
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
                 </a>
-                <i class="bi bi-chevron-right"></i>
             </span>
         </div>
     </div>
