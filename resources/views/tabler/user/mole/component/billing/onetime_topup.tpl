@@ -11,7 +11,7 @@
                     <span class="input-group-text border-0 m-0 ps-3 pe-0 bg-tertiary text-light fs-6">$</span>
                     <input type="number" id="topup_amount" name="topup_amount"
                         class="bg-tertiary border-0 ps-2 form-control placeholder-gray text-light p-3 fs-6 fw-light"
-                         min="1" value="1" required />
+                         min="1" value="10" required />
                 </div>
 
                 <div class="text-secondary fs-6 fw-light text-gray mt-1">
@@ -27,7 +27,7 @@
                 <div class="d-flex align-items-center justify-content-between p-3">
                     <div>
                         <input class="form-check-input me-3 border-3 border-white bg-darkblue" type="radio"
-                            name="paymentSelect" id="paywithcard" value="card" required>
+                            name="paymentSelect" id="paywithcard" value="card" required disabled>
                         <label class="form-check-label fw-lighter fs-6" for="paywithcard">
                             Pay with credit or debit card
                         </label>
