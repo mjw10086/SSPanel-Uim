@@ -30,7 +30,7 @@
                 </div>
                 <div class="card m-2 text-light border-light" style="background-color: transparent;">
                     <div class="d-flex align-items-center justify-content-center gap-2 px-2 py-1">
-                        <img src="/assets/icons/apple.svg" style="width: 25px;">
+                        <img src="/assets/icons/apple.svg" style="width: 15px; margin: 3px;">
                         <div>Log In With Apple</div>
                     </div>
                 </div>

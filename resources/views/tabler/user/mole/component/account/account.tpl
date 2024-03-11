@@ -7,7 +7,7 @@
                     <div class="container d-flex flex-column">
                         <div class="d-flex justify-content-between fs-6 fw-light text-gray m-0">
                             <div>
-                                <img src="/assets/icons/apple.svg" />
+                                <img src="/assets/icons/apple.svg"  style="margin: 10px; margin-bottom: 12px"/>
                                 <span class="align-middle">Sign in with Apple</span>
                             </div>
                             <div class="d-flex align-items-center gap-2">

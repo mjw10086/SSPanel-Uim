@@ -18,12 +18,13 @@
     <form class="container d-flex pb-5 pt-4" action="/init-purchase/create" method="post">
         <div class="col-7 px-4">
             <div class="card rounded-4 bg-quinary p-5 py-4 text-light">
-                <input hidden name="product_id" value="1"/>
+                <input hidden name="product_id" value="1" />
                 <div class="text-primary fs-4">Step 1</div>
                 <div class="fs-2">Enter the email for your account</div>
                 <div class="mt-4">
                     <label class="form-label fs-7 text-gray fw-light">Your Email</label>
-                    <input name="email" class="form-control bg-quinary text-light py-3" type="email" placeholder="Email address" />
+                    <input name="email" class="form-control bg-quinary text-light py-3" type="email"
+                        placeholder="Email address" />
                 </div>
                 <div class="mb-3 mt-4 w-100 d-flex justify-content-center align-items-center">
                     <span class="line" style="width: calc(50% - 70px);"></span>
@@ -45,7 +46,7 @@
                     </div>
                     <div class="card m-2 text-light border-light" style="background-color: transparent;">
                         <div class="d-flex align-items-center justify-content-center gap-2 px-2 py-1">
-                            <img src="/assets/icons/apple.svg" style="width: 35px;">
+                            <img src="/assets/icons/apple.svg" style="width: 18px; margin: 6px;">
                             <div>Log In With Apple</div>
                         </div>
                     </div>
@@ -114,7 +115,8 @@
                 <div id="coupon_input" class="mt-3" hidden>
                     <div class="fs-7 fw-light text-gray mb-2">Enter Your Coupon Code</div>
                     <div class="d-flex gap-3">
-                        <input id="coupon_code" class="form-control bg-quaternary text-light" type="text" name="coupon_code"/>
+                        <input id="coupon_code" class="form-control bg-quaternary text-light" type="text"
+                            name="coupon_code" />
                         <button type="button" class="btn btn-info" hx-post="/user/coupon" hx-swap="none"
                             hx-vals='js:{ coupon: document.getElementById("coupon_code").value, product_id: 1 }'>Apply</button>
                     </div>
