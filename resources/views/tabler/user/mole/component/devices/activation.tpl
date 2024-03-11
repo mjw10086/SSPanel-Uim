@@ -95,13 +95,6 @@
                 <button id="copy" class="input-group-text fs-7 fw-light bg-quaternary border-0 text-light"
                     data-clipboard-target="#activate_code">copy<i class="bi bi-copy ms-1"></i></button>
             </div>
-            <div class="text-gray fw-light fs-6 mt-1 d-flex justify-content-between fw-light text-gray">
-                <div>
-                    <i class="bi bi-info-circle-fill me-2"></i>
-                    <span>Code valid for 30 minutes</span>
-                </div>
-                <span class="text-warning fw-normal" id="code_valid_time"></span>
-            </div>
         </div>
     </div>
     <div class="mb-4">
@@ -144,16 +137,4 @@
 
     var devices_and_app_panel = document.getElementById('devices_and_app_panel');
     devices_and_app_panel.classList.remove('h-100');
-
-    var code_valid_time = document.getElementById('code_valid_time');
-    var remain_time = {$activateCode.remain_time};
-    var timer = setInterval(function() {
-        var minutes = Math.floor(remain_time / 60);
-        var seconds = remain_time % 60;
-        var formattedMinutes = (minutes < 10 ? '0' : '') + minutes;
-        var formattedSeconds = (seconds < 10 ? '0' : '') + seconds;
-        var formatted_remain_time = formattedMinutes + ':' + formattedSeconds;
-        code_valid_time.innerHTML = formatted_remain_time;
-        remain_time -= 1;
-    }, 1000);
 </script>

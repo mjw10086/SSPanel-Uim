@@ -108,7 +108,7 @@ final class DeviceService
   {
     // remain_time -> second
     // status -> Inactive, Activated, Expired
-    return ["code" => "dsahdjsahdashklsh", "remain_time" => 60 * 30, "status" => "Inactive"];
+    return ["code" => "dsahdjsahdashklsh", "status" => "Inactive"];
   }
 
 
