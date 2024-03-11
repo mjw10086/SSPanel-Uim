@@ -27,7 +27,7 @@
                 <div class="d-flex align-items-center justify-content-between p-3">
                     <div>
                         <input class="form-check-input me-3 border-3 border-white bg-darkblue" type="radio"
-                            name="paymentSelect" value="card" required>
+                            name="paymentSelect" value="card" required disabled>
                         <label class="form-check-label fw-lighter fs-6" for="flexRadioDefault1">
                             Pay with credit or debit card
                         </label>
