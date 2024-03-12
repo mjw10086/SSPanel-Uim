@@ -46,12 +46,14 @@
             <div class="modal-footer border-0">
                 <div class="w-100 d-flex justify-content-between fs-5">
                     <div class="col-6 pe-2">
-                        <button class="w-100 btn btn-outline-info fw-normal">
+                        <button class="w-100 btn btn-outline-info fw-normal" id="dismiss_btn" data-bs-dismiss="modal"
+                            aria-label="Close">
                             Dismiss
                         </button>
                     </div>
                     <div class="col-6 ps-2">
-                        <button class="w-100 btn btn-default fw-normal">
+                        <button class="w-100 btn btn-default fw-normal" id="mark_unread_btn" data-bs-dismiss="modal"
+                            aria-label="Close">
                             Mark unread
                         </button>
                     </div>
@@ -63,7 +65,7 @@
 
 <script type="text/javascript">
     var announcementDetailModal = document.getElementById("announcementDetailModal");
-    announcementDetailModal.addEventListener('hide.bs.modal', () => {
+    announcementDetailModal.addEventListener('show.bs.modal', () => {
         document.getElementById("announcementDetail").innerHTML = ` <div class="d-flex justify-content-center">
         <div class="spinner-border" role="status">
             <span class="visually-hidden">Loading...</span>
