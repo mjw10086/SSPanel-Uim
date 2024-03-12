@@ -41,7 +41,7 @@ final class MoleController extends BaseController
      */
     public function sometrigger(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
-        $res = DeviceService::addDeviceToUser($this->user->id);
+        $res = DeviceService::addDeviceToUser($this->user);
         return $response->write(json_encode($res));
     }
 
@@ -52,7 +52,7 @@ final class MoleController extends BaseController
     {
         $anns = (new Ann())->orderBy('date', 'desc')->get();
 
-        $userDevices = DeviceService::getUserDeviceList($this->user->id);
+        $userDevices = DeviceService::getUserDeviceList($this->user);
         $activated_order = (new Order())
             ->where('user_id', $this->user->id)
             ->where('status', 'activated')
@@ -120,7 +120,7 @@ final class MoleController extends BaseController
             ->orderBy('id', 'asc')
             ->get();
 
-        $userDevices = DeviceService::getUserDeviceList($this->user->id);
+        $userDevices = DeviceService::getUserDeviceList($this->user);
         $activated_order = (new Order())
             ->where('user_id', $this->user->id)
             ->where('status', 'activated')
@@ -363,7 +363,7 @@ final class MoleController extends BaseController
      */
     public function devices(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
-        $userDevices = DeviceService::getUserDeviceList($this->user->id);
+        $userDevices = DeviceService::getUserDeviceList($this->user);
 
         return $response->write(
             $this->view()
@@ -380,7 +380,7 @@ final class MoleController extends BaseController
     {
         if (isset($_POST['id'])) {
             $device_id = $_POST['id'];
-            $result = DeviceService::activateUserDevice($this->user->id, $device_id);
+            $result = DeviceService::activateUserDevice($this->user, $device_id);
             return $response->write(
                 $this->view()
                     ->assign('user_devices', $result)
@@ -389,7 +389,7 @@ final class MoleController extends BaseController
         }
         return $response->write(
             $this->view()
-                ->assign('user_devices', DeviceService::getUserDeviceList($this->user->id))
+                ->assign('user_devices', DeviceService::getUserDeviceList($this->user))
                 ->fetch('user/mole/component/devices/devices_list.tpl')
         );
     }
@@ -401,7 +401,7 @@ final class MoleController extends BaseController
     {
         if (isset($_POST['id'])) {
             $device_id = $_POST['id'];
-            $result = DeviceService::deactivatedUserDevice($this->user->id, $device_id);
+            $result = DeviceService::deactivatedUserDevice($this->user, $device_id);
             return $response->write(
                 $this->view()
                     ->assign('user_devices', $result)
@@ -410,7 +410,7 @@ final class MoleController extends BaseController
         }
         return $response->write(
             $this->view()
-                ->assign('user_devices', DeviceService::getUserDeviceList($this->user->id))
+                ->assign('user_devices', DeviceService::getUserDeviceList($this->user))
                 ->fetch('user/mole/component/devices/devices_list.tpl')
         );
     }
@@ -421,7 +421,7 @@ final class MoleController extends BaseController
     public function remove_device(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
         $device_id = $args['id'];
-        $result = DeviceService::removeDeviceFromUser($this->user->id, $device_id);
+        $result = DeviceService::removeDeviceFromUser($this->user, $device_id);
         return $response->write(
             $this->view()
                 ->assign('user_devices', $result)

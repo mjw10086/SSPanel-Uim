@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use App\Models\User;
 
 use Ramsey\Uuid\Uuid;
 
@@ -15,8 +16,10 @@ final class DeviceService
     fclose($handle);
   }
 
-  public static function getUserDeviceList($userid): array
+  public static function getUserDeviceList($user): array
   {
+    $limited_count = $user->node_iplimit;
+    
     $handle = fopen("/var/www/devices.json", "r");
     $content = "";
     while (!feof($handle)) {
@@ -26,12 +29,16 @@ final class DeviceService
       }
     }
     fclose($handle);
-    return json_decode($content, true);
+
+    $result = json_decode($content, true);
+    $result["limited_count"] = $limited_count;
+
+    return $result;
   }
 
-  public static function addDeviceToUser($userid): array
+  public static function addDeviceToUser(User $user): array
   {
-    $userDevices = DeviceService::getUserDeviceList($userid);
+    $userDevices = DeviceService::getUserDeviceList($user);
     $length = 10; // 生成的字符串长度
     $random_bytes = random_bytes($length);
     $random_string = bin2hex($random_bytes);
@@ -54,9 +61,9 @@ final class DeviceService
   }
 
 
-  public static function removeDeviceFromUser($userid, $deviceid): array
+  public static function removeDeviceFromUser(User $user, $deviceid): array
   {
-    $userDevices = DeviceService::getUserDeviceList($userid);
+    $userDevices = DeviceService::getUserDeviceList($user);
     foreach ($userDevices["devices"] as $index => $device) {
       if ($device["id"] === $deviceid) {
         unset($userDevices["devices"][$index]);
@@ -69,9 +76,9 @@ final class DeviceService
     return $userDevices;
   }
 
-  public static function activateUserDevice($userid, $deviceid): array
+  public static function activateUserDevice(User $user, $deviceid): array
   {
-    $userDevices = DeviceService::getUserDeviceList($userid);
+    $userDevices = DeviceService::getUserDeviceList($user);
     if($userDevices["activated_count"] >= $userDevices["limited_count"]){
       return $userDevices;
     }
@@ -88,9 +95,9 @@ final class DeviceService
     return $userDevices;
   }
 
-  public static function deactivatedUserDevice($userid, $deviceid): array
+  public static function deactivatedUserDevice(User $user, $deviceid): array
   {
-    $userDevices = DeviceService::getUserDeviceList($userid);
+    $userDevices = DeviceService::getUserDeviceList($user);
     foreach ($userDevices["devices"] as $index => $device) {
       if ($device["id"] === $deviceid) {
         if ($device["status"] === "activated") {
@@ -109,41 +116,5 @@ final class DeviceService
     // remain_time -> second
     // status -> Inactive, Activated, Expired
     return ["code" => "dsahdjsahdashklsh", "status" => "Inactive"];
-  }
-
-
-  private static function fetchDataFromRemoteApi(): string
-  {
-    return '{
-            "devices": [
-              {
-                "id": 1,
-                "name": "iPhone 12 Pro",
-                "status": "activated"
-              },
-              {
-                "id": 2,
-                "name": "Macbook Air M2",
-                "status": "deactivated"
-              },
-              {
-                "id": 3,
-                "name": "Samsung Galaxy A1",
-                "status": "deactivated"
-              },
-              {
-                "id": 4,
-                "name": "Samsung Galaxy A1",
-                "status": "activated"
-              },
-              {
-                "id": 5,
-                "name": "Samsung Galaxy A1",
-                "status": "activated"
-              }
-            ],
-            "activated_count": 3,
-            "limited_count": 5
-          }';
   }
 }
