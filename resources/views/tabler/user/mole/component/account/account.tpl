@@ -7,7 +7,7 @@
                     <div class="container d-flex flex-column">
                         <div class="d-flex justify-content-between fs-6 fw-light text-gray m-0">
                             <div>
-                                <img src="/assets/icons/apple.svg"  style="margin: 10px; margin-bottom: 12px"/>
+                                <img src="/assets/icons/apple.svg" style="margin: 10px; margin-bottom: 12px" />
                                 <span class="align-middle">Sign in with Apple</span>
                             </div>
                             <div class="d-flex align-items-center gap-2">
@@ -121,8 +121,13 @@
                                 </button>
                             </div>
                             <div class="d-flex justify-content-between gap-4">
-                                <input type="password" id="new-passwd"
-                                    class="form-control bg-tertiary border-0 fs-6 fw-light text-light"  />
+                                <div class="input-group">
+                                    <input type="password" id="new-passwd"
+                                        class="form-control bg-tertiary border-0 fs-6 fw-light text-light" />
+                                    <span id="togglePasswordVisible_btn"
+                                        class="input-group-text bg-tertiary text-light border-0" id="basic-addon1"><i
+                                            class="bi bi-eye"></i></span>
+                                </div>
                                 <button class="btn btn-default fs-6 fw-normal" style="width: 270px;"
                                     hx-post="/user/account/password" hx-swap="innerHTML"
                                     hx-target="#operationResultRender" hx-vals='js:{
@@ -143,8 +148,23 @@
     </div>
 </div>
 
+<script>
+    var togglePasswordVisible_btn = document.getElementById("togglePasswordVisible_btn");
+    togglePasswordVisible_btn.addEventListener('click', function(event) {
+        var passwdInput = document.getElementById("new-passwd");
+        if (passwdInput.type == "text") {
+            passwdInput.type = "password";
+            togglePasswordVisible_btn.innerHTML = '<i class="bi bi-eye"></i>';
+        } else {
+            passwdInput.type = "text";
+            togglePasswordVisible_btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
+        }
+    });
+</script>
 
-<div class="modal fade" id="operationResult" aria-hidden="true" aria-labelledby="operationResult" tabindex="-1" data-bs-backdrop="static">
+
+<div class="modal fade" id="operationResult" aria-hidden="true" aria-labelledby="operationResult" tabindex="-1"
+    data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-2 bg-quinary text-light opacity-100 p-3" id="operationResultRender">
         </div>

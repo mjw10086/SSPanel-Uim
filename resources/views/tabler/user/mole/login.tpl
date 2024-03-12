@@ -49,8 +49,13 @@
                 </div>
                 <div class="col-9">
                     <label for="passwd" class="form-label">Password</label>
-                    <input type="password" class="form-control text-light" id="passwd" name="passwd" placeholder=""
-                        style="background-color: transparent;" autocomplete="on" required>
+                    <div class="input-group border border-1 rounded">
+                        <input id="password_input" type="password" class="form-control text-light border-0" id="passwd"
+                            name="passwd" placeholder="" style="background-color: transparent;" autocomplete="on"
+                            required>
+                        <span id="togglePasswordVisible_btn" class="input-group-text bg-quaternary text-light border-0"
+                            id="basic-addon1"><i class="bi bi-eye"></i></span>
+                    </div>
                     <a class="form-text text-end text-light" style="float: right;" href="/password/reset">Forget
                         password</a>
                 </div>
@@ -83,6 +88,18 @@
             </div>
         </div>`;
             myModal.show();
+        });
+
+        var togglePasswordVisible_btn = document.getElementById("togglePasswordVisible_btn");
+        togglePasswordVisible_btn.addEventListener('click', function(event) {
+            var passwdInput = document.getElementById("password_input");
+            if (passwdInput.type == "text") {
+                passwdInput.type = "password";
+                togglePasswordVisible_btn.innerHTML = '<i class="bi bi-eye"></i>';
+            } else {
+                passwdInput.type = "text";
+                togglePasswordVisible_btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
+            }
         });
     </script>
 </body>
