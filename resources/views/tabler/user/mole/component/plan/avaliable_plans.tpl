@@ -30,7 +30,11 @@
                     <button class="w-100 btn btn-info mt-3 fs-5 fw-normal" data-bs-target="#switchPlanConfirm"
                         data-bs-toggle="modal" data-bs-planid="{$plan.id}"
                         {if $activated_order !== null && $plan.id eq $activated_order.product_id} disabled {/if}>
-                        Switch to this plan
+                        {if $activated_order !== null && $plan.id eq $activated_order.product_id}
+                            Current plan
+                        {else}
+                            Switch to this plan
+                        {/if}
                     </button>
                 </div>
             </div>
