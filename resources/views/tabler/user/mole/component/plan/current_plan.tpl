@@ -3,30 +3,34 @@
         <div class="fs-4 fw-bold mb-2">Current plan</div>
         <div class="d-flex justify-content-between align-items-end">
             <div class="col-7 fw-normal fs-5 text-light">
-                <div class="d-flex justify-content-between my-2">
+                <div class="d-flex justify-content-between my-3">
                     <span class="fw-light">{$activated_order.product_name}</span>
                     <span>${$activated_order.price}/Month</span>
                 </div>
-                <div class="d-flex justify-content-between my-2">
+                <div class="d-flex justify-content-between my-3">
                     <span class="fw-light">Next payment</span>
                     <span>{$next_payment_date|date_format:"%b %e, %Y"}</span>
                 </div>
-                <div class="d-flex justify-content-between my-2">
+                <div class="d-flex justify-content-between my-3">
                     <span class="fw-light">Active devices</span>
                     <span>{$user_devices.activated_count}/{$user_devices.limited_count} device</span>
                 </div>
-                <div class="d-flex justify-content-between my-2">
-                    <span class="fw-light">Remaining data this month</span>
+                <div class="d-flex justify-content-between my-3">
+                    <span class="fw-light d-flex gap-2 align-items-center">
+                        <span>Remaining data this month</span> 
+                        <img src="/assets/icons/graph.svg" />
+                    </span>
                     <span>{$data_usage/1024/1024/1024}GB/{$user.transfer_enable/1024/1024/1024}GB</span>
                 </div>
-                <div class="d-flex justify-content-between my-2">
+                <div class="d-flex justify-content-between my-3">
                     <span class="fw-light">Member since</span>
                     <span>{$member_since|date_format:"%b %e, %Y"}</span>
                 </div>
             </div>
             <div class="col-4 px-4 d-flex flex-column justify-content-end fs-5 gap-4">
                 <div class="d-flex gap-4">
-                    <button id="purchase_addition_quota_btn" class="w-100 btn btn-info py-2" data-bs-target="#additionQuota" data-bs-toggle="modal">
+                    <button id="purchase_addition_quota_btn" class="w-100 btn btn-info py-2" data-bs-target="#additionQuota"
+                        data-bs-toggle="modal">
                         <div class="fs-5 fw-bold">Buy Extra Data</div>
                         <div class="fs-6 fw-light">vaild until Feb 1, 2024</div>
                     </button>

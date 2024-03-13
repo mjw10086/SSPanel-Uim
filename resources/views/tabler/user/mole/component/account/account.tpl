@@ -29,8 +29,8 @@
                             </div>
                             <button
                                 class="btn btn-outline-info d-flex align-items-center justify-content-center py-0 pe-3 px-2">
-                                <img src="/assets/icons/apple-info.svg" style="height: 36px;" />
-                                <span class="fs-7 fw-normal">Log in with Apple</span>
+                                <img src="/assets/icons/apple-info.svg" style="height: 23px; margin:0 10px;" />
+                                <span class="fs-7 fw-normal" style="width: 130px;">Log in with Apple</span>
                             </button>
                         </div>
                     </div>
@@ -40,7 +40,7 @@
                         <div class="d-flex justify-content-between fs-6 fw-light text-gray m-0">
                             <div>
                                 <img src="/assets/icons/google.svg" />
-                                <span class="align-middle">Sign in with Apple</span>
+                                <span class="align-middle">Sign in with Google</span>
                             </div>
                             <div class="d-flex align-items-center gap-2">
                                 {if $data.account_info.OAuth.google.activated}
@@ -62,7 +62,7 @@
                             <button
                                 class="btn btn-outline-info d-flex align-items-center justify-content-center py-0 pe-3 px-2">
                                 <img src="/assets/icons/google.svg" style="height: 36px;" />
-                                <span class="fs-7 fw-normal">Log in with Apple</span>
+                                <span class="fs-7 fw-normal" style="width: 130px;">Log in with Google</span>
                             </button>
                         </div>
                     </div>
@@ -72,7 +72,7 @@
                         <div class="d-flex justify-content-between fs-6 fw-light text-gray m-0">
                             <div>
                                 <img src="/assets/icons/telegram.svg" />
-                                <span class="align-middle">Sign in with Apple</span>
+                                <span class="align-middle">Sign in with Telegram</span>
                             </div>
                             <div class="d-flex align-items-center gap-2">
                                 {if $data.account_info.OAuth.telegram.activated}
@@ -90,7 +90,7 @@
                             <button
                                 class="btn btn-outline-info d-flex align-items-center justify-content-center py-0 pe-3 px-2">
                                 <img src="/assets/icons/telegram.svg" style="height: 36px;" />
-                                <span class="fs-7 fw-normal">Log in with Apple</span>
+                                <span class="fs-7 fw-normal" style="width: 130px;">Log in with Telegram</span>
                             </button>
                         </div>
                     </div>
