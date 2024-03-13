@@ -33,7 +33,7 @@ return static function (Slim\App $app): void {
     $app->post('/user/billing/topup/return', App\Controllers\Mole\BillingController::class . ':returnTopUp');
 
     // init purchase
-    $app->get('/init-purchase', App\Controllers\Mole\MoleController::class . ':initPurchase');
+    $app->get('/init-purchase/{id:[0-9]+}', App\Controllers\Mole\MoleController::class . ':initPurchase');
     $app->post('/init-purchase/create', App\Controllers\Mole\MoleController::class . ':createInitPurchase');
     $app->get('/init-purchase/return', App\Controllers\Mole\MoleController::class . ':returnInitPurchase');
     $app->get('/init-purchase/check', App\Controllers\Mole\MoleController::class . ':checkInitPurchase');

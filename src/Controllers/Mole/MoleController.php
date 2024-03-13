@@ -629,8 +629,22 @@ final class MoleController extends BaseController
      */
     public function initPurchase(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
+        $product_id = $args['id'] ?? null;
+        if ($product_id === null) {
+            return $response->withStatus(404)->write($this->view()->fetch('404.tpl'));
+        }
+
+        $product = (new Product())->where("id", $product_id)->first();
+        if ($product === null) {
+            return $response->withStatus(404)->write($this->view()->fetch('404.tpl'));
+        }
+        $product->content = json_decode($product->content, true);
+        $next_pay = strtotime('+30 days', time());
+
         return $response->write(
             $this->view()
+                ->assign("product", $product)
+                ->assign("next_pay", $next_pay)
                 ->fetch('user/mole/init-purchase.tpl')
         );
     }
@@ -753,9 +767,9 @@ final class MoleController extends BaseController
                 'amount' => (string) $pay_amount,
                 'currency' => 'USD',
                 'order_id' => $pl->tradeno,
-                'url_return' => $_ENV['baseUrl'] . '/init-purchase/check' . "?trade_no=" . $pl->tradeno . "&invoice_id=" . $result . "&counpon_code=" . $coupon_code,
-                'url_callback' => $_ENV['baseUrl'] . '/init-purchase/return' . "&invoice_id=" . $result . "&counpon_code=" . $coupon_code,
-                'url_success' => $_ENV['baseUrl'] . '/init-purchase/check' . "?trade_no=" . $pl->tradeno . "&invoice_id=" . $result . "&counpon_code=" . $coupon_code,
+                'url_return' => $_ENV['baseUrl'] . '/init-purchase/' . $product_id,
+                'url_callback' => $_ENV['baseUrl'] . '/init-purchase/return' . "&invoice_id=" . $result,
+                'url_success' => $_ENV['baseUrl'] . '/init-purchase/check' . "?trade_no=" . $pl->tradeno . "&invoice_id=" . $result,
                 'is_payment_multiple' => false,
                 'lifetime' => '3600',
             ];
@@ -783,7 +797,6 @@ final class MoleController extends BaseController
         // ----------------
         // get parameter
         $trade_no = $this->antiXss->xss_clean($request->getParam('trade_no'));
-        $coupon_code = $this->antiXss->xss_clean($request->getParam('coupon_code'));
         $invoice_id = $this->antiXss->xss_clean($request->getParam('invoice_id'));
 
         // ----------------
@@ -920,7 +933,7 @@ final class MoleController extends BaseController
         $coupon_use_limit = $coupon_limit->use_time;
 
         if ($coupon_use_limit > 0) {
-            $user_use_count = (new Order())->where('user_id', $this->user->id)->where('coupon', $coupon->code)->count();
+            $user_use_count = (new Order())->where('user_id', $this->user->id)->whereIn('status', ['activated', 'expired', 'cancelled'])->where('coupon', $coupon->code)->count();
             if ($user_use_count >= $coupon_use_limit) {
                 return false;
             }
