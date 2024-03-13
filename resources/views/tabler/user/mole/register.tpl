@@ -15,8 +15,8 @@
                 <span class="underline-text px-3 fs-6 fw-light">Register an account via email</span>
                 <span class="line" style="width: 24%;"></span>
             </div>
-            <form class="w-100 d-flex flex-column justify-content-center align-items-center gap-3 mb-3"
-                hx-post="/auth/register" hx-swap="none">
+            <form id="register-form" class="w-100 d-flex flex-column justify-content-center align-items-center gap-3 mb-3"
+                hx-post="/auth/register" hx-swap="innerHTML" hx-target="#operationResultRender">
                 <div class="col-9">
                     <label for="email" class="form-label">Your Email</label>
                     <input type="email" class="form-control text-light" id="email" name="email"
@@ -49,6 +49,13 @@
             </form>
         </div>
     </div>
+
+    <div class="modal fade" id="operationResult" aria-hidden="true" aria-labelledby="operationResult" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-2 bg-quinary text-light opacity-100 p-3" id="operationResultRender">
+            </div>
+        </div>
+    </div>
 </body>
 
 <script>
@@ -62,6 +69,17 @@
             passwdInput.type = "text";
             togglePasswordVisible_btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
         }
+    });
+
+    document.getElementById("register-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+        var myModal = new bootstrap.Modal(document.getElementById('operationResult'));
+        document.getElementById("operationResultRender").innerHTML = ` <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>`;
+        myModal.show();
     });
 </script>
 

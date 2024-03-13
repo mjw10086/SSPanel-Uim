@@ -295,11 +295,21 @@ final class AuthController extends BaseController
     public function registerHandle(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
         if (Config::obtain('reg_mode') === 'close') {
-            return ResponseHelper::error($response, '未开放注册。');
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Registration Not Open")
+                    ->assign('message', "Registration is currently not open")
+                    ->fetch("user/mole/operation-res.tpl")
+            );
         }
 
         if (Config::obtain('enable_reg_captcha') && !Captcha::verify($request->getParams())) {
-            return ResponseHelper::error($response, '系统无法接受你的验证结果，请刷新页面后重试。');
+            return $response->write(
+                $this->view()
+                    ->assign('status', "System Unable to Accept Your Verification Result")
+                    ->assign('message', "The system is unable to accept your verification result. Please refresh the page and try again.")
+                    ->fetch("user/mole/operation-res.tpl")
+            );
         }
 
         $email = strtolower(trim($this->antiXss->xss_clean($request->getParam('email'))));
@@ -319,11 +329,21 @@ final class AuthController extends BaseController
         $user = (new User())->where('email', $email)->first();
 
         if ($user !== null) {
-            return ResponseHelper::error($response, '邮箱已经被注册了');
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Email Already Registered")
+                    ->assign('message', "The email has already been registered.")
+                    ->fetch("user/mole/operation-res.tpl")
+            );
         }
         // check pwd length
         if (strlen($passwd) < 8) {
-            return ResponseHelper::error($response, '密码请大于8位');
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Password Must Be Greater Than 8 Characters")
+                    ->assign('message', "Please enter a password greater than 8 characters.")
+                    ->fetch("user/mole/operation-res.tpl")
+            );
         }
 
         return $this->registerHelper($response, $name, $email, $passwd, $imtype, $imvalue, 0, 0);
