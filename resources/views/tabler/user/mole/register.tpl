@@ -16,10 +16,7 @@
                 <span class="line" style="width: 24%;"></span>
             </div>
             <form class="w-100 d-flex flex-column justify-content-center align-items-center gap-3 mb-3"
-                hx-post="/auth/register" hx-swap="none" hx-vals='js:{
-                    email: document.getElementById("email").value,
-                    passwd: document.getElementById("passwd").value
-                 }'>
+                hx-post="/auth/register" hx-swap="none">
                 <div class="col-9">
                     <label for="email" class="form-label">Your Email</label>
                     <input type="email" class="form-control text-light" id="email" name="email"
@@ -48,7 +45,6 @@
                         Sign Up
                     </button>
                 </div>
-
                 <a class="text-light" href="/auth/login">Already have an account? Click here to log in</a>
             </form>
         </div>
