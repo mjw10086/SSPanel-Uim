@@ -48,6 +48,8 @@
                         Sign Up
                     </button>
                 </div>
+
+                <a class="text-light" href="/auth/login">Already have an account? Click here to log in</a>
             </form>
         </div>
     </div>
