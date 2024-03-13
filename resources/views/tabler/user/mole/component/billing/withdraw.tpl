@@ -14,7 +14,7 @@
                     <span class="input-group-text border-0 m-0 ps-3 pe-0 bg-tertiary text-light fs-6">$</span>
                     <input type="number" id="amount" name="amount"
                         class="bg-tertiary border-0 ps-2 form-control placeholder-gray text-light p-3 fs-6 fw-light"
-                        min="1" value="1" step="0.01" required />
+                        min="1" value="10" step="0.01" required />
                 </div>
             </div>
         </div>

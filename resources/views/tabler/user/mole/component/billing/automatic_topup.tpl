@@ -8,24 +8,24 @@
     </div>
     <form class="p-4 col-10" action="/user/billing/recurrence/create" method="post">
         {if $current_recurrence !== null}
-            <label class="fs-3 fw-bold">Current Payment Method</label>
-            <div class="form-check bg-quinary rounded-2 mt-3">
-                <div class="d-flex align-items-center justify-content-between p-3 ps-2">
-                    <div>
-                        <label class="form-check-label fw-lighter fs-6" for="flexRadioDefault1">
-                            Cryptomus
-                        </label>
-                    </div>
-                    <a class="text-danger nav-link" data-bs-target="#cancelRecurrenceEnsure"
-                        data-bs-toggle="modal">remove</a>
+        <label class="fs-3 fw-bold">Current Payment Method</label>
+        <div class="form-check bg-quinary rounded-2 mt-3">
+            <div class="d-flex align-items-center justify-content-between p-3 ps-2">
+                <div>
+                    <label class="form-check-label fw-lighter fs-6" for="flexRadioDefault1">
+                        Cryptomus
+                    </label>
                 </div>
+                <a class="text-danger nav-link" data-bs-target="#cancelRecurrenceEnsure"
+                    data-bs-toggle="modal">remove</a>
             </div>
+        </div>
         {/if}
         <div class="my-4">
             <label class="fs-3 fw-bold">Select payment method</label>
             <div class="form-check bg-quinary rounded-2 mt-3">
                 <div class="d-flex align-items-center justify-content-between p-3">
-                    <div>
+                    <div class="ms-1">
                         <input class="form-check-input me-3 border-3 border-white bg-darkblue" type="radio"
                             name="paymentSelect" value="card" required disabled>
                         <label class="form-check-label fw-lighter fs-6" for="flexRadioDefault1">
@@ -37,14 +37,21 @@
             </div>
             <div class="form-check bg-quinary rounded-2 mt-3">
                 <div class="d-flex align-items-center justify-content-between p-3">
-                    <div>
-                        <input class="form-check-input me-3 border-3 border-white bg-darkblue" type="radio"
-                            name="paymentSelect" value="crypto" required>
+                    <div class="ms-1">
+                        <input id="crypto_select_input" class="form-check-input me-3 border-3 border-white bg-darkblue"
+                            type="radio" name="paymentSelect" value="crypto" required>
                         <label class="form-check-label fw-lighter fs-6" for="flexRadioDefault1">
                             Any other crypto via your network of choice
                         </label>
                     </div>
                     <img src="/assets/icons/crypto.svg" style="height: 23px;">
+                </div>
+                <div id="crypto_info" class="text-secondary fs-6 fw-light mt-1 d-flex pb-3 visually-hidden">
+                    <i class="bi bi-info-circle-fill me-3 text-info"></i>
+                    <div>
+                        Automatic crypto top-ups require a Crypto-mus account. It’s a Canadian service which welcomes
+                        Iranians. <a class="text-info" href="#">Here is a guide on how to set it up</a>.
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,3 +90,14 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById("crypto_select_input").addEventListener('change', function() {
+        var crypto_info = document.getElementById("crypto_info");
+        if (this.checked) {
+            crypto_info.classList.remove("visually-hidden")
+        } else {
+            crypto_info.classList.add("visually-hidden")
+        }
+    })
+</script>
