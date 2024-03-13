@@ -46,9 +46,9 @@ final class MockData
         $account_info = [
             "user_id" => "a24990d1-9254-455f-a26d-f776e8d86536",
             "OAuth" => [
-                "google" => ["activated" => false],
-                "apple" => ["activated" => true],
-                "telegram" => ["username" => "telegramusername", "activated" => true]
+                "google" => ["activated" => true],
+                "apple" => ["activated" => false],
+                "telegram" => ["username" => "telegramusername", "activated" => false]
             ],
             "email" => "email@gmail.com",
             "join_data" => 1703438093

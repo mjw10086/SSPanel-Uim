@@ -60,9 +60,13 @@
                                 Apple’s side
                             </div>
                             <button
-                                class="btn btn-outline-info d-flex align-items-center justify-content-center py-0 pe-3 px-2">
+                                class="visually-hidden btn btn-outline-info d-flex align-items-center justify-content-center py-0 pe-3 px-2">
                                 <img src="/assets/icons/google.svg" style="height: 36px;" />
                                 <span class="fs-7 fw-normal">Log in with Google</span>
+                            </button>
+                            <button
+                                class="btn btn-danger text-light d-flex align-items-center justify-content-center py-0" style="width: 170px;">
+                                <span class="fs-6 fw-normal">Disable & Remove</span>
                             </button>
                         </div>
                     </div>
