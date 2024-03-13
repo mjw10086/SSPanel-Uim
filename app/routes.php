@@ -114,7 +114,8 @@ return static function (Slim\App $app): void {
         // 工单
         $group->get('/ticket', App\Controllers\User\TicketController::class . ':index');
         $group->get('/ticket/create', App\Controllers\User\TicketController::class . ':create');
-        $group->post('/ticket', App\Controllers\User\TicketController::class . ':add');
+        // $group->post('/ticket', App\Controllers\User\TicketController::class . ':add');
+        $group->post('/ticket', App\Controllers\User\TicketController::class . ':addMole');
         $group->get('/ticket/{id:[0-9]+}/view', App\Controllers\User\TicketController::class . ':detail');
         $group->put('/ticket/{id:[0-9]+}', App\Controllers\User\TicketController::class . ':update');
         // 资料编辑

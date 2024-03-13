@@ -3,7 +3,8 @@
         <div class="fs-4 fw-bold text-center">Have any other question?</div>
         <div class="fs-6 fw-light text-center">Couldn’t find you r answer in our FAQ? contact us and we’ll be with you
             shortly</div>
-        <a href="https://t.me/irontest_bot" class="btn btn-outline-info fw-7 fw-light d-flex align-items-center ps-0 py-1">
+        <a href="https://t.me/irontest_bot"
+            class="btn btn-outline-info fw-7 fw-light d-flex align-items-center ps-0 py-1">
             <img src="/assets/icons/telegram.svg" />
             <span>Contact us on Telegram</span>
         </a>
@@ -11,7 +12,7 @@
     <hr class="m-5" />
 
     <div class="fs-4 fw-bold text-center">Contact With Us</div>
-    <form class="d-flex flex-column" hx-post="/user/ticket" hx-swap="none">
+    <form id="contact-form" class="d-flex flex-column" hx-post="/user/ticket" hx-swap="innerHTML" hx-target="#operationResultRender">
         <input type="hidden" name="title" value="user faq">
         <div class="mb-3">
             <label class="form-label fs-7 fw-light">Category</label>
@@ -41,7 +42,28 @@
                 required></textarea>
         </div>
         <div class="d-flex justify-content-center">
-            <button class="btn btn-info fs-5 fw-normal" type="submit">Send messange</button>
+            <button class="btn btn-info fs-5 fw-normal" type="submit">Send message</button>
         </div>
     </form>
 </div>
+
+<div class="modal fade" id="operationResult" aria-hidden="true" aria-labelledby="operationResult" tabindex="-1"
+    data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-2 bg-quinary text-light opacity-100 p-3" id="operationResultRender">
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("contact-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+        var myModal = new bootstrap.Modal(document.getElementById('operationResult'));
+        document.getElementById("operationResultRender").innerHTML = ` <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>`;
+        myModal.show();
+    });
+</script>

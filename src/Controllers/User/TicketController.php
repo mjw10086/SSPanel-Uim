@@ -113,6 +113,72 @@ final class TicketController extends BaseController
     }
 
     /**
+     * @throws RedisException
+     * @throws ClientExceptionInterface
+     * @throws TelegramSDKException
+     * @throws GuzzleException
+     */
+    public function addMole(ServerRequest $request, Response $response, array $args): ResponseInterface
+    {
+        $title = $request->getParam('title') ?? '';
+        $comment = $request->getParam('comment') ?? '';
+        $type = $request->getParam('type') ?? '';
+        $email = $request->getParam('email') ?? '';
+        $name = $request->getParam('name') ?? '';
+
+        if (
+            !Config::obtain('enable_ticket') ||
+            $this->user->is_shadow_banned ||
+            // ! RateLimit::checkTicketLimit($this->user->id) ||
+            $title === '' ||
+            $comment === '' ||
+            $type === ''
+        ) {
+            return $response->write(
+                $this->view()
+                    ->assign('status', "Error occur")
+                    ->assign('message', self::$err_msg)
+                    ->fetch("user/mole/component/faq/operation-res.tpl")
+            );
+        }
+
+        $content = [
+            [
+                'comment_id' => 0,
+                'commenter_name' => $this->user->user_name,
+                'comment' => $this->antiXss->xss_clean($comment),
+                'datetime' => time(),
+            ],
+        ];
+
+        $ticket = new Ticket();
+        $ticket->title = $this->antiXss->xss_clean($title);
+        $ticket->content = json_encode($content);
+        $ticket->userid = $this->user->id;
+        $ticket->datetime = time();
+        $ticket->status = 'open_wait_admin';
+        $ticket->type = $this->antiXss->xss_clean($type);
+        $ticket->email = $this->antiXss->xss_clean($email);
+        $ticket->name = $this->antiXss->xss_clean($name);
+        $ticket->save();
+
+        if (Config::obtain('mail_ticket')) {
+            Notification::notifyAdmin(
+                $_ENV['appName'] . '-新工单被开启',
+                '管理员，有人开启了新的工单，请你及时处理。'
+            );
+        }
+
+        return $response->write(
+            $this->view()
+                ->assign('status', "Success")
+                ->assign('message', "We will contact you by email shortly")
+                ->fetch("user/mole/component/faq/operation-res.tpl")
+        );
+    }
+
+
+    /**
      * @throws GuzzleException
      * @throws TelegramSDKException
      * @throws ClientExceptionInterface
