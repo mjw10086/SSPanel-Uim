@@ -125,7 +125,7 @@
                                     <input type="password" id="new-passwd"
                                         class="form-control bg-tertiary border-0 fs-6 fw-light text-light" />
                                     <span id="togglePasswordVisible_btn"
-                                        class="input-group-text text-light border-0" style="background-color: transparent;" id="basic-addon1"><i
+                                        class="input-group-text bg-tertiary text-light border-0" id="basic-addon1"><i
                                             class="bi bi-eye"></i></span>
                                 </div>
                                 <button class="btn btn-default fs-6 fw-normal" style="width: 270px;"
