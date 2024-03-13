@@ -1,6 +1,6 @@
 <div class="col-6 py-4 pe-5 ps-4 h-100" id="devices_list">
     <div class="mb-5">
-        <div class="fs-4 fw-bold">Active Devices</div>
+        <div class="fs-4 fw-bold">Active devices</div>
         <div class="fs-7 fw-light text-gray">{$user_devices.activated_count} out of {$user_devices.limited_count}
             devices
             limit

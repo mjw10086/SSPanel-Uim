@@ -14,7 +14,7 @@
                     <div
                         class="card rounded-4 bg-secondary text-bg-dark pt-5 px-4 {if $smarty.server.REQUEST_URI eq "/user/account/notification"} h-100 {/if}">
                         <img src="/assets/icons/account-info.svg" style="height: 60px;" alt="icon" class="mb-3">
-                        <span class="text-center fw-bold mb-2" style="font-size: 22px;">Manage Account</span>
+                        <span class="text-center fw-bold mb-2" style="font-size: 22px;">Manage account</span>
                         <span class="text-center fs-6 fw-light mb-3">Protected by Ironlink since
                             {$data.account_info.join_data|date_format:"%b %e, %Y"}</span>
                         <div class="d-flex justify-content-center align-items-center">
