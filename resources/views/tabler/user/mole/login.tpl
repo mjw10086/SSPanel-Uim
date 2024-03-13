@@ -53,7 +53,7 @@
                         <input id="password_input" type="password" class="form-control text-light border-0" id="passwd"
                             name="passwd" placeholder="" style="background-color: transparent;" autocomplete="on"
                             required>
-                        <span id="togglePasswordVisible_btn" class="input-group-text bg-quaternary text-light border-0"
+                        <span id="togglePasswordVisible_btn" class="input-group-text text-light border-0" style="background-color: transparent;"
                             id="basic-addon1"><i class="bi bi-eye"></i></span>
                     </div>
                     <a class="form-text text-end text-light" style="float: right;" href="/password/reset">Forget
