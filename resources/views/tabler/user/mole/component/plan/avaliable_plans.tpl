@@ -2,7 +2,7 @@
     <span class="fs-4 fw-bold">Change plan</span>
     <div class="w-100 d-flex flex-nowrap mt-3 justify-content-center">
         {foreach $available_plans as $plan}
-            <div class="card mx-3 rounded-4 bg-darkblue2 text-bg-dark p-4" style="width: 250px;">
+            <div class="plan-div card mx-3 rounded-4 bg-darkblue2 text-bg-dark p-4" style="width: 250px;">
                 <span class="mt-1 mb-3 fs-4 fw-normal">{$plan.name}</span>
                 <div class="">
                     <div class="my-1">
@@ -28,8 +28,8 @@
                 </div>
                 <div class="col-12">
                     <button class="w-100 btn btn-info mt-3 fs-5 fw-normal" data-bs-target="#switchPlanConfirm"
-                        data-bs-toggle="modal" data-bs-planid="{$plan.id}" {if $activated_order !== null && $plan.id eq $activated_order.product_id}
-                        disabled {/if}>
+                        data-bs-toggle="modal" data-bs-planid="{$plan.id}"
+                        {if $activated_order !== null && $plan.id eq $activated_order.product_id} disabled {/if}>
                         Switch to this plan
                     </button>
                 </div>

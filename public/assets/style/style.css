@@ -347,3 +347,7 @@ thead {
     border-top: 1px solid #cccccc;
     vertical-align: 5px;
 }
+
+.plan-div:hover {
+    border-color: var(--info-color);
+}
