@@ -30,7 +30,7 @@
                             <button
                                 class="btn btn-outline-info d-flex align-items-center justify-content-center py-0 pe-3 px-2">
                                 <img src="/assets/icons/apple-info.svg" style="height: 23px; margin:0 10px;" />
-                                <span class="fs-7 fw-normal" style="width: 130px;">Log in with Apple</span>
+                                <span class="fs-7 fw-normal">Log in with Apple</span>
                             </button>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                             <button
                                 class="btn btn-outline-info d-flex align-items-center justify-content-center py-0 pe-3 px-2">
                                 <img src="/assets/icons/google.svg" style="height: 36px;" />
-                                <span class="fs-7 fw-normal" style="width: 130px;">Log in with Google</span>
+                                <span class="fs-7 fw-normal">Log in with Google</span>
                             </button>
                         </div>
                     </div>
@@ -89,8 +89,8 @@
                             <div></div>
                             <button
                                 class="btn btn-outline-info d-flex align-items-center justify-content-center py-0 pe-3 px-2">
-                                <img src="/assets/icons/telegram.svg" style="height: 36px;" />
-                                <span class="fs-7 fw-normal" style="width: 130px;">Log in with Telegram</span>
+                                <img src="/assets/icons/telegram.svg" style="height: 40px;" />
+                                <span class="fw-normal" style="font-size: 11px;">Log in with Telegram</span>
                             </button>
                         </div>
                     </div>
