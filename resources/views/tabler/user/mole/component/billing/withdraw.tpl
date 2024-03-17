@@ -31,14 +31,122 @@
                     <select class="form-select text-gray fs-6 fw-light bg-quinary border-0 mt-1 py-3"
                         aria-label="withdraw network" name="network" required id="cryptomus-service-list">
                         <option value="" disabled selected>select network & currency</option>
-                        {foreach $network_currency_list as $item}
-                            {if $item.is_available}
-                                <option value="{$item.network} {$item.currency}">
-                                    <div>{$item.currency}</div>
-                                    <div>({$item.network})</div>
-                                </option>
-                            {/if}
-                        {/foreach}
+                        <option value="ARBITRUM USDT">
+                            USDT
+                            (ARBITRUM)
+                        </option>
+                        <option value="TON TON">
+                            TON
+                            (TON)
+                        </option>
+                        <option value="BSC USDT">
+                            USDT
+                            (BSC)
+                        </option>
+                        <option value="TRON USDT">
+                            USDT
+                            (TRON)
+                        </option>
+                        <option value="DASH DASH">
+                            DASH
+                            (DASH)
+                        </option>
+                        <option value="DOGE DOGE">
+                            DOGE
+                            (DOGE)
+                        </option>
+                        <option value="POLYGON USDT">
+                            USDT
+                            (POLYGON)
+                        </option>
+                        <option value="POLYGON USDC">
+                            USDC
+                            (POLYGON)
+                        </option>
+                        <option value="BSC CGPT">
+                            CGPT
+                            (BSC)
+                        </option>
+                        <option value="LTC LTC">
+                            LTC
+                            (LTC)
+                        </option>
+                        <option value="AVALANCHE AVAX">
+                            AVAX
+                            (AVALANCHE)
+                        </option>
+                        <option value="ARBITRUM USDC">
+                            USDC
+                            (ARBITRUM)
+                        </option>
+                        <option value="BSC DAI">
+                            DAI
+                            (BSC)
+                        </option>
+                        <option value="POLYGON MATIC">
+                            MATIC
+                            (POLYGON)
+                        </option>
+                        <option value="POLYGON DAI">
+                            DAI
+                            (POLYGON)
+                        </option>
+                        <option value="TRON TRX">
+                            TRX
+                            (TRON)
+                        </option>
+                        <option value="XMR XMR">
+                            XMR
+                            (XMR)
+                        </option>
+                        <option value="AVALANCHE USDC">
+                            USDC
+                            (AVALANCHE)
+                        </option>
+                        <option value="BSC BNB">
+                            BNB
+                            (BSC)
+                        </option>
+                        <option value="ARBITRUM ETH">
+                            ETH
+                            (ARBITRUM)
+                        </option>
+                        <option value="BSC USDC">
+                            USDC
+                            (BSC)
+                        </option>
+                        <option value="BCH BCH">
+                            BCH
+                            (BCH)
+                        </option>
+                        <option value="AVALANCHE USDT">
+                            USDT
+                            (AVALANCHE)
+                        </option>
+                        <option value="ETH ETH">
+                            ETH
+                            (ETH)
+                        </option>
+                        <option value="BTC BTC">
+                            BTC
+                            (BTC)
+                        </option>
+                        <option value="ETH USDT">
+                            USDT
+                            (ETH)
+                        </option>
+                        <option value="ETH DAI">
+                            DAI
+                            (ETH)
+                        </option>
+                        <option value="ETH VERSE">
+                            VERSE
+                            (ETH)
+                        </option>
+                        <option value="ETH USDC">
+                            USDC
+                            (ETH)
+                        </option>
                     </select>
                 </div>
             </div>

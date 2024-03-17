@@ -48,17 +48,8 @@ final class BillingController extends BaseController
         $current_recurrence = (new Recurrence())->where('user_id', $this->user->id)
             ->where('status', 'activate')->first();
 
-        $configs = Config::getClass('billing');
-        $cryptomus_merchant_uuid = $configs['cryptomus_merchant_uuid'];
-        $cryptomus_payout_key = $configs['cryptomus_payout_key'];
-
-        $requestBuilder = new \Cryptomus\Api\RequestBuilder($cryptomus_payout_key, $cryptomus_merchant_uuid);
-
-        $list = $requestBuilder->sendRequest('v1' . '/payout/services');
-
         return $response->write(
             $this->view()
-                ->assign("network_currency_list", $list)
                 ->assign('current_recurrence', $current_recurrence)
                 ->assign('billing_history', $billing_history)
                 ->assign('balance_history', $balance_history)
