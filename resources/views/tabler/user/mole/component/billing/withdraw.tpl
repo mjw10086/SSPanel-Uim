@@ -1,8 +1,6 @@
 <iframe id="hiddenFrame" name="hiddenFrame" style="display: none;"></iframe>
 
-<div style="height: calc(100% - 20px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: darkgrey lightgrey;"
-    hx-get="/user/billing/cryptomus-network-list" hx-trigger="load" hx-swap="beforeend"
-    hx-target="#cryptomus-service-list">
+<div style="height: calc(100% - 20px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: darkgrey lightgrey;">
     <div class="fs-4 fw-bold">Withdraw balance</div>
     <div class="fs-6 fw-light mt-2">Withdrawals allowed via crypto. You will bear the payment fee.</div>
     <form class="p-4 col-10" hx-post="/user/billing/withdraw/create" hx-trigger="submit" hx-swap="innerHTML"
@@ -33,6 +31,14 @@
                     <select class="form-select text-gray fs-6 fw-light bg-quinary border-0 mt-1 py-3"
                         aria-label="withdraw network" name="network" required id="cryptomus-service-list">
                         <option value="" disabled selected>select network & currency</option>
+                        {foreach $network_currency_list as $item}
+                            {if $item.is_available}
+                                <option value="{$item.network} {$item.currency}">
+                                    <div>{$item.currency}</div>
+                                    <div>({$item.network})</div>
+                                </option>
+                            {/if}
+                        {/foreach}
                     </select>
                 </div>
             </div>
@@ -64,7 +70,7 @@
     aria-labelledby="withdrawResultLabel" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-2 bg-quinary text-light opacity-100 p-3" id="withdrawDetail">
-           
+
         </div>
     </div>
 </div>

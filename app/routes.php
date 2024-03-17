@@ -63,7 +63,6 @@ return static function (Slim\App $app): void {
         $group->get('/billing/withdraw', App\Controllers\Mole\BillingController::class . ':billing');
         $group->get('/billing/billing-history', App\Controllers\Mole\BillingController::class . ':billing');
         $group->get('/billing/balance-history', App\Controllers\Mole\BillingController::class . ':billing');
-        $group->get('/billing/cryptomus-network-list', App\Controllers\Mole\BillingController::class . ':getCryptomusNetworkList');
         $group->post('/billing/topup/create', App\Controllers\Mole\BillingController::class . ':createTopUp');
         $group->get('/billing/topup/check', App\Controllers\Mole\BillingController::class . ':checkTopUp');
         $group->post('/billing/recurrence/create', App\Controllers\Mole\BillingController::class . ':createRecurrence');

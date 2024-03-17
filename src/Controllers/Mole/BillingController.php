@@ -51,21 +51,6 @@ final class BillingController extends BaseController
         $current_recurrence = (new Recurrence())->where('user_id', $this->user->id)
             ->where('status', 'activate')->first();
 
-        return $response->write(
-            $this->view()
-                ->assign('current_recurrence', $current_recurrence)
-                ->assign('billing_history', $billing_history)
-                ->assign('balance_history', $balance_history)
-                ->assign('expected_suffice_till', $expected_suffice_till)
-                ->fetch('user/mole/billing.tpl')
-        );
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function getCryptomusNetworkList(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
-    {
         $configs = Config::getClass('billing');
         $cryptomus_merchant_uuid = $configs['cryptomus_merchant_uuid'];
         $cryptomus_payout_key = $configs['cryptomus_payout_key'];
@@ -76,8 +61,12 @@ final class BillingController extends BaseController
 
         return $response->write(
             $this->view()
-                ->assign("list", $list)
-                ->fetch('user/mole/component/billing/cryptomus_service_list.tpl')
+                ->assign("network_currency_list", $list)
+                ->assign('current_recurrence', $current_recurrence)
+                ->assign('billing_history', $billing_history)
+                ->assign('balance_history', $balance_history)
+                ->assign('expected_suffice_till', $expected_suffice_till)
+                ->fetch('user/mole/billing.tpl')
         );
     }
 
@@ -278,12 +267,12 @@ final class BillingController extends BaseController
         $configs = Config::getClass('billing');
         $cryptomus_merchant_uuid = $configs['cryptomus_merchant_uuid'];
         $cryptomus_payment_key = $configs['cryptomus_payment_key'];
-        $uuid =  Tools::genRandomChar();
+        $uuid = Tools::genRandomChar();
 
         $data = [
             "amount" => "1",
             "currency" => "USD",
-            "order_id" =>  $uuid,
+            "order_id" => $uuid,
             "name" => "Ironlink recurring payment",
             "period" => "monthly",
             // "url_callback" => "http://echo.connexusy.com",
@@ -525,7 +514,7 @@ final class BillingController extends BaseController
                 $user->save();
             }
         }
-        
+
         return $response->withJson([
             'ret' => 1,
             'msg' => 'success',
@@ -556,7 +545,7 @@ final class BillingController extends BaseController
                 $paylist->datetime = time();
                 $paylist->status = 1;
                 $paylist->save();
-                
+
                 (new UserMoneyLog())->add(
                     $this->user->id,
                     $this->user->money,
