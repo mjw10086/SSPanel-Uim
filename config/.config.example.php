@@ -6,7 +6,7 @@ $_ENV['pwdMethod']  = 'bcrypt';                       //密码加密 可选 bcry
 $_ENV['salt']       = '';                             //bcrypt/argon2i/argon2id 会忽略此项
 
 $_ENV['debug']      = false;                          //debug模式开关，生产环境请保持为false
-$_ENV['appName']    = 'SSPanel-UIM';                  //站点名称
+$_ENV['appName']    = 'Ironlink';                  //站点名称
 $_ENV['baseUrl']    = 'https://example.com';          //站点地址，必须以https://开头，不要以/结尾
 
 // WebAPI
