@@ -1,7 +1,7 @@
 <div class="p-2">
     <div class="card rounded-4 bg-secondary text-bg-dark p-4">
         <div class="d-flex justify-content-between align-items-center">
-            <div class="fs-4 fw-bold">Your Devices</div>
+            <div class="fs-4 fw-bold">Your devices</div>
             <a href="/user/devices" class="nav-link fs-4 fw-bold text-info">Edit</a>
         </div>
         <span class="fs-7 fw-light text-light mt-1">

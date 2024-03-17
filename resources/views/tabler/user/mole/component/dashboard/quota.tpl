@@ -2,7 +2,7 @@
 
 <div class="p-2">
     <div class="card rounded-4 bg-secondary text-bg-dark p-4">
-        <div class="fs-4 fw-bold text-light">Remaining Data This Month</div>
+        <div class="fs-4 fw-bold text-light">Remaining data this month</div>
         <span class="fs-7 fw-light text-light">Resets on
             {$data.current_plan.next_reset_date|date_format:"%b %e, %Y"}</span>
         <div class="usage_container">

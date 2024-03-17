@@ -8,6 +8,6 @@
         {else}
             <div class="fs-1 fw-bold text-light">You don't have any plan now</div>
         {/if}
-        <a href="/user/plan" class="btn btn-default mt-4 fs-5 fw-normal text-light">Manage Plan</a>
+        <a href="/user/plan" class="btn btn-default mt-4 fs-5 fw-normal text-light">Manage plan</a>
     </div>
 </div>
