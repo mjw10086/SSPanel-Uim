@@ -95,6 +95,37 @@ final class Notification
         return;
     }
 
+
+    /**
+     * @throws GuzzleException
+     * @throws ClientExceptionInterface
+     */
+    public static function notifyUserInSystem($user, $msg = ''): void
+    {
+        $notification = new \App\Models\Notification();
+        $notification->user_id = $user->id;
+        $notification->content = $msg;
+        $notification->save();
+
+        return;
+    }
+
+    /**
+     * @throws GuzzleException
+     * @throws ClientExceptionInterface
+     */
+    public static function fetchUserNotificationInSystem($user)
+    {
+        $list = (new \App\Models\Notification())->where('user_id', 1)->where('has_read', false)->get();
+
+        foreach ($list as $notification) {
+            $notification->update([
+                'has_read' => true
+            ]);
+        }
+
+        return $list;
+    }
     /**
      * @throws GuzzleException
      * @throws TelegramSDKException
@@ -114,6 +145,8 @@ final class Notification
             IM::send($user->im_value, $msg, $user->im_type);
         }
     }
+
+
 
     /**
      * @throws GuzzleException

@@ -37,6 +37,7 @@
             </div>
         </div>
     </div>
+    {include file='user/mole/component/notification.tpl'}
 </body>
 
 </html>

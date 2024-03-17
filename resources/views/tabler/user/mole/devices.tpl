@@ -11,6 +11,8 @@
             {include file='user/mole/component/devices/devices_manage.tpl'}
         </div>
     </div>
+
+    {include file='user/mole/component/notification.tpl'}
 </body>
 
 </html>

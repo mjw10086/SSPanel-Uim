@@ -13,6 +13,7 @@ use App\Models\Order;
 use App\Models\Paylist;
 use App\Models\Invoice;
 use App\Models\UserMoneyLog;
+use App\Services\Notification;
 use App\Utils\Tools;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
@@ -48,8 +49,11 @@ final class BillingController extends BaseController
         $current_recurrence = (new Recurrence())->where('user_id', $this->user->id)
             ->where('status', 'activate')->first();
 
+        $notifications = Notification::fetchUserNotificationInSystem($this->user);
+
         return $response->write(
             $this->view()
+                ->assign('notifications', $notifications)
                 ->assign('current_recurrence', $current_recurrence)
                 ->assign('billing_history', $billing_history)
                 ->assign('balance_history', $balance_history)

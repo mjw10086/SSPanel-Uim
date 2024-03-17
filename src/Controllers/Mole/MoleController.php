@@ -20,6 +20,7 @@ use App\Models\UserMoneyLog;
 use App\Models\Docs;
 use App\Services\DataUsage;
 use App\Services\MFA;
+use App\Services\Notification;
 use App\Services\MockData;
 use App\Services\DeviceService;
 use App\Utils\ResponseHelper;
@@ -66,12 +67,15 @@ final class MoleController extends BaseController
             $expected_suffice_till = strtotime($this->user->plan_start_date) + ($availale_date * 24 * 60 * 60);
         }
 
+        $notifications = Notification::fetchUserNotificationInSystem($this->user);
+
         return $response->write(
             $this->view()
                 ->assign('data', MockData::getData())
                 ->assign('user_devices', $userDevices)
                 ->assign('announcements', $anns)
                 ->assign('activated_order', $activated_order)
+                ->assign('notifications', $notifications)
                 ->assign('data_usage', $data_usage)
                 ->assign('expected_suffice_till', $expected_suffice_till)
                 ->fetch('user/mole/dashboard.tpl')
@@ -134,10 +138,13 @@ final class MoleController extends BaseController
             $next_payment_date = $activated_order->update_time + $activated_order->product_content->time * 24 * 60 * 60;
         }
 
+        $notifications = Notification::fetchUserNotificationInSystem($this->user);
+
         return $response->write(
             $this->view()
                 ->assign("addition_quota", $addition_quota)
                 ->assign('data', MockData::getData())
+                ->assign('notifications', $notifications)
                 ->assign('user_devices', $userDevices)
                 ->assign('available_plans', $available_plans)
                 ->assign('data_plans', $data_plans)
@@ -364,10 +371,12 @@ final class MoleController extends BaseController
     public function devices(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
         $userDevices = DeviceService::getUserDeviceList($this->user);
+        $notifications = Notification::fetchUserNotificationInSystem($this->user);
 
         return $response->write(
             $this->view()
                 ->assign('data', MockData::getData())
+                ->assign('notifications', $notifications)
                 ->assign('user_devices', $userDevices)
                 ->fetch('user/mole/devices.tpl')
         );
@@ -601,9 +610,12 @@ final class MoleController extends BaseController
      */
     public function account(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
+        $notifications = Notification::fetchUserNotificationInSystem($this->user);
+
         return $response->write(
             $this->view()
                 ->assign('user', $this->user)
+                ->assign('notifications', $notifications)
                 ->assign('data', MockData::getData())->fetch('user/mole/account.tpl')
         );
     }
@@ -615,10 +627,12 @@ final class MoleController extends BaseController
     public function faq(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
         $faq_list = (new Docs())->orderBy('id', 'desc')->get();
+        $notifications = Notification::fetchUserNotificationInSystem($this->user);
 
         return $response->write(
             $this->view()
                 ->assign('data', MockData::getData())
+                ->assign('notifications', $notifications)
                 ->assign('faq_list', $faq_list)
                 ->fetch('user/mole/faq.tpl')
         );
