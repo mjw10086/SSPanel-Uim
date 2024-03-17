@@ -27,7 +27,7 @@
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label fs-7 fw-light">Enter Your Name (Optional)</label>
             <input type="text" name="comment" class="form-control bg-quinary border-0 text-light fs-6 fw-light py-3"
-                placeholder="name@example.com">
+                placeholder="John Doe">
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label fs-7 fw-light">Enter Your Email <span
