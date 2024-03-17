@@ -12,8 +12,10 @@
                 {include file='user/mole/component/dashboard/current_plan.tpl'}
                 {include file='user/mole/component/dashboard/balance.tpl'}
                 <div class="col-4">
-                    {include file='user/mole/component/dashboard/devices.tpl'}
-                    {include file='user/mole/component/dashboard/quota.tpl'}
+                    {if $activated_order !== null}
+                        {include file='user/mole/component/dashboard/devices.tpl'}
+                        {include file='user/mole/component/dashboard/quota.tpl'}
+                    {/if}
                 </div>
                 <div class="col-8 p-2">
                     {include file='user/mole/component/dashboard/announcements.tpl'}
