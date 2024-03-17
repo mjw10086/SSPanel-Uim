@@ -1,4 +1,4 @@
-<div class="fs-4 fw-bold">Top up & Withdrawal History</div>
+<div class="fs-4 fw-bold">Top up & withdrawal history</div>
 <div class="fs-6 fw-light mt-2">blahNam quis convallis elit. Sed fermentum magna nec
 </div>
 <div class="py-3 col-10"

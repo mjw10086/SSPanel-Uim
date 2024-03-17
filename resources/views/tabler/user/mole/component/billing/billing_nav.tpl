@@ -68,12 +68,12 @@
         <div class="d-flex flex-column gap-2 fs-6 fw-normal">
             <a href="/user/billing/billing-history"
                 class="{if $current_route == 4}bg-quinary{/if} rounded-2 p-3 nav-link d-flex align-items-center justify-content-between">
-                Billing History
+                Billing history
                 <i class="bi bi-chevron-right"></i>
             </a>
             <a href="/user/billing/balance-history"
                 class="{if $current_route == 5}bg-quinary{/if} rounded-2 p-3 nav-link d-flex align-items-center justify-content-between">
-                Top up & Withdraw History
+                Top up & withdraw history
                 <i class="bi bi-chevron-right"></i>
             </a>
         </div>
