@@ -196,7 +196,7 @@ final class MoleController extends BaseController
             $this->user->money,
             (float) $this->user->money + $refund_amount,
             (float) $refund_amount,
-            '取消计划 #' . $activated_order->id,
+            'unused ' . $activated_order->product_name,
             "plan cancel"
         );
 

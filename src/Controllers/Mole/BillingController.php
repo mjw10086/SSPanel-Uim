@@ -28,10 +28,7 @@ final class BillingController extends BaseController
      */
     public function billing(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
-        $billing_history = (new Invoice())->where('user_id', $this->user->id)->where('status', 'paid_balance')->orderBy('update_time', 'desc')->get();
-        foreach ($billing_history as $billing) {
-            $billing->content = json_decode($billing->content);
-        }
+        $billing_history = (new UserMoneyLog())->where('user_id', $this->user->id)->whereIn('type', ['pay with balance', 'plan cancel'])->orderBy('create_time', 'desc')->get();
 
         $balance_history = (new UserMoneyLog())->where('user_id', $this->user->id)->whereIn('type', ['admin', 'card manual', 'card recurring', 'crypto manual', 'crypto recurring', 'withdraw', 'withdraw failed'])->orderBy('create_time', 'desc')->get();
 

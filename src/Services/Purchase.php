@@ -133,12 +133,14 @@ final class Purchase
         $user->money -= $invoice->price;
         $user->save();
 
+        $content = json_decode($invoice->content);
+
         (new UserMoneyLog())->add(
             $user->id,
             $money_before,
             (float) $user->money,
             -$invoice->price,
-            '支付账单 #' . $invoice->id,
+            $content->name,
             "pay with balance"
         );
 

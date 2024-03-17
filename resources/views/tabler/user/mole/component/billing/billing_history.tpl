@@ -8,16 +8,16 @@
             <tr>
                 <th scope="col" class="text-gray">Date</th>
                 <th scope="col" class="text-gray">Plan</th>
-                <th scope="col" class="text-gray">Price</th>
+                <th scope="col" class="text-gray text-end">Price</th>
                 <th scope="col" class="text-gray text-end">Doc</th>
             </tr>
         </thead>
         <tbody>
             {foreach $billing_history as $billing}
                 <tr>
-                    <th scope="row" class="fw-light">{$billing.update_time|date_format:"%b %e, %Y"}</th>
-                    <td class="fw-light">{$billing.content[0]->name}</td>
-                    <td class="fw-light">${$billing.price}</td>
+                    <th scope="row" class="fw-light">{$billing.create_time|date_format:"%b %e, %Y"}</th>
+                    <td class="fw-light">{$billing.remark}</td>
+                    <td class="fw-light text-end">{if $billing.amount < 0}-{else}+{/if}${abs($billing.amount)}</td>
                     <td class="fw-light text-end"><a href="#">Invoice</a></td>
                 </tr>
             {{/foreach}}
