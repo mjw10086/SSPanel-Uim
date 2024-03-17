@@ -1,5 +1,5 @@
 <div class="fs-4 fw-bold">Top up & withdrawal history</div>
-<div class="fs-6 fw-light mt-2">blahNam quis convallis elit. Sed fermentum magna nec
+<div class="fs-6 fw-light mt-2">You can see here the history of balance spent on the plan purchases
 </div>
 <div class="py-3 col-10"
     style="height: calc(100% - 50px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: darkgrey lightgrey;">
