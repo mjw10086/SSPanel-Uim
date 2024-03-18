@@ -30,9 +30,9 @@ final class WithdrawController extends BaseController
             'amount' => 'Amount',
             'to_account' => 'Destination Account',
             'addition_msg' => 'Additional Message',
-            'note' => 'Note',
             'create_time' => 'Creation Time',
-            'update_time' => 'Update Time'
+            'update_time' => 'Update Time',
+            'note' => 'Note'
         ],
     ];
 
@@ -99,13 +99,14 @@ final class WithdrawController extends BaseController
         foreach ($withdraws as $withdraw) {
             if ($withdraw->status === 'pending') {
                 $withdraw->status = '<span class="status status-orange">' . $withdraw->status . '</span>';
+                $withdraw->op .= '
+            <a class="btn btn-blue" href="/admin/withdraw/' . $withdraw->id . '/view">Operation</a>';
             } else if ($withdraw->status === 'rejected') {
                 $withdraw->status = '<span class="status status-red">' . $withdraw->status . '</span>';
             } else if ($withdraw->status === 'success') {
                 $withdraw->status = '<span class="status status-green">' . $withdraw->status . '</span>';
             }
-            $withdraw->op .= '
-            <a class="btn btn-blue" href="/admin/withdraw/' . $withdraw->id . '/view">Operation</a>';
+            $withdraw->op .= '';
         }
 
         return $response->withJson([
