@@ -17,6 +17,7 @@
     <script src="//{$config['jsdelivr_url']}/npm/clipboard@latest/dist/clipboard.min.js"></script>
     <script src="//{$config['jsdelivr_url']}/npm/jquery/dist/jquery.min.js"></script>
     <script src="//cdn.datatables.net/v/bs5/dt-1.13.8/datatables.min.js"></script>
+    <script src="//{$config['jsdelivr_url']}/npm/htmx.org@latest/dist/htmx.min.js"></script>
     <style>
         .home-subtitle {
             font-size: 14px;

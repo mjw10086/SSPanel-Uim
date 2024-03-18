@@ -28,7 +28,6 @@ return static function (Slim\App $app): void {
     $app->get('/sub/{token}/{subtype}', App\Controllers\SubController::class . ':index');
 
     // payment callback url
-    $app->post('/user/billing/withdraw/return', App\Controllers\Mole\BillingController::class . ':returnWithdraw');
     $app->post('/user/billing/recurrence/return', App\Controllers\Mole\BillingController::class . ':returnRecurrence');
     $app->post('/user/billing/topup/return', App\Controllers\Mole\BillingController::class . ':returnTopUp');
 
@@ -332,6 +331,8 @@ return static function (Slim\App $app): void {
         );
         // 提款
         $group->get('/withdraw', App\Controllers\Admin\WithdrawController::class . ':index');
+        $group->get('/withdraw/{id:[0-9]+}/view', App\Controllers\Admin\WithdrawController::class . ':detail');
+        $group->post('/withdraw/{id:[0-9]+}', App\Controllers\Admin\WithdrawController::class . ':update');
         $group->post('/withdraw/ajax', App\Controllers\Admin\WithdrawController::class . ':ajax');
 
         // 礼品卡

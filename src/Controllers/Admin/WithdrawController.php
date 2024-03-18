@@ -21,15 +21,18 @@ final class WithdrawController extends BaseController
 {
     private static array $details = [
         'field' => [
-            'op' => '操作',
-            'id' => '提款ID',
-            'uuid' => '提款标识',
-            'user_id' => '提款用户',
-            'amount' => '金额',
-            'status' => '提款状态',
-            'create_time' => '创建时间',
-            'update_time' => '更新时间',
-            'message' => '备注',
+            'op' => 'Operation',
+            'status' => 'Withdrawal Status',
+            'id' => 'Withdrawal ID',
+            'user_id' => 'User ID',
+            'transfer_id' => 'Transfer ID',
+            'type' => 'Withdrawal Type',
+            'amount' => 'Amount',
+            'to_account' => 'Destination Account',
+            'addition_msg' => 'Additional Message',
+            'note' => 'Note',
+            'create_time' => 'Creation Time',
+            'update_time' => 'Update Time'
         ],
     ];
 
@@ -45,55 +48,64 @@ final class WithdrawController extends BaseController
         );
     }
 
-    public function reject(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    /**
+     * @throws Exception
+     */
+    public function detail(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
-        $order_id = $args['id'];
-        (new Order())->find($order_id)->delete();
-        (new Invoice())->where('order_id', $order_id)->first()->delete();
+        $id = $args['id'];
+        $withdraw = (new Withdraw())->find($id);
 
-        return $response->withJson([
-            'ret' => 1,
-            'msg' => '删除成功',
-        ]);
+        return $response->write(
+            $this->view()
+                ->assign('withdraw', $withdraw)
+                ->fetch('admin/withdraw/view.tpl')
+        );
     }
 
-    public function proceed(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    /**
+     * @throws Exception
+     */
+    public function update(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
-        $order_id = $args['id'];
-        (new Order())->find($order_id)->delete();
-        (new Invoice())->where('order_id', $order_id)->first()->delete();
+        $id = $args['id'];
+        $status = $this->antiXss->xss_clean($request->getParam('status'));
+        $transfer_id = $this->antiXss->xss_clean($request->getParam('transfer_id')) ?? "";
+        $note = $this->antiXss->xss_clean($request->getParam('note')) ?? "";
+
+        $withdraw = (new Withdraw())->where('id', $id)->first();
+        $withdraw->status = $status ?? $withdraw->status;
+        $withdraw->transfer_id = $transfer_id;
+        $withdraw->note = $note;
+        $withdraw->save();
 
         return $response->withJson([
             'ret' => 1,
-            'msg' => '删除成功',
+            'msg' => '更新成功',
         ]);
     }
 
     public function ajax(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
-        $withdraws = (new Withdraw())->orderBy('id', 'desc')->get();
+        $withdraws = (new Withdraw())->orderByRaw("
+            CASE
+                WHEN status = 'pending' THEN 1
+                WHEN status = 'rejected' THEN 2
+                WHEN status = 'success' THEN 3
+                ELSE 4
+            END
+        ")->get();
 
         foreach ($withdraws as $withdraw) {
-            // if ($withdraw->status === 'pending') {
-            //     $withdraw->op .= '
-            //     <button type="button" class="btn btn-red" id="cancel-order-' . $withdraw->id . '"
-            //      onclick="cancelOrder(' . $withdraw->id . ')">拒绝</button>';
-            //     $withdraw->op .= '
-            //      <button type="button" class="btn btn-blue" id="cancel-order-' . $withdraw->id . '"
-            //       onclick="cancelOrder(' . $withdraw->id . ')">继续</button>';
-            // }
-
-            // if ($withdraw->status === 'fail') {
-            //     $withdraw->op .= '
-            //      <button type="button" class="btn btn-orange" id="cancel-order-' . $withdraw->id . '"
-            //       onclick="cancelOrder(' . $withdraw->id . ')">重试</button>';
-            //     $withdraw->op .= '
-            //       <button type="button" class="btn btn-dark" id="cancel-order-' . $withdraw->id . '"
-            //        onclick="cancelOrder(' . $withdraw->id . ')">标记处理</button>';
-            // }
+            if ($withdraw->status === 'pending') {
+                $withdraw->status = '<span class="status status-orange">' . $withdraw->status . '</span>';
+            } else if ($withdraw->status === 'rejected') {
+                $withdraw->status = '<span class="status status-red">' . $withdraw->status . '</span>';
+            } else if ($withdraw->status === 'success') {
+                $withdraw->status = '<span class="status status-green">' . $withdraw->status . '</span>';
+            }
             $withdraw->op .= '
-            <button type="button" class="btn btn-dark" id="cancel-order-' . $withdraw->id . '"
-             onclick="cancelOrder(' . $withdraw->id . ')">标记处理</button>';
+            <a class="btn btn-blue" href="/admin/withdraw/' . $withdraw->id . '/view">Operation</a>';
         }
 
         return $response->withJson([

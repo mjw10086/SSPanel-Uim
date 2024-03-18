@@ -74,9 +74,7 @@ final class BillingController extends BaseController
         // read paramter
         $amount = $this->antiXss->xss_clean($request->getParam('amount'));
         $address = $this->antiXss->xss_clean($request->getParam('address'));
-        $network_list = explode(" ", $this->antiXss->xss_clean($request->getParam('network')));
-        $network = $network_list[0];
-        $currency = $network_list[1];
+        $network = $this->antiXss->xss_clean($request->getParam('network'));
 
         // check amount
         if ($amount < 1 && $this->user->money < $amount) {
@@ -86,147 +84,40 @@ final class BillingController extends BaseController
             ]);
         }
 
-        // create withdraw order to cryptomus
-        $configs = Config::getClass('billing');
-        $cryptomus_merchant_uuid = $configs['cryptomus_merchant_uuid'];
-        $cryptomus_payout_key = $configs['cryptomus_payout_key'];
-
-        $payout = \Cryptomus\Api\Client::payout($cryptomus_payout_key, $cryptomus_merchant_uuid);
-
-        $data = [
-            'amount' => $amount,
-            'currency' => 'USD',
-            'to_currency' => $currency,
-            'network' => $network,
-            'order_id' => Tools::genRandomChar(),
-            'address' => $address,
-            'is_subtract' => '0',
-            // 'url_callback' => "http://echo.connexusy.com",
-            'url_callback' => $_ENV['baseUrl'] . '/user/billing/withdraw/return',
-        ];
-
-        try {
-            $result = $payout->create($data);
-        } catch (Exception $e) {
-            $message = $e->getMessage();
-            $status = "System Error";
-            if (
-                $message == "Not found service to_currency"
-                || $message == "The service was not found"
-                || $message == "The withdrawal amount is too small"
-                || strpos($message, "mum amount")
-            ) {
-                $status = "Failed";
-                $message = $message . ", try change your amount, currency or network";
-            } else {
-                $status = "System Error";
-                $message = "Try later or contact with administrator";
-            }
-
-            return $response->write(
-                $this->view()
-                    ->assign("status", $status)
-                    ->assign("message", $message)
-                    ->fetch('user/mole/component/billing/withdraw_result.tpl')
-            );
-        }
-
-        // while success, change user balance
-        $this->user->money = $this->user->money - $result["amount"];
-        $this->user->save();
-
+        // create money log
         (new UserMoneyLog())->add(
             $this->user->id,
             $this->user->money,
-            (float) $this->user->money - $result["amount"],
-            (float) $result["amount"],
-            '提款 #' . $result["uuid"],
+            (float) $this->user->money - $amount,
+            (float) -$amount,
+            '提款 #' . $address,
             "withdraw"
         );
 
-        // create withdraw record
+        // change user balance
+        $this->user->money = $this->user->money - $amount;
+
+        // create withdraw proposal
         $withdraw = new Withdraw();
         $withdraw->user_id = $this->user->id;
-        $withdraw->uuid = $result["uuid"];
-        $withdraw->type = "cryptomus";
-        $withdraw->amount = $result["amount"];
-        $withdraw->withdraw_message = json_encode($result);
-        $withdraw->status = $result["status"];
-        $withdraw->message = json_encode($result);
-
+        $withdraw->transfer_id = '';
+        $withdraw->type = 'cryptomus';
+        $withdraw->amount = $amount;
+        $withdraw->status = 'pending';
+        $withdraw->to_account = $address;
+        $withdraw->addition_msg = $network;
+        $withdraw->note = '';
         $withdraw->save();
 
+        // return notification
         $message = "Your withdraw is in progress";
+
         return $response->write(
             $this->view()
-                ->assign("status", $result["status"])
+                ->assign("status", 'pending')
                 ->assign("message", $message)
                 ->fetch('user/mole/component/billing/withdraw_result.tpl')
         );
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function returnWithdraw(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
-    {
-        $configs = Config::getClass('billing');
-        $cryptomus_payout_key = $configs['cryptomus_payout_key'];
-
-        // read paramter
-        $uuid = $this->antiXss->xss_clean($request->getParam('uuid'));
-        $status = $this->antiXss->xss_clean($request->getParam('status'));
-
-        // check request validity
-        $body = $request->getParsedBody();
-        $get_sign = $body["sign"];
-        unset($body["sign"]);
-        $sign = md5(base64_encode(json_encode($body, JSON_UNESCAPED_UNICODE)) . $cryptomus_payout_key);
-
-        if ($get_sign !== $sign) {
-            return $response->withJson([
-                'ret' => 0,
-                'msg' => '非法请求',
-            ]);
-        }
-
-        // get withdraw record
-        $withdrawRecord = (new Withdraw())->where("uuid", $uuid)->first();
-        if ($withdrawRecord === null) {
-            return $response->withJson([
-                'ret' => 0,
-                'msg' => 'no such withdraw record',
-            ]);
-        }
-
-        // check status
-        if ($status == "fail" || $status == "cancel" || $status == "system_fail") {
-            // back money to user balance
-            $user = (new User())->where("id", $withdrawRecord->user_id)->first();
-
-            (new UserMoneyLog())->add(
-                $user->id,
-                $user->money,
-                (float) $user->money + $withdrawRecord->amount,
-                (float) $withdrawRecord->amount,
-                '提款退回 #' . $withdrawRecord->uuid,
-                "withdraw failed"
-            );
-
-            $user->money = $user->money + $withdrawRecord->amount;
-            $user->save();
-        }
-
-        // update withdraw record
-        $withdrawRecord->status = $status;
-        $withdrawRecord->message = json_encode($body);
-
-        $withdrawRecord->save();
-
-        return $response->withJson([
-            'ret' => 1,
-            'msg' => 'success',
-        ]);
     }
 
 

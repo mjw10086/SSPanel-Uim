@@ -12,15 +12,15 @@ return new class() implements MigrationInterface {
             CREATE TABLE withdraw (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 user_id INT NOT NULL,
-                uuid VARCHAR(36) NOT NULL,
+                transfer_id VARCHAR(36) NOT NULL,
                 type VARCHAR(36) NOT NULL,
                 amount DECIMAL(10,2) NOT NULL,
-                withdraw_message longtext DEFAULT '',
                 status VARCHAR(50) NOT NULL,
                 create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                create_message longtext DEFAULT '',
-                message longtext DEFAULT ''
+                to_account longtext NOT NULL,
+                addition_msg longtext DEFAULT '',
+                note longtext DEFAULT ''
             );
         ");
 

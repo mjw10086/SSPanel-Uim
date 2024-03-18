@@ -9,7 +9,7 @@
     <div class="w-100 d-flex justify-content-between fs-5">
         <div class="col-12">
             <a class="w-100 btn btn-default text-light fw-normal" data-bs-dismiss="modal" aria-label="Close">
-                Proceed
+                OK
             </a>
         </div>
     </div>

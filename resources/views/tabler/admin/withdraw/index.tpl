@@ -47,9 +47,6 @@
             "autoWidth": false,
             'iDisplayLength': 10,
             'scrollX': true,
-            'order': [
-                [1, 'desc']
-            ],
             columns: [
                 {foreach $details['field'] as $key => $value}
                 {
