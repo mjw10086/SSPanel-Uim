@@ -45,7 +45,7 @@
                 dataSrc: 'withdraws'
             },
             "autoWidth": false,
-            'iDisplayLength': 10,
+            'iDisplayLength': 100,
             'scrollX': true,
             'order': [
            
