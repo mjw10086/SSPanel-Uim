@@ -73,6 +73,10 @@ use const PHP_EOL;
  * @property int    $is_inactive 是否处于闲置状态
  * @property string $locale 显示语言
  * @property string $plan_start_date 计划开始的时间(NULL为当前无计划)
+ * @property string $telegram_id        for oauth
+ * @property string $telegram_username  for oauth
+ * @property string $google_id          for oauth
+ * @property string $google_username    for oauth
  *
  * @mixin Builder
  */
@@ -101,6 +105,24 @@ final class User extends Model
         'ref_by' => 'int',
     ];
 
+    public function setUserEmail($email)
+    {
+        if ($email == "") {
+            $this->email = "NONE" . Uuid::uuid4()->toString();
+        } else {
+            $this->email = $email;
+        }
+    }
+
+    public function getUserEmail()
+    {
+        if (substr($this->email, 0, 4) === "NONE") {
+            return "";
+        } else {
+            return $this->email;
+        }
+    }
+
     /**
      * @param $len
      *
@@ -116,7 +138,7 @@ final class User extends Model
         $query = Node::query();
         $query->where('type', 1);
 
-        if (! $this->is_admin) {
+        if (!$this->is_admin) {
             $group = ($this->node_group !== 0 ? [0, $this->node_group] : [0]);
             $query->whereIn('node_group', $group);
         }
@@ -369,7 +391,7 @@ final class User extends Model
             'ok' => true,
         ];
 
-        if (! $this->isAbleToCheckin() || $this->is_shadow_banned) {
+        if (!$this->isAbleToCheckin() || $this->is_shadow_banned) {
             $return['ok'] = false;
             $return['msg'] = '签到失败，请稍后再试';
         } else {
@@ -433,7 +455,7 @@ final class User extends Model
 
             try {
                 IM::send($this->im_value, $text, $this->im_type);
-            } catch (GuzzleException|TelegramSDKException $e) {
+            } catch (GuzzleException | TelegramSDKException $e) {
                 echo $e->getMessage() . PHP_EOL;
             }
         }

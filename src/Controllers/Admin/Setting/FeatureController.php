@@ -21,6 +21,11 @@ final class FeatureController extends BaseController
         'notify_new_subscribe',
         'login_log',
         'notify_new_login',
+        'telegram_oauth_id',
+        'telegram_oauth_token',
+        'google_oauth_client_id',
+        'google_oauth_client_secret',
+        'server_proxy',
     ];
 
     /**

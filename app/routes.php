@@ -22,8 +22,13 @@ return static function (Slim\App $app): void {
     // Bot Callback
     $app->post('/callback/{type}', App\Controllers\CallbackController::class . ':index');
     // OAuth
-    $app->post('/oauth/{type}', App\Controllers\OAuthController::class . ':index');
-    $app->get('/oauth/{type}', App\Controllers\OAuthController::class . ':index');
+    // $app->post('/oauth/{type}', App\Controllers\OAuthController::class . ':index');
+    // $app->get('/oauth/{type}', App\Controllers\OAuthController::class . ':index');
+    $app->post('/oauth/callback/telegram', App\Controllers\Mole\OAuth\TelegramOAuthController::class . ':callback');
+    $app->get('/oauth/callback/google', App\Controllers\Mole\OAuth\GoogleOAuthController::class . ':callback');
+
+
+
     // 通用订阅
     $app->get('/sub/{token}/{subtype}', App\Controllers\SubController::class . ':index');
 

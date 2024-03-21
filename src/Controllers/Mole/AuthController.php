@@ -41,14 +41,23 @@ final class AuthController extends BaseController
      */
     public function login(ServerRequest $request, Response $response, array $args): ResponseInterface
     {
+        $configs = Config::getClass('feature');
         $captcha = [];
 
         if (Config::obtain('enable_login_captcha')) {
             $captcha = Captcha::generate();
         }
 
+        $uuid = Uuid::uuid4();
+        $telegram_id = $configs['telegram_oauth_id'];
+        $google_client_id = $configs['google_oauth_client_id'];
+
+
         return $response->write($this->view()
             ->assign('base_url', $_ENV['baseUrl'])
+            ->assign('uuid', $uuid)
+            ->assign('telegram_id', $telegram_id)
+            ->assign('google_client_id', $google_client_id)
             ->assign('captcha', $captcha)
             ->fetch('user/mole/login.tpl'));
     }

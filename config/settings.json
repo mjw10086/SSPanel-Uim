@@ -1,6 +1,56 @@
 [
     {
         "id": null,
+        "item": "telegram_oauth_id",
+        "value": "",
+        "class": "feature",
+        "is_public": 1,
+        "type": "string",
+        "default": "",
+        "mark": "telegram oauth id"
+    },
+    {
+        "id": null,
+        "item": "telegram_oauth_token",
+        "value": "",
+        "class": "feature",
+        "is_public": 1,
+        "type": "string",
+        "default": "",
+        "mark": "telegram oauth token"
+    },
+    {
+        "id": null,
+        "item": "google_oauth_client_id",
+        "value": "",
+        "class": "feature",
+        "is_public": 1,
+        "type": "string",
+        "default": "",
+        "mark": "google oauth client id"
+    },
+    {
+        "id": null,
+        "item": "google_oauth_client_secret",
+        "value": "",
+        "class": "feature",
+        "is_public": 1,
+        "type": "string",
+        "default": "",
+        "mark": "google oauth client secret"
+    },
+    {
+        "id": null,
+        "item": "server_proxy",
+        "value": "",
+        "class": "feature",
+        "is_public": 1,
+        "type": "string",
+        "default": "",
+        "mark": "server proxy to make sure request to oauth could work"
+    },
+    {
+        "id": null,
         "item": "payment_gateway",
         "value": "[]",
         "class": "billing",
