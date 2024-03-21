@@ -66,8 +66,8 @@ final class TelegramOAuthController extends BaseController
         $user = new User();
         $configs = Config::getClass('reg');
 
+        $user->user_name = "";
         $user->setUserEmail("");
-        $user->email = "";
         $user->remark = '';
         $user->pass = '';
         $user->passwd = Tools::genRandomChar(16);
