@@ -16,14 +16,15 @@
                         hx-target="#announcementDetail">Open</button>
                 </div>
                 <div class="col-6 ps-2">
-                    <button class="w-100 btn btn-outline-default fw-normal">Dismiss</button>
+                    <button class="w-100 btn btn-outline-default fw-normal" hx-post="/user/announcement/{$ann.id}/read"
+                        hx-swap="none">Dismiss</button>
                 </div>
             </div>
         </div>
         {if not $ann@last}
             <hr class="mx-5 my-4 border border-gray" />
         {/if}
-    {{/foreach}}
+    {/foreach}
 </div>
 
 
@@ -40,22 +41,6 @@
                 <div class="d-flex justify-content-center">
                     <div class="spinner-border" role="status">
                         <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer border-0">
-                <div class="w-100 d-flex justify-content-between fs-5">
-                    <div class="col-6 pe-2">
-                        <button class="w-100 btn btn-outline-info fw-normal" id="dismiss_btn" data-bs-dismiss="modal"
-                            aria-label="Close">
-                            Dismiss
-                        </button>
-                    </div>
-                    <div class="col-6 ps-2">
-                        <button class="w-100 btn btn-default fw-normal" id="mark_unread_btn" data-bs-dismiss="modal"
-                            aria-label="Close">
-                            Mark unread
-                        </button>
                     </div>
                 </div>
             </div>

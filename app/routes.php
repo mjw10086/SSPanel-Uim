@@ -75,6 +75,7 @@ return static function (Slim\App $app): void {
 
 
         $group->get('/announcement/{id:[0-9]+}', App\Controllers\Mole\MoleController::class . ':getAnnByID');
+        $group->post('/announcement/{id:[0-9]+}/{mark}', App\Controllers\Mole\MoleController::class . ':markAnn');
 
         $group->get('/devices/activate-code', App\Controllers\Mole\MoleController::class . ':getActivateCode');
         $group->post('/devices/activate', App\Controllers\Mole\MoleController::class . ':activate');

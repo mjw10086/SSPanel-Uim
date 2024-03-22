@@ -1,5 +1,3 @@
-{* {assign "balance" ["amount" => 15, "last_until" => 1709126493 ]} *}
-
 <div class="col-8 p-2">
     <div class="card rounded-4 bg-secondary p-4">
         <div class="d-flex justify-content-between align-items-center">

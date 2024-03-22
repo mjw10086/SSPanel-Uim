@@ -6,6 +6,7 @@ namespace App\Controllers\Mole;
 
 use App\Controllers\BaseController;
 use App\Models\Invoice;
+use App\Models\User_Announcement;
 use App\Services\Purchase;
 use App\Models\Config;
 use App\Services\Cache;
@@ -97,6 +98,36 @@ final class MoleController extends BaseController
                 ->assign('ann', $ann)
                 ->fetch('user/mole/component/dashboard/announcement_detail.tpl')
         );
+    }
+
+    public function markAnn(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        $ann = (new Ann())->where('id', $args['id'])->first();
+        if ($ann === null) {
+            return $response->write("no such announcement");
+        }
+
+        $mark = true;
+        if ($args['mark'] == "read") {
+            $mark = true;
+        } else if ($args['mark'] == "unread") {
+            $mark = false;
+        }
+
+        $exist_user_announcement = (new User_Announcement())->where("annoucement_id", $args['id'])
+            ->where("user_id", $this->user->id)->first();
+
+        if ($exist_user_announcement !== null) {
+            $exist_user_announcement->has_read = $mark;
+        } else {
+            $user_announcement = new User_Announcement();
+            $user_announcement->user_id = $this->user->id;
+            $user_announcement->annoucement_id = $args['id'];
+            $user_announcement->has_read = $mark;
+            $user_announcement->save();
+        }
+
+        return $response->withHeader('HX-Refresh', 'true');
     }
 
     /**

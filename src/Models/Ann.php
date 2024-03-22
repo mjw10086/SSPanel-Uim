@@ -19,4 +19,9 @@ final class Ann extends Model
 {
     protected $connection = 'default';
     protected $table = 'announcement';
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_annoucement', 'annoucement_id', 'user_id');
+    }
 }
