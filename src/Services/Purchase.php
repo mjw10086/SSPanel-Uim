@@ -140,7 +140,7 @@ final class Purchase
             $money_before,
             (float) $user->money,
             -$invoice->price,
-            $content->name,
+            $content[0]->name,
             "pay with balance"
         );
 
