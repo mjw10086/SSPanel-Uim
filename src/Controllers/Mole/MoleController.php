@@ -26,6 +26,7 @@ use App\Services\DeviceService;
 use App\Utils\ResponseHelper;
 use App\Utils\Tools;
 use App\Utils\Hash;
+use DateTime;
 use Ramsey\Uuid\Uuid;
 use Exception;
 use RedisException;
@@ -51,7 +52,10 @@ final class MoleController extends BaseController
      */
     public function dashboard(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
-        $anns = (new Ann())->orderBy('date', 'desc')->get();
+        $user = $this->user;
+        $anns = Ann::whereDoesntHave('users', function ($query) use ($user) {
+            $query->where('user_id', $this->user->id)->where('has_read', true);
+        })->get();
 
         $userDevices = DeviceService::getUserDeviceList($this->user);
         $activated_order = (new Order())
@@ -101,8 +105,7 @@ final class MoleController extends BaseController
     public function plan(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
         $addition_quota = false;
-        if(substr_compare($request->getUri()->__toString(), "addition-quota", -strlen("addition-quota")) === 0)
-        {
+        if (substr_compare($request->getUri()->__toString(), "addition-quota", -strlen("addition-quota")) === 0) {
             $addition_quota = true;
         }
         $available_plans = (new Product())
@@ -171,12 +174,21 @@ final class MoleController extends BaseController
         }
         $product_content = json_decode($activated_order->product_content);
 
-        // calculate refund amount
-        $data_usage = DataUsage::getUserDataUsage($this->user->id);
-        $refund_amount_base_time = $activated_order->price - ((time() - $activated_order->update_time) / ($product_content->time * 24 * 60 * 60)) * $activated_order->price;
-        $refund_amount_base_quota = $activated_order->price - ($data_usage / ($product_content->bandwidth * 1024 * 1024 * 1024)) * $activated_order->price;
+        // if cancel plan in 30 days after create account, full refund
+        $currentDate = new DateTime();
+        $timeDifference = $currentDate->diff(new DateTime($this->user->create_time));
+        $refund_amount = $activated_order->price;
 
-        $refund_amount = number_format($refund_amount_base_time < $refund_amount_base_quota ? $refund_amount_base_time : $refund_amount_base_quota, 2, '.', '');
+        // else refund part
+        if ($timeDifference->days > 30) {
+            // calculate refund amount
+            $data_usage = DataUsage::getUserDataUsage($this->user->id);
+            $refund_amount_base_time = $activated_order->price - ((time() - $activated_order->update_time) / ($product_content->time * 24 * 60 * 60)) * $activated_order->price;
+            $refund_amount_base_quota = $activated_order->price - ($data_usage / ($product_content->bandwidth * 1024 * 1024 * 1024)) * $activated_order->price;
+
+            $refund_amount = number_format($refund_amount_base_time < $refund_amount_base_quota ? $refund_amount_base_time : $refund_amount_base_quota, 2, '.', '');
+        }
+
 
         // cancel current activated order & update user data
         $activated_order->status = 'cancelled';
@@ -387,7 +399,7 @@ final class MoleController extends BaseController
      */
     public function activate(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
-        if (isset($_POST['id'])) {
+        if (isset ($_POST['id'])) {
             $device_id = $_POST['id'];
             $result = DeviceService::activateUserDevice($this->user, $device_id);
             return $response->write(
@@ -408,7 +420,7 @@ final class MoleController extends BaseController
      */
     public function deactivate(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
-        if (isset($_POST['id'])) {
+        if (isset ($_POST['id'])) {
             $device_id = $_POST['id'];
             $result = DeviceService::deactivatedUserDevice($this->user, $device_id);
             return $response->write(

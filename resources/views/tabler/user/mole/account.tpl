@@ -16,7 +16,7 @@
                         <img src="/assets/icons/account-info.svg" style="height: 60px;" alt="icon" class="mb-3">
                         <span class="text-center fw-bold mb-2" style="font-size: 22px;">Manage account</span>
                         <span class="text-center fs-6 fw-light mb-3">Protected by Ironlink since
-                            {$data.account_info.join_data|date_format:"%b %e, %Y"}</span>
+                            {$user.create_time|date_format:"%b %e, %Y"}</span>
                         <div class="d-flex justify-content-center align-items-center">
                             <div class="col-8 d-flex justify-content-between fs-4 fw-normal">
                                 <a href="/user/account/info"

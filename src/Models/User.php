@@ -77,6 +77,7 @@ use const PHP_EOL;
  * @property string $telegram_username  for oauth
  * @property string $google_id          for oauth
  * @property string $google_username    for oauth
+ * @property string $create_time        account create time
  *
  * @mixin Builder
  */
