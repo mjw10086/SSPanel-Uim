@@ -269,6 +269,7 @@ final class AuthController extends BaseController
         $user->reg_date = date('Y-m-d H:i:s');
         $user->reg_ip = $_SERVER['REMOTE_ADDR'];
         $user->theme = $_ENV['theme'];
+        $user->contact_method = 1;
         $user->locale = $_ENV['locale'];
         $random_group = Config::obtain('random_group');
 

@@ -98,6 +98,7 @@ final class TelegramOAuthController extends BaseController
         $user->reg_ip = $_SERVER['REMOTE_ADDR'];
         $user->theme = $_ENV['theme'];
         $user->locale = $_ENV['locale'];
+        $user->contact_method = 2;
         $random_group = Config::obtain('random_group');
 
         if ($random_group === '') {
