@@ -174,9 +174,26 @@ final class MoleController extends BaseController
 
         $notifications = Notification::fetchUserNotificationInSystem($this->user);
 
+        $currentDate = new DateTime();
+        $timeDifference = $currentDate->diff(new DateTime($this->user->create_time));
+        $refund_amount = $activated_order->price;
+
+        $product_content = $activated_order->product_content;
+
+        // else refund part
+        if ($timeDifference->days > 30) {
+            // calculate refund amount
+            $data_usage = DataUsage::getUserDataUsage($this->user->id);
+            $refund_amount_base_time = $activated_order->price - ((time() - $activated_order->update_time) / ($product_content->time * 24 * 60 * 60)) * $activated_order->price;
+            $refund_amount_base_quota = $activated_order->price - ($data_usage / ($product_content->bandwidth * 1024 * 1024 * 1024)) * $activated_order->price;
+
+            $refund_amount = number_format($refund_amount_base_time < $refund_amount_base_quota ? $refund_amount_base_time : $refund_amount_base_quota, 2, '.', '');
+        }
+
         return $response->write(
             $this->view()
                 ->assign("addition_quota", $addition_quota)
+                ->assign("refund_amount", $refund_amount)
                 ->assign('data', MockData::getData())
                 ->assign('notifications', $notifications)
                 ->assign('user_devices', $userDevices)
