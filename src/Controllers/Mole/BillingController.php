@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers\Mole;
 
 use App\Controllers\BaseController;
+use App\Models\Product;
 use App\Models\Recurrence;
 use App\Models\Withdraw;
 use App\Models\Config;
@@ -152,8 +153,20 @@ final class BillingController extends BaseController
         $cryptomus_payment_key = $configs['cryptomus_payment_key'];
         $uuid = Tools::genRandomChar();
 
+        $activated_order = (new Order())
+            ->where('user_id', $this->user->id)
+            ->where('status', 'activated')
+            ->where('product_type', 'tabp')
+            ->first();
+
+        if($activated_order == null){
+            return $response->write("no activated plan");
+        }
+
+        $product = (new Product())->where("id", $activated_order->product_id)->first();
+
         $data = [
-            "amount" => "1",
+            "amount" => (string)($product->price),
             "currency" => "USD",
             "order_id" => $uuid,
             "name" => "Ironlink recurring payment",
