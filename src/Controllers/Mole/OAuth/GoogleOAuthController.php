@@ -18,7 +18,7 @@ use Slim\Http\ServerRequest;
 
 final class GoogleOAuthController extends BaseController
 {
-    private function getToken($code)
+    private function getToken($code, $redirect_uri)
     {
         $configs = Config::getClass('feature');
         $url = 'https://accounts.google.com/o/oauth2/token';
@@ -27,7 +27,7 @@ final class GoogleOAuthController extends BaseController
             'code' => $code,
             'client_id' => $configs["google_oauth_client_id"],
             'client_secret' => $configs["google_oauth_client_secret"],
-            'redirect_uri' => $_ENV['baseUrl'] . '/oauth/callback/google',
+            'redirect_uri' => $redirect_uri,
             'grant_type' => 'authorization_code'
         );
 
@@ -94,7 +94,7 @@ final class GoogleOAuthController extends BaseController
     {
         $code = $this->antiXss->xss_clean($request->getQueryParams()['code']);
 
-        $result = $this->getToken($code);
+        $result = $this->getToken($code, $_ENV['baseUrl'] . '/oauth/callback/google');
         $token = json_decode($result, true);
         $user_profile_str = $this->getUserProfile($token["access_token"]);
 
@@ -181,4 +181,46 @@ final class GoogleOAuthController extends BaseController
                 ->fetch('user/mole/google-oauth-callback.tpl')
         );
     }
+
+
+    /**
+     * @throws Exception
+     */
+    public function addGoogleOauth(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        $code = $this->antiXss->xss_clean($request->getQueryParams()['code']);
+        
+
+        $result = $this->getToken($code, $_ENV['baseUrl'] . '/user/account/oauth/google',);
+
+        $token = json_decode($result, true);
+        $user_profile_str = $this->getUserProfile($token["access_token"]);
+
+        $user_profile = json_decode($user_profile_str, true);
+
+        $this->user->google_id = $user_profile["id"];
+        $this->user->google_username = $user_profile["name"];
+        $this->user->save();
+
+        return $response->write(
+            $this->view()
+                ->assign("message", '{"oauth": "google", "status": "success"}')
+                ->fetch('user/mole/google-oauth-callback.tpl')
+        );
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    public function removeGoogleOauth(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        // remove google oauth info
+        $this->user->google_id = "";
+        $this->user->google_username = "";
+        $this->user->save();
+
+        return $response->withHeader('HX-Refresh', 'true');
+    }
+
 }

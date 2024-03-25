@@ -43,7 +43,7 @@
                                 <span class="align-middle">Sign in with Google</span>
                             </div>
                             <div class="d-flex align-items-center gap-2">
-                                {if $data.account_info.OAuth.google.activated}
+                                {if $user.google_id !== ""}
                                     <div class="green-circle"></div>
                                     <span class="text-success">Active</span>
                                 {else}
@@ -59,15 +59,21 @@
                                 delivery on
                                 Apple’s side
                             </div>
-                            <button
-                                class="visually-hidden btn btn-outline-info d-flex align-items-center justify-content-center py-0 pe-3 px-2">
-                                <img src="/assets/icons/google.svg" style="height: 36px;" />
-                                <span class="fs-7 fw-normal">Log in with Google</span>
-                            </button>
-                            <button
-                                class="btn btn-danger text-light d-flex align-items-center justify-content-center py-0" style="width: 170px;">
-                                <span class="fs-6 fw-normal">Disable & Remove</span>
-                            </button>
+                            {if $user.google_id !== ""}
+                                <button
+                                    class="btn btn-danger text-light d-flex align-items-center justify-content-center py-0"
+                                    style="width: 170px; height: 40px" hx-get="/user/account/oauth/google/deactivate"
+                                    hx-swap="none">
+                                    <span class="fs-6 fw-normal">Disable & Remove</span>
+                                </button>
+                            {else}
+                                <button id="google_oauth_set"
+                                    class="btn btn-outline-info d-flex align-items-center justify-content-center py-0 pe-3 px-2">
+                                    <img src="/assets/icons/google.svg" style="height: 36px;" />
+                                    <span class="fs-7 fw-normal">Log in with Google</span>
+                                </button>
+
+                            {/if}
                         </div>
                     </div>
                 </div>
@@ -79,7 +85,7 @@
                                 <span class="align-middle">Sign in with Telegram</span>
                             </div>
                             <div class="d-flex align-items-center gap-2">
-                                {if $data.account_info.OAuth.telegram.activated}
+                                {if $user.telegram_id !== ""}
                                     <div class="green-circle"></div>
                                     <span class="text-success">Active</span>
                                 {else}
@@ -91,11 +97,20 @@
                         <hr>
                         <div class="d-flex justify-content-between">
                             <div></div>
-                            <button
-                                class="btn btn-outline-info d-flex align-items-center justify-content-center py-0 pe-3 px-2">
-                                <img src="/assets/icons/telegram.svg" style="height: 40px;" />
-                                <span class="fw-normal" style="font-size: 11px;">Log in with Telegram</span>
-                            </button>
+                            {if $user.telegram_id !== ""}
+                                <button
+                                    class="btn btn-danger text-light d-flex align-items-center justify-content-center py-0"
+                                    style="width: 170px; height: 40px" hx-get="/user/account/oauth/telegram/deactivate"
+                                    hx-swap="none">
+                                    <span class="fs-6 fw-normal">Disable & Remove</span>
+                                </button>
+                            {else}
+                                <button id="telegram_oauth_set"
+                                    class="btn btn-outline-info d-flex align-items-center justify-content-center py-0 pe-3 px-2">
+                                    <img src="/assets/icons/telegram.svg" style="height: 40px;" />
+                                    <span class="fw-normal" style="font-size: 11px;">Log in with Telegram</span>
+                                </button>
+                            {/if}
                         </div>
                     </div>
                 </div>
@@ -163,6 +178,79 @@
             passwdInput.type = "text";
             togglePasswordVisible_btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
         }
+    });
+
+    var google_oauth_set = document.getElementById("google_oauth_set");
+    if (google_oauth_set != null) {
+        google_oauth_set.addEventListener('click', function(event) {
+            var oauthUrl =
+                "https://accounts.google.com/o/oauth2/auth?client_id={$google_client_id}&redirect_uri={$base_url}/user/account/oauth/google&scope=profile%20email&response_type=code&access_type=offline";
+
+                var oauthWindow = window.open(oauthUrl, "Google OAuth Login", "height=600,width=800");
+
+            if (oauthWindow) {
+                oauthWindow.focus();
+            } else {
+                alert("The window cannot be opened. Please check your browser's pop-up window settings.");
+            }
+        })
+    }
+
+
+    var telegram_oauth_set = document.getElementById("telegram_oauth_set");
+    if (telegram_oauth_set != null) {
+        telegram_oauth_set.addEventListener('click', function(event) {
+            var oauthUrl =
+                "https://oauth.telegram.org/auth?bot_id={$telegram_id}&origin={$base_url}/user/account/oauth/telegram&scope=identity&nonce={$uuid}";
+
+                var oauthWindow = window.open(oauthUrl, "Telegram OAuth Login", "height=600,width=800");
+
+            if (oauthWindow) {
+                oauthWindow.focus();
+            } else {
+                alert("The window cannot be opened. Please check your browser's pop-up window settings.");
+            }
+        })
+    }
+
+
+    // telegram oauth callback
+    window.addEventListener('message', function(event) {
+        if (event.origin === "https://oauth.telegram.org") {
+            fetch('{$base_url}/user/account/oauth/telegram', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: event.data
+        }).then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data["status"] == 1) {
+            window.location.href = "/user/account/info";
+        }
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:',
+            error);
+    });
+    }else if(event.origin === "{$base_url}"){
+    if (event.data["oauth"] == "google") {
+        if (event.data["status"] == "success") {
+            window.location = "/user/account/info";
+        } else if (event.data["status"] == "duplicate") {
+            var myModal = new bootstrap.Modal(document.getElementById('operationResult'));
+            document.getElementById("operationResultRender").innerHTML = ` <div class="d-flex justify-content-center">
+                    You tried signing in with a different authentication method than the one you used during signup. Please try again using your original authentication method, and bind this login method in account settings.
+                </div>`;
+            myModal.show();
+        }
+    }
+    }
     });
 </script>
 

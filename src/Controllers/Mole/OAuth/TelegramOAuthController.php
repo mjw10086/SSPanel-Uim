@@ -120,4 +120,59 @@ final class TelegramOAuthController extends BaseController
         );
     }
 
+    /**
+     * @throws Exception
+     */
+    public function addTelegramOauth(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        $configs = Config::getClass('feature');
+        $token = $configs['telegram_oauth_id'] . ":" . $configs['telegram_oauth_token'];
+
+        $data = $request->getParsedBody();
+        if ($data["event"] != "auth_result") {
+            return $response->write("error");
+        }
+
+        $auth_data = $data["result"];
+        $check_hash = $auth_data['hash'];
+        unset($auth_data['hash']);
+        $data_check_arr = [];
+        foreach ($auth_data as $key => $value) {
+            $data_check_arr[] = $key . '=' . $value;
+        }
+        sort($data_check_arr);
+        $data_check_string = implode("\n", $data_check_arr);
+        $secret_key = hash('sha256', $token, true);
+        $hash = hash_hmac('sha256', $data_check_string, $secret_key);
+
+        if (strcmp($hash, $check_hash) !== 0) {
+            return $response->write('Data is NOT from Telegram!');
+        }
+        if ((time() - $auth_data['auth_date']) > 86400) {
+            return $response->write('Data is outdated!');
+        }
+
+        $this->user->telegram_id = $auth_data["id"];
+        $this->user->telegram_username = $auth_data["username"];
+        $this->user->save();
+
+        return $response->withJson(
+            [
+                "status" => 1
+            ]
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function removeTelegramOauth(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        // remove telegram oauth info
+        $this->user->telegram_id = "";
+        $this->user->telegram_username = "";
+        $this->user->save();
+        return $response->withHeader('HX-Refresh', 'true');
+    }
+
 }

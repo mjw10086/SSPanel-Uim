@@ -57,6 +57,10 @@ return static function (Slim\App $app): void {
         $group->get('/faq', App\Controllers\Mole\MoleController::class . ':faq');
         $group->get('/account', App\Controllers\Mole\MoleController::class . ':account');
         $group->get('/account/info', App\Controllers\Mole\MoleController::class . ':account');
+        $group->post('/account/oauth/telegram', App\Controllers\Mole\OAuth\TelegramOAuthController::class . ':addTelegramOauth');
+        $group->get('/account/oauth/google', App\Controllers\Mole\OAuth\GoogleOAuthController::class . ':addGoogleOauth');
+        $group->get('/account/oauth/telegram/deactivate', App\Controllers\Mole\OAuth\TelegramOAuthController::class . ':removeTelegramOauth');
+        $group->get('/account/oauth/google/deactivate', App\Controllers\Mole\OAuth\GoogleOAuthController::class . ':removeGoogleOauth');
         $group->post('/account/password', App\Controllers\Mole\MoleController::class . ':updatePassword');
         $group->post('/account/email', App\Controllers\Mole\MoleController::class . ':updateEmail');
         $group->get('/account/notification', App\Controllers\Mole\MoleController::class . ':account');

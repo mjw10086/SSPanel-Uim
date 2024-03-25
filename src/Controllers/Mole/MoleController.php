@@ -672,8 +672,20 @@ final class MoleController extends BaseController
     {
         $notifications = Notification::fetchUserNotificationInSystem($this->user);
 
+        $configs = Config::getClass('feature');
+        $captcha = [];
+
+        $uuid = Uuid::uuid4();
+        $telegram_id = $configs['telegram_oauth_id'];
+        $google_client_id = $configs['google_oauth_client_id'];
+
+
         return $response->write(
             $this->view()
+                ->assign('base_url', $_ENV['baseUrl'])
+                ->assign('uuid', $uuid)
+                ->assign('telegram_id', $telegram_id)
+                ->assign('google_client_id', $google_client_id)
                 ->assign('user', $this->user)
                 ->assign('notifications', $notifications)
                 ->assign('data', MockData::getData())->fetch('user/mole/account.tpl')
