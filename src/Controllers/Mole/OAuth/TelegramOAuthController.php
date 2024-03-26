@@ -19,14 +19,13 @@ use Slim\Http\ServerRequest;
 final class TelegramOAuthController extends BaseController
 {
 
-    public function callback(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    private function vaildData($data)
     {
         $configs = Config::getClass('feature');
         $token = $configs['telegram_oauth_id'] . ":" . $configs['telegram_oauth_token'];
 
-        $data = $request->getParsedBody();
         if ($data["event"] != "auth_result") {
-            return $response->write("error");
+            return false;
         }
 
         $auth_data = $data["result"];
@@ -42,10 +41,23 @@ final class TelegramOAuthController extends BaseController
         $hash = hash_hmac('sha256', $data_check_string, $secret_key);
 
         if (strcmp($hash, $check_hash) !== 0) {
-            return $response->write('Data is NOT from Telegram!');
+            return false;
         }
         if ((time() - $auth_data['auth_date']) > 86400) {
-            return $response->write('Data is outdated!');
+            return false;
+        }
+
+        return $auth_data;
+    }
+
+    public function callback(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+
+        $data = $request->getParsedBody();
+
+        $auth_data = $this->vaildData($data);
+        if ($auth_data === false) {
+            return $response->write("error");
         }
 
         // login into account
@@ -125,31 +137,12 @@ final class TelegramOAuthController extends BaseController
      */
     public function addTelegramOauth(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
-        $configs = Config::getClass('feature');
-        $token = $configs['telegram_oauth_id'] . ":" . $configs['telegram_oauth_token'];
 
         $data = $request->getParsedBody();
-        if ($data["event"] != "auth_result") {
+
+        $auth_data = $this->vaildData($data);
+        if ($auth_data === false) {
             return $response->write("error");
-        }
-
-        $auth_data = $data["result"];
-        $check_hash = $auth_data['hash'];
-        unset($auth_data['hash']);
-        $data_check_arr = [];
-        foreach ($auth_data as $key => $value) {
-            $data_check_arr[] = $key . '=' . $value;
-        }
-        sort($data_check_arr);
-        $data_check_string = implode("\n", $data_check_arr);
-        $secret_key = hash('sha256', $token, true);
-        $hash = hash_hmac('sha256', $data_check_string, $secret_key);
-
-        if (strcmp($hash, $check_hash) !== 0) {
-            return $response->write('Data is NOT from Telegram!');
-        }
-        if ((time() - $auth_data['auth_date']) > 86400) {
-            return $response->write('Data is outdated!');
         }
 
         $this->user->telegram_id = $auth_data["id"];
@@ -173,6 +166,36 @@ final class TelegramOAuthController extends BaseController
         $this->user->telegram_username = "";
         $this->user->save();
         return $response->withHeader('HX-Refresh', 'true');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function initPurchaseOauthCallback(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        $data = $request->getParsedBody();
+
+        $auth_data = $this->vaildData($data);
+        if ($auth_data === false) {
+            return $response->write("error");
+        }
+
+        $res = [
+            "id" => (string)$auth_data["id"],
+            "name" => $auth_data["username"],
+        ];
+
+        $configs = Config::getClass('feature');
+        $token = $configs['telegram_oauth_id'] . ":" . $configs['telegram_oauth_token'];
+        $checksum = hash('sha256', json_encode($res) . $token);
+        $res["validation"] = $checksum;
+
+        return $response->withJson(
+            [
+                "status" => 1,
+                "data" => $res,
+            ]
+        );
     }
 
 }

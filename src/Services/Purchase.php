@@ -118,7 +118,7 @@ final class Purchase
         }
 
         if($invoice->status !== "unpaid"){
-            return false;
+            return true;
         }
 
         if ($user->is_shadow_banned) {

@@ -23,33 +23,39 @@
                 <div class="fs-2">Enter the email for your account</div>
                 <div class="mt-4">
                     <label class="form-label fs-7 text-gray fw-light">Your Email</label>
-                    <input name="email" class="form-control bg-quinary text-light py-3" type="email"
-                        placeholder="Email address" required/>
+                    <input id="email_input" name="email" class="form-control bg-quinary text-light py-3" type="email"
+                        placeholder="Email address" required />
                 </div>
                 <div class="mb-3 mt-4 w-100 d-flex justify-content-center align-items-center">
                     <span class="line" style="width: calc(50% - 70px);"></span>
                     <span class="underline-text px-3 fs-6 fw-light">or continue with</span>
                     <span class="line" style="width: calc(50% - 70px);"></span>
                 </div>
-                <div class="d-flex justify-content-center fs-7">
-                    <div class="card m-2 text-light border-light" style="background-color: transparent;">
-                        <div class="d-flex align-items-center justify-content-center gap-2 px-2 py-1">
-                            <img src="/assets/icons/telegram.svg" style="width: 35px;">
+                <div style="display: none;">
+                    <input id="oauth_type" type="text" name="type" />
+                    <input id="oauth_id" type="text" name="id" />
+                    <input id="oauth_name" type="text" name="name" />
+                    <input id="validation" type="text" name="validation">
+                </div>
+                <div class="d-flex justify-content-center fs-7 gap-4">
+                    <button id="telegram_login" class="btn btn-outline-light btn-sm py-2" type="button">
+                        <div class="d-flex align-items-center justify-content-center gap-2">
+                            <img src="/assets/icons/telegram.svg" style="width: 25px;">
                             <div>Log In With Telegram</div>
                         </div>
-                    </div>
-                    <div class="card m-2 text-light border-light" style="background-color: transparent;">
-                        <div class="d-flex align-items-center justify-content-center gap-2 px-2 py-1">
-                            <img src="/assets/icons/google.svg" style="width: 35px;">
+                    </button>
+                    <button id="google_login" class="btn btn-outline-light btn-sm py-2" type="button">
+                        <div class="d-flex align-items-center justify-content-center gap-2">
+                            <img src="/assets/icons/google.svg" style="width: 25px;">
                             <div>Log In With Google</div>
                         </div>
-                    </div>
-                    <div class="card m-2 text-light border-light" style="background-color: transparent;">
-                        <div class="d-flex align-items-center justify-content-center gap-2 px-2 py-1">
-                            <img src="/assets/icons/apple.svg" style="width: 18px; margin: 6px;">
+                    </button>
+                    <button class="btn btn-outline-light btn-sm py-2" type="button">
+                        <div class="d-flex align-items-center justify-content-center gap-2">
+                            <img src="/assets/icons/apple.svg" style="width: 15px; margin: 3px;">
                             <div>Log In With Apple</div>
                         </div>
-                    </div>
+                    </button>
                 </div>
             </div>
             <div class="card rounded-4 bg-quinary p-5 py-4 mt-5 text-light">
@@ -106,7 +112,8 @@
                 <div class="mt-3">
                     <span class="fs-3 fw-light">Plan:</span><span class="fs-2 fw-bold"> {$product.name}</span>
                 </div>
-                <div class="fw-light text-gray fs-5">${$product.price}/month, {$product.content.bandwidth} GB/ month, {$product.content.ip_limit} devices</div>
+                <div class="fw-light text-gray fs-5">${$product.price}/month, {$product.content.bandwidth} GB/ month,
+                    {$product.content.ip_limit} devices</div>
                 <div class="fs-6 mt-4">
                     <span class="fw-light">purchased period: </span> <span class="fw-bolder">1-Month</span>
                 </div>
@@ -123,7 +130,7 @@
                     <div id="coupon_check_msg" class="my-2">
 
                     </div>
-                    <a id="coupon_remove" class="text-danger">Remove Coupon?</a>
+                    <a id="coupon_remove" class="text-danger">Remove Coupon</a>
                 </div>
                 <hr class="my-4 me-5" />
                 <div class="d-flex justify-content-between align-items-center">
@@ -147,6 +154,14 @@
             </div>
         </div>
     </form>
+
+    <div class="modal fade" id="operationResult" aria-hidden="true" aria-labelledby="operationResult" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-2 bg-quinary text-light opacity-100 p-3" id="operationResultRender">
+            </div>
+        </div>
+    </div>
+
 </body>
 
 <script>
@@ -171,17 +186,92 @@
 
     document.addEventListener('htmx:afterRequest', function(evt) {
         if (evt.detail.xhr.status != 404 && evt.detail.successful == true) {
-            try {
-                var result = JSON.parse(evt.detail.xhr.response);
-                document.getElementById("coupon_check_msg").innerHTML = result["msg"];
-                if (result["success"]) {
-                    document.getElementById("price").innerHTML = "$" + result["price"];
-                }
-            } catch (error) {
-                // 
+            var result = JSON.parse(evt.detail.xhr.response);
+            document.getElementById("coupon_check_msg").innerHTML = result["msg"];
+            if (result["success"]) {
+                document.getElementById("price").innerHTML = "$" + result["price"];
             }
         }
     });
+
+
+    // telegram oauth
+    var telegram_login = document.getElementById("telegram_login");
+    telegram_login.addEventListener('click', function(event) {
+        var oauthUrl =
+            "https://oauth.telegram.org/auth?bot_id={$telegram_id}&origin={$base_url}&scope=identity&nonce={$uuid}";
+
+            var oauthWindow = window.open(oauthUrl, "Telegram OAuth Login", "height=600,width=800");
+
+        if (oauthWindow) {
+            oauthWindow.focus();
+        } else {
+            alert("The window cannot be opened. Please check your browser's pop-up window settings.");
+        }
+    })
+
+    var google_login = document.getElementById("google_login");
+    google_login.addEventListener('click', function(event) {
+        var oauthUrl =
+            "https://accounts.google.com/o/oauth2/auth?client_id={$google_client_id}&redirect_uri={$base_url}/init-purchase/oauth/callback/google&scope=profile%20email&response_type=code&access_type=offline";
+
+            var oauthWindow = window.open(oauthUrl, "Google OAuth Login", "height=600,width=800");
+
+        if (oauthWindow) {
+            oauthWindow.focus();
+        } else {
+            alert("The window cannot be opened. Please check your browser's pop-up window settings.");
+        }
+    })
+
+    var oauth_type = document.getElementById("oauth_type");
+    var oauth_id = document.getElementById("oauth_id");
+    var oauth_name = document.getElementById("oauth_name");
+    var validation = document.getElementById("validation");
+    var email_input = document.getElementById("email_input");
+
+    window.addEventListener('message', function(event) {
+        console.log(event)
+        if (event.origin === "https://oauth.telegram.org") {
+            fetch('{$base_url}/init-purchase/oauth/callback/telegram', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: event.data}).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }).then(res => {
+                oauth_type.value = "telegram";
+                oauth_id.value = res["data"]["id"];
+                oauth_name.value = res["data"]["name"];
+                validation.value = res["data"]["validation"];
+                email_input.removeAttribute("required");
+            }).catch(error => {
+                console.error('There has been a problem with your fetch operation:',
+                    error);
+            });
+        } else if(event.origin === "{$base_url}"){
+            if (event.data["oauth"] == "google") {
+                if (event.data["status"] == "success") {
+                    oauth_type.value = "google";
+                    oauth_id.value = event.data["data"]["id"];
+                    oauth_name.value = event.data["data"]["name"];
+                    validation.value = event.data["data"]["validation"];
+                    email_input.value = event.data["data"]["email"];
+                    email_input.removeAttribute("required");
+                } else if (event.data["status"] == "duplicate") {
+                    var myModal = new bootstrap.Modal(document.getElementById('operationResult'));
+                    document.getElementById("operationResultRender").innerHTML = ` <div class="d-flex justify-content-center">
+                            You tried signing in with a different authentication method than the one you used during signup. Please try again using your original authentication method, and bind this login method in account settings.
+                        </div>`;
+                    myModal.show();
+                }
+            }
+        }
+    })
 </script>
 
 

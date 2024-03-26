@@ -189,9 +189,8 @@ final class GoogleOAuthController extends BaseController
     public function addGoogleOauth(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
         $code = $this->antiXss->xss_clean($request->getQueryParams()['code']);
-        
 
-        $result = $this->getToken($code, $_ENV['baseUrl'] . '/user/account/oauth/google',);
+        $result = $this->getToken($code, $_ENV['baseUrl'] . '/user/account/oauth/google');
 
         $token = json_decode($result, true);
         $user_profile_str = $this->getUserProfile($token["access_token"]);
@@ -221,6 +220,46 @@ final class GoogleOAuthController extends BaseController
         $this->user->save();
 
         return $response->withHeader('HX-Refresh', 'true');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function initPurchaseOauthCallback(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
+    {
+        $code = $this->antiXss->xss_clean($request->getQueryParams()['code']);
+
+        $result = $this->getToken($code, $_ENV['baseUrl'] . '/init-purchase/oauth/callback/google');
+        $token = json_decode($result, true);
+        $user_profile_str = $this->getUserProfile($token["access_token"]);
+
+        $user_profile = json_decode($user_profile_str, true);
+
+        $exist_user = (new User())->where("email", $user_profile["email"])->where("google_id", "")->first();
+        if ($exist_user !== null) {
+            return $response->write(
+                $this->view()
+                    ->assign("message", '{"oauth": "google", "status": "duplicate"}')
+                    ->fetch('user/mole/google-oauth-callback.tpl')
+            );
+        }
+
+        $res = [
+            "id" => $user_profile["id"],
+            "name" => $user_profile["name"],
+            "email" => $user_profile["email"]
+        ];
+
+        $configs = Config::getClass('feature');
+        $token = $configs["google_oauth_client_secret"];
+        $checksum = hash('sha256', json_encode($res) . $token);
+        $res["validation"] = $checksum;
+
+        return $response->write(
+            $this->view()
+                ->assign("message", '{"status": "success","oauth": "google", "data":' . json_encode($res) . '}')
+                ->fetch('user/mole/google-oauth-callback.tpl')
+        );
     }
 
 }

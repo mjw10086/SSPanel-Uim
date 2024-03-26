@@ -41,6 +41,8 @@ return static function (Slim\App $app): void {
     $app->post('/init-purchase/create', App\Controllers\Mole\MoleController::class . ':createInitPurchase');
     $app->get('/init-purchase/return', App\Controllers\Mole\MoleController::class . ':returnInitPurchase');
     $app->get('/init-purchase/check', App\Controllers\Mole\MoleController::class . ':checkInitPurchase');
+    $app->post('/init-purchase/oauth/callback/telegram', App\Controllers\Mole\OAuth\TelegramOAuthController::class . ':initPurchaseOauthCallback');
+    $app->get('/init-purchase/oauth/callback/google', App\Controllers\Mole\OAuth\GoogleOAuthController::class . ':initPurchaseOauthCallback');
 
 
     // User

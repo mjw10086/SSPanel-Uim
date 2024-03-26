@@ -715,6 +715,11 @@ final class MoleController extends BaseController
      */
     public function initPurchase(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
+        $configs = Config::getClass('feature');
+        $uuid = Uuid::uuid4();
+        $telegram_id = $configs['telegram_oauth_id'];
+        $google_client_id = $configs['google_oauth_client_id'];
+
         $product_id = $args['id'] ?? null;
         if ($product_id === null) {
             return $response->withStatus(404)->write($this->view()->fetch('404.tpl'));
@@ -729,6 +734,10 @@ final class MoleController extends BaseController
 
         return $response->write(
             $this->view()
+                ->assign('base_url', $_ENV['baseUrl'])
+                ->assign('uuid', $uuid)
+                ->assign('telegram_id', $telegram_id)
+                ->assign('google_client_id', $google_client_id)
                 ->assign("product", $product)
                 ->assign("next_pay", $next_pay)
                 ->fetch('user/mole/init-purchase.tpl')
@@ -740,23 +749,70 @@ final class MoleController extends BaseController
      */
     public function createInitPurchase(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
+
         // ----------------
         // get parameter
         $coupon_code = $this->antiXss->xss_clean($request->getParam('coupon_code'));
         $product_id = $this->antiXss->xss_clean($request->getParam('product_id')) ?? null;
         $payment_method = $this->antiXss->xss_clean($request->getParam('paymentSelect'));
         $email = $this->antiXss->xss_clean($request->getParam('email'));
+        $type = $this->antiXss->xss_clean($request->getParam('type'));
+        $id = $this->antiXss->xss_clean($request->getParam('id'));
+        $name = $this->antiXss->xss_clean($request->getParam('name'));
+        $validation = $this->antiXss->xss_clean($request->getParam('validation'));
 
+        $exist_user = null;
 
-        // -----------------
-        // check and create account
-        if ($this->user->id === null) {
-            // create account with email
+        if ($type == "") {
+            // check user exist
+            $exist_user = (new User())->where("email", $email)->first();
+            if ($exist_user !== null) {
+                return $response->write("You tried signing in with a different authentication method than the one you used during signup. Please try again using your original authentication method, and bind this login method in account settings.");
+            }
+        } else if ($type == "telegram") {
+            // validation
+            $res = [
+                "id" => $id,
+                "name" => $name,
+            ];
+            $configs = Config::getClass('feature');
+            $token = $configs['telegram_oauth_id'] . ":" . $configs['telegram_oauth_token'];
+            $checksum = hash('sha256', json_encode($res) . $token);
+            if ($checksum !== $validation) {
+                return $response->write("your request is invalid");
+            }
+
+            // check user exist
+            $exist_user = (new User())->where("telegram_id", $id)->first();
+        } else if ($type == "google") {
+            // validation
+            $res = [
+                "id" => $id,
+                "name" => $name,
+                "email" => $email
+            ];
+
+            $configs = Config::getClass('feature');
+            $token = $configs["google_oauth_client_secret"];
+            $checksum = hash('sha256', json_encode($res) . $token);
+            if ($checksum !== $validation) {
+                return $response->write("your request is invalid");
+            }
+
+            // check user exist
+            $exist_user = (new User())->where("google_id", $id)->first();
+        }
+
+        $time = 86400 * ($_ENV['rememberMeDuration'] ?: 7);
+
+        // create user then login or login as exist user
+        if ($exist_user === null) {
+            // create user and become $this->user
             $user = new User();
             $configs = Config::getClass('reg');
 
             $user->user_name = "";
-            $user->email = $email;
+            $user->setUserEmail($email);
             $user->remark = '';
             $user->pass = '';
             $user->passwd = Tools::genRandomChar(16);
@@ -795,13 +851,24 @@ final class MoleController extends BaseController
                 $user->node_group = $random_group[array_rand(explode(',', $random_group))];
             }
 
+            if ($type == "telegram") {
+                $user->telegram_id = $id;
+                $user->telegram_username = $name;
+            }
+            if ($type == "google") {
+                $user->google_id = $id;
+                $user->google_username = $name;
+            }
             $user->save();
 
-            $time = 86400 * ($_ENV['rememberMeDuration'] ?: 7);
-
-            Auth::login($user->id, $time);
-            $this->user = $user;
+            $cur_user = (new User())->where("email", $user->email)->first();
+            Auth::login($cur_user->id, $time);
+            $this->user = $cur_user;
+        } else {
+            $this->user = $exist_user;
+            Auth::login($this->user->id, $time);
         }
+
 
         // -----------------
         // deal with product and coupon
@@ -925,12 +992,10 @@ final class MoleController extends BaseController
         // order update
         $res = Purchase::purchaseWithBalance($invoice_id, $this->user);
         if ($res === true) {
-            return $response->write("success");
+            return $response->withRedirect($_ENV['baseUrl']);
+        } else {
+            return $response->write("fail");
         }
-
-        return $response->write(
-            json_encode($_POST)
-        );
     }
 
     /**
