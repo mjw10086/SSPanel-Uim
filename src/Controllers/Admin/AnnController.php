@@ -127,15 +127,17 @@ final class AnnController extends BaseController
                 ->get();
 
             foreach ($users as $user) {
-                (new EmailQueue())->add(
-                    $user->email,
-                    $subject,
-                    'warn.tpl',
-                    [
-                        'user' => $user,
-                        'text' => $content,
-                    ]
-                );
+                if ($user->getUserEmail() !== "") {
+                    (new EmailQueue())->add(
+                        $user->email,
+                        $subject,
+                        'warn.tpl',
+                        [
+                            'user' => $user,
+                            'text' => $content,
+                        ]
+                    );
+                }
             }
         }
 

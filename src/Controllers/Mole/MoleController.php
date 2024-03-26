@@ -518,7 +518,7 @@ final class MoleController extends BaseController
     {
         $new_email = $this->antiXss->xss_clean($request->getParam('newemail'));
         $user = $this->user;
-        $old_email = $user->email;
+        $old_email = $user->getUserEmail();
 
         if (!$_ENV['enable_change_email'] || $user->is_shadow_banned) {
             return $response->write(
@@ -576,7 +576,7 @@ final class MoleController extends BaseController
         //     $redis->del('email_verify:' . $email_verify_code);
         // }
 
-        $user->email = $new_email;
+        $user->setUserEmail($new_email);
 
         if (!$user->save()) {
             return $response->write(

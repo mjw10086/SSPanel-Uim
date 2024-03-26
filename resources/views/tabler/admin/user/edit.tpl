@@ -35,7 +35,7 @@
                             <div class="form-group mb-3 row">
                                 <label class="form-label col-3 col-form-label">注册邮箱</label>
                                 <div class="col">
-                                    <input id="email" type="email" class="form-control" value="{$edit_user->email}">
+                                    <input id="email" type="email" class="form-control" value="{$edit_user->getUserEmail()}">
                                 </div>
                             </div>
                             <div class="form-group mb-3 row">

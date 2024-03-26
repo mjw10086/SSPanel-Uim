@@ -24,7 +24,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="subheader">账户邮箱</div>
                             </div>
-                            <div class="h1 mb-3">{$user->email}</div>
+                            <div class="h1 mb-3">{$user->getUserEmail()}</div>
                         </div>
                     </div>
                 </div>

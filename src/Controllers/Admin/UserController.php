@@ -190,7 +190,7 @@ final class UserController extends BaseController
             $user->money = $money;
         }
 
-        $user->email = $request->getParam('email');
+        $user->setUserEmail($request->getParam('email'));
         $user->user_name = $request->getParam('user_name');
         $user->remark = $request->getParam('remark');
         $user->is_admin = $request->getParam('is_admin') === 'true' ? 1 : 0;
