@@ -859,6 +859,21 @@ final class MoleController extends BaseController
                 $user->google_id = $id;
                 $user->google_username = $name;
             }
+
+            if ($user->telegram_id == null) {
+                if ($user->getUserEmail() != "") {
+                    $user->contact_method = 1;
+                } else {
+                    $user->contact_method = 0;
+                }
+            } else {
+                if ($user->getUserEmail() != "") {
+                    $user->contact_method = 3;
+                } else {
+                    $user->contact_method = 2;
+                }
+            }
+
             $user->save();
 
             $cur_user = (new User())->where("email", $user->email)->first();

@@ -15,7 +15,7 @@
                         <div class="fw-light">
                             <div class="fs-5">Email notification</div>
                             {if $user->getUserEmail() != ""}
-                                <div class="fs-7">{$user.email}</div>
+                                <div class="fs-7">{$user->getUsereEmail()}</div>
                             {/if}
                         </div>
                         <div class="form-check form-switch">
