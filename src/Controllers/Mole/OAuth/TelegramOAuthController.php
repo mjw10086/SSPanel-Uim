@@ -137,11 +137,15 @@ final class TelegramOAuthController extends BaseController
      */
     public function addTelegramOauth(ServerRequest $request, Response $response, array $args): Response|ResponseInterface
     {
-
         $data = $request->getParsedBody();
 
         $auth_data = $this->vaildData($data);
         if ($auth_data === false) {
+            return $response->write("error");
+        }
+
+        $exist_user = (new User())->where("telegram_id", $auth_data["id"])->first();
+        if($exist_user !== null){
             return $response->write("error");
         }
 

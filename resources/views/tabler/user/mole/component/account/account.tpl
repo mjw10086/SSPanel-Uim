@@ -122,15 +122,20 @@
                                 <span class="">Sign in with Email</span>
                             </div>
                             <div class="d-flex align-items-center gap-2">
-                                <div class="green-circle"></div>
-                                <span class="text-success">Active</span>
+                                {if $user->getUserEmail() != ""}
+                                    <div class="green-circle"></div>
+                                    <span class="text-success">Active</span>
+                                {else}
+                                    <div class="gray-circle"></div>
+                                    <span>Not activated</span>
+                                {/if}
                             </div>
                         </div>
                         <hr>
                         <div class="d-flex flex-column gap-3">
                             <div class="d-flex justify-content-between gap-4">
                                 <input type="email" class="form-control bg-tertiary border-0 fs-6 fw-light text-light"
-                                    value="{$user.email}" id="new-email" />
+                                    value="{$user->getUserEmail()}" id="new-email" />
                                 <button class="btn btn-default fs-6 fw-normal" style="width: 270px;"
                                     hx-post="/user/account/email" hx-swap="innerHTML" hx-target="#operationResultRender"
                                     hx-vals='js:{
@@ -155,11 +160,13 @@
                                     password</button>
                             </div>
                         </div>
-                        <div class=" d-flex justify-content-between mt-4">
-                            <div></div>
-                            <button class="col-5 btn btn-outline-danger fs-5 fw-normal">Disable &
-                                remove</button>
-                        </div>
+                        {if $user->getUserEmail() != ""}
+                            <div class=" d-flex justify-content-between mt-4">
+                                <div></div>
+                                <button class="col-5 btn btn-outline-danger fs-5 fw-normal">Disable &
+                                    remove</button>
+                            </div>
+                        {/if}
                     </div>
                 </div>
             </div>

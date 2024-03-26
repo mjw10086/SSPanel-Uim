@@ -197,6 +197,11 @@ final class GoogleOAuthController extends BaseController
 
         $user_profile = json_decode($user_profile_str, true);
 
+        $exist_user = (new User())->where("google_id", $user_profile["id"])->first();
+        if($exist_user !== null){
+            return $response->write("error");
+        }
+
         $this->user->google_id = $user_profile["id"];
         $this->user->google_username = $user_profile["name"];
         $this->user->save();
